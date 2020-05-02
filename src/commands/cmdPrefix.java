@@ -25,6 +25,14 @@ public class cmdPrefix implements Command {
             event.getTextChannel().sendMessage("Usage: `"+prefix+"`prefix [Neues Prefix]`").queue();
             return;
         }
+
+        try {
+            "abc".replaceFirst(args[0],"");
+        } catch (Exception e) {
+            event.getTextChannel().sendMessage("Dieses Prefix ist nicht zugelassen, bitte suche ein anderes!").queue();
+            return;
+
+        }
         STATIC.changePrefix(args[0]);
         event.getTextChannel().sendMessage("Prefix erfogreich geändert!").queue();
     }
@@ -45,7 +53,7 @@ public class cmdPrefix implements Command {
     }
 
     @Override
-    public String Def() {
+    public String Def(String prefix) {
         return "Ändere das Prefix!";
     }
 }

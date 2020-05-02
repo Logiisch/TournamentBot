@@ -1,6 +1,7 @@
 package commands;
 
 import core.commandHandler;
+import listeners.commandListener;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -16,11 +17,12 @@ public class cmdHelp implements Command {
 
     @Override
     public void action(String[] args, MessageReceivedEvent event)  {
+        String prefix = commandListener.getPrefix(event.getGuild());
         EmbedBuilder eb = new EmbedBuilder().setColor(getRandomColor()).setTitle("Xander's Hilfe");
         for (String s: commandHandler.commands.keySet()) {
             Command cmd = commandHandler.commands.get(s);
             if (cmd.isPrivate())continue;
-            String def = cmd.Def();
+            String def = cmd.Def(prefix);
             if (def==null) def = "<Keine Beschreibung verfügbar!>";
             eb.addField(s,def,false);
         }
@@ -44,7 +46,7 @@ public class cmdHelp implements Command {
     }
 
     @Override
-    public String Def() {
+    public String Def(String prefix) {
         return "Erhalte Hilfe zu allen Befehlen.";
     }
 

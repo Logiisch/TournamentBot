@@ -16,7 +16,7 @@ public interface Command {
         return new ArrayList<>();
     }
      boolean isPrivate();
-    String Def();
+    String Def(String prefix);
 
 
 }

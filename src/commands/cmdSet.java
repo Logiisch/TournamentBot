@@ -79,7 +79,7 @@ public class cmdSet implements Command {
     }
 
     @Override
-    public String Def() {
+    public String Def(String prefix) {
         return "Setze das Ergebnis eines noch nicht eingetragenen Matches!";
     }
 }

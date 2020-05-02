@@ -62,7 +62,7 @@ public class cmdResult implements Command {
     }
 
     @Override
-    public String Def() {
-        return "Trage das Ergebnis eines Matches ein. Nutze \"t!res win\", wenn du gewonnen hast oder \"t!res lose\", wenn du verloren hast!";
+    public String Def(String prefix) {
+        return "Trage das Ergebnis eines Matches ein. Nutze \""+prefix+"res win\", wenn du gewonnen hast oder \""+prefix+"res lose\", wenn du verloren hast!";
     }
 }

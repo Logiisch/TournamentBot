@@ -46,7 +46,7 @@ public class cmdRetry implements Command {
     }
 
     @Override
-    public String Def() {
+    public String Def(String prefix) {
         return "Befehl, um bei unzustellbaren Nachrichten die Zustellung erneut zu probieren. ";
     }
 }

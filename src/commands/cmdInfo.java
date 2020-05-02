@@ -63,7 +63,7 @@ public class cmdInfo implements Command {
     }
 
     @Override
-    public String Def() {
-        return "zeige deine Aktiuelle Position und deinen aktuellen Gegner an";
+    public String Def(String prefix) {
+        return "Zeige deine Aktuelle Position und deinen aktuellen Gegner an";
     }
 }

@@ -97,7 +97,7 @@ public class cmdKick implements Command{
     }
 
     @Override
-    public String Def() {
+    public String Def(String prefix) {
         return "Verlasse das Turnier";
     }
 }

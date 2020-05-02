@@ -70,7 +70,7 @@ public class cmdMessage implements Command {
     }
 
     @Override
-    public String Def() {
+    public String Def(String prefix) {
         return "Sende eine Nachricht an alle Teilnehmer!";
     }
 }

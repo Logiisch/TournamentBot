@@ -62,7 +62,7 @@ public class cmdRejoin implements Command {
     }
 
     @Override
-    public String Def() {
+    public String Def(String prefix) {
         return "Hole bereits gekickte Personen zurück ins Turnier!";
     }
 }

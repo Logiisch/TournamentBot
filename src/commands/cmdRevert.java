@@ -61,7 +61,7 @@ public class cmdRevert implements Command {
     }
 
     @Override
-    public String Def() {
+    public String Def(String prefix) {
         return "Setze einen Spieler eine Stufe zurück!";
     }
 }

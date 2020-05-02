@@ -69,7 +69,7 @@ public class cmdReset implements Command {
     }
 
     @Override
-    public String Def() {
+    public String Def(String prefix) {
         return "Setzte das Turnier zurück!";
     }
 
