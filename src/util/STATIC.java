@@ -19,15 +19,15 @@ public class STATIC {
     public static String VERSION = "2.0";
     public static String PREFIX = "t!";
     public static String ADDLINK = "https://discordapp.com/oauth2/authorize?client_id=705567211380801598&scope=bot&permissions=268692560";
-    public static String CODELINK = "https://github.com/Logiisch/XanderBot";
+    public static String CODELINK = "https://github.com/Logiisch/TournamentBot";
     public static String OWNERID = "318457868917407745";
-   // public static String XANDERID = "402094664016199680";
+
 
     public static String SELFID = "705567211380801598";
 
     public static String GUILDID = "676002000835444736";
 
-    public static boolean LOOPBOLEAN = true;
+
 
 
     public static String ROLE_TOT = "678319461610029056";
@@ -94,7 +94,7 @@ public class STATIC {
     public static boolean trysend (User u, String msg) {
         if (u.getId().equalsIgnoreCase(SELFID)||u.getJDA().getSelfUser().getId().equalsIgnoreCase(u.getId())) return true;
         try {
-            u.openPrivateChannel().complete().sendMessage(msg).queue();
+            u.openPrivateChannel().complete().sendMessage(msg).queue(); //Zeile, die Fehler ausgibt, obwohl sie im Try-Block steht
             return true;
         } catch (Exception e) {
             Guild g = u.getJDA().getTextChannelById(CHANNEL_ALLGEMEIN).getGuild();
