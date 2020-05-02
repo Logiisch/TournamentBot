@@ -47,6 +47,10 @@ public class STATIC {
 
     public static boolean dryRun = false;
 
+
+    public static void changePrefix (String prefix){
+        PREFIX = prefix;
+    }
     //Für User IDs
     private static ArrayList<String> notincluded = new ArrayList<>();
 

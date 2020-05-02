@@ -503,7 +503,13 @@ public class Logic {
 
         return true;
     }
-
+    public static TournamentNode getCurrentNode(User u) {
+        for (int nid:nodes.keySet()) {
+            TournamentNode tn = nodes.get(nid);
+            if (tn.players.contains(u)&&tn.winner==null) return tn;
+        }
+        return null;
+    }
 
 
 

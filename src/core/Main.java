@@ -64,6 +64,8 @@ public class Main {
         commandHandler.commands.put("msg",new cmdMessage());
         commandHandler.commands.put("set", new cmdSet());
         commandHandler.commands.put("delete", new cmdReset());
+        commandHandler.commands.put("info", new cmdInfo());
+        commandHandler.commands.put("prefix", new cmdPrefix());
 
 
     }
