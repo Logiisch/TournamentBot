@@ -122,7 +122,7 @@ public class Logic {
                     int promid = node.promoteToNID;
                     TournamentNode promto = nodes.get(promid);
                     promto.players.add(node.players.get(0));
-                    if (!node.players.get(1).getId().equalsIgnoreCase(event.getJDA().getSelfUser().getId())) node.players.get(0).openPrivateChannel().complete().sendMessage("Du hast Glück, da nicht genügend Spieler da sind, um das Turnier zu füllen oder jemand das Turnier verlassen hat, bist du direkt eine Runde weitergekommen!").queue();
+                    if (!node.players.get(0).getId().equalsIgnoreCase(event.getJDA().getSelfUser().getId())) node.players.get(0).openPrivateChannel().complete().sendMessage("Du hast Glück, da nicht genügend Spieler da sind, um das Turnier zu füllen oder jemand das Turnier verlassen hat, bist du direkt eine Runde weitergekommen!").queue();
                     node.update();
                     promto.update();
                 }
@@ -188,7 +188,7 @@ public class Logic {
                 return;
             }
             User pla = promto.players.get(0);
-            User plb = promto.players.get(0);
+            User plb = promto.players.get(1);
             String prefix = commandListener.getPrefix(g);
 
 
