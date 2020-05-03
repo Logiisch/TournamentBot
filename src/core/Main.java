@@ -27,11 +27,11 @@ public class Main {
         builder.setToken(SECRETS.getTOKEN());
         builder.setAutoReconnect(true);
         builder.setStatus(OnlineStatus.ONLINE);
-        String Version = STATIC.VERSION;
+        String Version = STATIC.ACTIVITY;
 
 
         builder.setActivity(Activity.playing(Version + ""));
-        System.out.println("Starte auf " + Version + " ...");
+        System.out.println("Starte mit Status " + Version + " ...");
         addListeners();
         addCommands();
         //readInStartValues();
@@ -69,6 +69,7 @@ public class Main {
         commandHandler.commands.put("prefix", new cmdPrefix());
         commandHandler.commands.put("leave", new cmdLeave());
         commandHandler.commands.put("messagetorole",new cmdMessageRole());
+        commandHandler.commands.put("status", new cmdUpdateStatus());
 
 
     }

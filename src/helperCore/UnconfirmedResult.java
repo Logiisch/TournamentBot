@@ -74,7 +74,7 @@ public class UnconfirmedResult {
         } catch (Exception e) {
             msg += Objects.requireNonNull(g.getJDA().getUserById(STATIC.OWNERID)).getName()+" ";
         }
-        msg +=": Es gibt Probleme bei der Abstimmung. Bitte schlichten! Dann mit `t!set [User als @Erwähnung] [winner/looser] korrigieren!";
+        msg +=": Es gibt Probleme bei der Abstimmung. Bitte schlichten! Dann mit `t!set [User als @Erwähnung] [winner/looser]` korrigieren!";
         Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage(msg).queue();
     }
 

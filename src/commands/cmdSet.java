@@ -24,7 +24,7 @@ public class cmdSet implements Command {
             return;
         }
         if (Logic.nodes.size()==0) {
-            event.getTextChannel().sendMessage("Immer ruhig. Ds Turnier hat noch nicht einmal begonnen!").queue();
+            event.getTextChannel().sendMessage("Immer ruhig. Das Turnier hat noch nicht einmal begonnen!").queue();
             return;
         }
         if (args.length<1||(event.getMessage().getMentionedUsers().size()==0)&&event.getMessage().getMentionedMembers().size()==0) {

@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class STATIC {
-    public static String VERSION = "wartet auf seinen Einsatz";
+    public static String ACTIVITY = "keine große Rolle";
     public static String PREFIX = "t!";
     public static String ADDLINK = "https://discordapp.com/oauth2/authorize?client_id=705567211380801598&scope=bot&permissions=268692560";
     public static String CODELINK = "https://github.com/Logiisch/TournamentBot";
@@ -47,7 +47,7 @@ public class STATIC {
     public static String ROLE_TESTLAUFTEILNEHMER = "706471180369920000";
 
     public static String CHANNEL_RESULTS = "705557075106988144";
-    public static String CHANNEL_ALLGEMEIN = "706058094614020139";
+    public static String CHANNEL_ALLGEMEIN = "676029060136042536";
 
 
     public static boolean dryRun = true;
