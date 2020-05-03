@@ -17,8 +17,8 @@ public class cmdInfo implements Command {
 
     @Override
     public void action(String[] args, MessageReceivedEvent event) {
-        User u =null;
-        TournamentNode tn = null;
+        User u;
+        TournamentNode tn;
         if (event.getMessage().getMentionedMembers().size()==0) {
              u = event.getAuthor();
         } else {
@@ -31,9 +31,9 @@ public class cmdInfo implements Command {
         }
         EmbedBuilder eb = new EmbedBuilder().setColor(Color.green);
         eb.setTitle(u.getName()).setAuthor(STATIC.getRoundname(tn.getRunde()));
-        String geg = "";
+        String geg;
         if (tn.players.size()==2) {
-            User gegner = null;
+            User gegner;
             if (tn.players.get(0).getId().equalsIgnoreCase(u.getId())) {
                 gegner = tn.players.get(1);
             } else {

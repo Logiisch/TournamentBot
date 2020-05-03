@@ -90,21 +90,21 @@ public class cmdUpdateStatus implements Command {
             event.getTextChannel().sendMessage("Du musts mir schon genau sagen, was ich machen soll!\n`"+prefix+"status set [Status,bei cycle getrennt durch §]`").queue();
             return;
         }
-        String out = "";
+        StringBuilder out = new StringBuilder();
         for (int i=1;i<args.length;i++) {
             String s = args[i];
-            out += " "+s;
+            out.append(" ").append(s);
         }
-        out = out.replaceFirst(" ","");
+        out = new StringBuilder(out.toString().replaceFirst(" ", ""));
         if (statusCycleThread.cycle) {
-            String[] split = out.split("§");
+            String[] split = out.toString().split("§");
             statusCycleThread.cycleList.clear();
             statusCycleThread.cycleList.addAll(Arrays.asList(split));
             statusCycleThread.reset();
             event.getTextChannel().sendMessage("Dann lasse ich jetzt das im Kreis laufen!").queue();
         } else {
-            STATIC.ACTIVITY = out;
-            event.getJDA().getPresence().setActivity(Activity.playing(out));
+            STATIC.ACTIVITY = out.toString();
+            event.getJDA().getPresence().setActivity(Activity.playing(out.toString()));
             event.getTextChannel().sendMessage("Na gut, überredet!").queue();
         }
     }
@@ -113,19 +113,19 @@ public class cmdUpdateStatus implements Command {
                 event.getTextChannel().sendMessage("Du musts mir schon genau sagen, was ich machen soll!\n`"+prefix+"status add [Status]`").queue();
                 return;
             }
-            String out = "";
+            StringBuilder out = new StringBuilder();
             for (int i=1;i<args.length;i++) {
                 String s = args[i];
-                out += " "+s;
+                out.append(" ").append(s);
             }
-            out = out.replaceFirst(" ","");
+            out = new StringBuilder(out.toString().replaceFirst(" ", ""));
             if (statusCycleThread.cycle) {
-                statusCycleThread.cycleList.add(out);
+                statusCycleThread.cycleList.add(out.toString());
                 event.getTextChannel().sendMessage("Das auch noch? Na gut, ob ich mir das alles merken kann..").queue();
             } else {
                 statusCycleThread.cycle = true;
                 statusCycleThread.cycleList.add(STATIC.ACTIVITY);
-                statusCycleThread.cycleList.add(out);
+                statusCycleThread.cycleList.add(out.toString());
                 Thread t = new Thread(new statusCycleThread(event.getJDA()));
                 t.start();
                 event.getTextChannel().sendMessage("Ich gehe dann mal zum Wechseln über, ja?").queue();
@@ -136,7 +136,7 @@ public class cmdUpdateStatus implements Command {
             event.getTextChannel().sendMessage("Du musts mir schon genau sagen, was ich machen soll!\n`"+prefix+"status apeed [Sekundenzahl]`").queue();
             return;
         }
-        int sek = 0;
+        int sek;
         try {
             sek = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {

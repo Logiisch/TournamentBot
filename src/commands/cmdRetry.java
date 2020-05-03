@@ -4,7 +4,6 @@ import helperCore.retryOnDemand;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 

@@ -5,22 +5,22 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 import util.STATIC;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 public class commandListener extends ListenerAdapter {
-    public static List<User> Blocked = new ArrayList<>();
+    private static List<User> Blocked = new ArrayList<>();
    // public static HashMap<Guild, String> cstmPrfx = new HashMap<>();
-    public static ArrayList<String> log = new ArrayList<>();
+    private static ArrayList<String> log = new ArrayList<>();
 
     //public static HashMap<Guild, ArrayList<String>> blockedCmds = new HashMap<>();
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         String CD = event.getMessage().getContentDisplay();
         Guild g;
         try {
@@ -72,7 +72,7 @@ public class commandListener extends ListenerAdapter {
     public static String getPrefix(Guild g) {
         return STATIC.PREFIX;
     }
-    public static void writeCmd(MessageReceivedEvent event) {
+    private static void writeCmd(MessageReceivedEvent event) {
         int Stunde = event.getMessage().getTimeCreated().getHour();
         Stunde = Stunde + 2;
         if (Stunde > 23) {

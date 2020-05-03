@@ -12,7 +12,7 @@ public class readInTxtFile
     java.io.FileReader fr = new java.io.FileReader(source);
     java.io.BufferedReader br = new java.io.BufferedReader(fr);
     
-    String zeile = "";
+    String zeile;
 
     while ((zeile = br.readLine()) != null)
     {

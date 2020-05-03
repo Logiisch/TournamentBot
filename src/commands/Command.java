@@ -2,7 +2,6 @@ package commands;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public interface Command {

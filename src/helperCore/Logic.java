@@ -54,12 +54,12 @@ public class Logic {
             if (!STATIC.getNotIncluded().contains(m.getUser().getId())&&!m.getUser().isBot()&&(!STATIC.dryRun||m.getRoles().contains(tlt))) teilnehmer.add(m.getUser());
 
         }
-        String out ="Folgende Nutzer spielen mit:\n";
+        StringBuilder out = new StringBuilder("Folgende Nutzer spielen mit:\n");
         for (User u:teilnehmer) {
             if (u.getId().equalsIgnoreCase(event.getJDA().getSelfUser().getId())) continue;
-            out += u.getName()+"\n";
+            out.append(u.getName()).append("\n");
         }
-        event.getTextChannel().sendMessage(out).queue();
+        event.getTextChannel().sendMessage(out.toString()).queue();
 
         if (teilnehmer.size()>64) {
             return "Es können maximal 64 Leute teilnehmen, bitte enferne Spieler mit `"+prefix+"kick [Anzahl/User als @Mention]`!";
@@ -100,11 +100,11 @@ public class Logic {
         return "Das Turnier wurde gestartet!";
     }
 
-    public static void refreshTournamnet(MessageReceivedEvent event, boolean exitOnHalfway) {
+    private static void refreshTournamnet(MessageReceivedEvent event, boolean exitOnHalfway) {
         boolean changedsomething = false;
         for (int nid: nodes.keySet()) {
             TournamentNode node = nodes.get(nid);
-            if (node.players.size()<2) continue;;
+            if (node.players.size()<2) continue;
             if (node.players.contains(event.getJDA().getSelfUser())&&node.winner==null) {
                 changedsomething= true;
                 if (node.players.get(0).getId().equalsIgnoreCase(event.getJDA().getSelfUser().getId())) {
@@ -234,7 +234,7 @@ public class Logic {
         TextChannel tc=g.getTextChannelById(STATIC.CHANNEL_RESULTS);
         EmbedBuilder eb = new EmbedBuilder().setColor(Color.green).setTitle("Matchergebnisse").setAuthor(STATIC.getRoundname(tn.getRunde()));
         if (tn.players.contains(g.getSelfMember().getUser())) {
-            User named = null;
+            User named;
             if (tn.players.get(0).getId().equalsIgnoreCase(g.getJDA().getSelfUser().getId())) {
                 named = tn.players.get(1);
             } else {
@@ -247,11 +247,11 @@ public class Logic {
         assert tc != null;
         tc.sendMessage(eb.build()).queue();
     }
-    public static void refreshRoles(Member m, boolean isdead, int round) throws Exception {
+    private static void refreshRoles(Member m, boolean isdead, int round) throws Exception {
         if (m==null){
             throw new Exception("Interner Fehler:m is null in Line 199");
         }
-        Role role = null;
+        Role role;
         switch (round) {
             case 1:
                 role = m.getGuild().getRoleById(STATIC.ROLE_VORRUNDE1);
@@ -288,9 +288,9 @@ public class Logic {
         for (int nid: nodes.keySet()) {
             TournamentNode node = nodes.get(nid);
             if (node.winner==null&&node.players.contains(event.getAuthor())&&node.players.size()==2) {
-                User tosend = null;
+                User tosend;
                 if (ConfirmReactListener.alreadyLogged(nid)) {
-                    event.getTextChannel().sendMessage(event.getMember().getAsMention()+": Für dieses Match wurde schon ein Ergebnis eingegeben!").queue();
+                    event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": Für dieses Match wurde schon ein Ergebnis eingegeben!").queue();
                     return;
                 }
                 if (node.players.get(0).getId().equalsIgnoreCase(event.getAuthor().getId())) tosend=node.players.get(1); else tosend=node.players.get(0);
@@ -315,7 +315,7 @@ public class Logic {
             Message msg =playerToNotify.openPrivateChannel().complete().sendMessage(msgs).complete();
             msg.addReaction("U+2705").queue();
             msg.addReaction("U+274E").queue();
-            UnconfirmedResult ur = new UnconfirmedResult(nid,playerthathaswon,playerthathaswon.getJDA().getGuildById(STATIC.GUILDID),playerToNotify);
+            UnconfirmedResult ur = new UnconfirmedResult(nid,playerthathaswon,playerthathaswon.getJDA().getGuildById(STATIC.GUILDID));
             ConfirmReactListener.toConfirmResult.put(msg.getId(),ur);
             tc.sendMessage(author.getAsMention()+": Dein Gegner wurde benachrichtigt!").queue();
 
@@ -358,7 +358,7 @@ public class Logic {
         }
         throw new Exception("Nimmt dieser Spieler überhaupt teil?");
     }
-    public static void revert(User u, TournamentNode revto,TournamentNode revfrom) throws Exception {
+    private static void revert(User u, TournamentNode revto, TournamentNode revfrom) throws Exception {
         revto.winner =null;
         revfrom.players.remove(u);
         if (!revfrom.players.isEmpty()) {
@@ -366,7 +366,7 @@ public class Logic {
         }
         revfrom.update();
         revto.update();
-        Role role = null;
+        Role role;
         switch (revfrom.getRunde()) {
             case 1:
                 role = Objects.requireNonNull(u.getJDA().getGuildById(STATIC.GUILDID)).getRoleById(STATIC.ROLE_VORRUNDE1);
@@ -401,14 +401,15 @@ public class Logic {
 
     }
 
-    public static void save() {
+    static void save() {
         if (nodes.isEmpty()) return;
         ArrayList<String> out = new ArrayList<>();
         for (int i:nodes.keySet()) {
             out.add(save(i));
         }
         File f = new File("data/");
-        if (!f.exists()) f.mkdirs();
+        if (!f.exists()) //noinspection ResultOfMethodCallIgnored
+            f.mkdirs();
         try {
             printOutTxtFile.Write("data/nodes.txt",out);
         } catch (IOException e) {
@@ -428,7 +429,7 @@ public class Logic {
         } else {
             out.append(node.winner.getId()).append(",");
         }
-        out.append(node.getRunde()+"").append(",");
+        out.append(node.getRunde()).append(",");
         if(node.promoteFrom.size()>0) {
             if (node.promoteFrom.size()>1) {
                 out.append(node.promoteFrom.get(0)).append(",");
@@ -507,7 +508,7 @@ public class Logic {
         tn.update(false);
     }
     public static boolean loadNodes(JDA jda) {
-        ArrayList<String> in = new ArrayList<>();
+        ArrayList<String> in;
         File f = new File("data/nodes.txt");
         if (!f.exists()) return false;
         try {

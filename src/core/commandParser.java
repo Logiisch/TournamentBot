@@ -4,6 +4,7 @@ import listeners.commandListener;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class commandParser {
 
@@ -13,9 +14,7 @@ public class commandParser {
         String[] splitBeheaded = beheaded.split(" ");
         String invoke = splitBeheaded[0].toLowerCase();
         ArrayList<String> split = new ArrayList<>();
-        for (String s : splitBeheaded) {
-            split.add(s);
-        }
+        split.addAll(Arrays.asList(splitBeheaded));
         String[] args = new String[split.size() - 1];
         split.subList(1, split.size()).toArray(args);
 
@@ -25,14 +24,14 @@ public class commandParser {
 
     public class commandContainer {
 
-        public final String raw;
-        public final String beheaded;
-        public final String[] splitBeheaded;
-        public final String invoke;
+        final String raw;
+        final String beheaded;
+        final String[] splitBeheaded;
+        final String invoke;
         public final String[] args;
         public final MessageReceivedEvent event;
 
-        public commandContainer(String rw, String beheaded, String[] splitBeheaded, String invoke, String[] args, MessageReceivedEvent event) {
+        commandContainer(String rw, String beheaded, String[] splitBeheaded, String invoke, String[] args, MessageReceivedEvent event) {
             this.raw = rw;
             this.beheaded = beheaded;
             this.splitBeheaded = splitBeheaded;

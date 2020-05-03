@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import util.STATIC;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -40,7 +39,7 @@ public class cmdKick implements Command{
                 rem.add(u);
             }
         } else {
-            int tokick=0;
+            int tokick;
             try {
                 tokick=Integer.parseInt(args[0]);
             } catch (Exception e) {
@@ -65,11 +64,11 @@ public class cmdKick implements Command{
 
 
         }
-        String out = "Folgende(r) User wurde(n) gekickt:\n";
+        StringBuilder out = new StringBuilder("Folgende(r) User wurde(n) gekickt:\n");
         for (User u: rem) {
-            out += u.getName()+"\n";
+            out.append(u.getName()).append("\n");
         }
-        event.getTextChannel().sendMessage(out).queue();
+        event.getTextChannel().sendMessage(out.toString()).queue();
 
     }
 

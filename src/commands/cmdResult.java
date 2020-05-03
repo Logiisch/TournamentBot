@@ -4,8 +4,6 @@ import helperCore.Logic;
 import listeners.commandListener;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class cmdResult implements Command {

@@ -19,7 +19,7 @@ import util.STATIC;
 import javax.security.auth.login.LoginException;
 
 public class Main {
-    public static JDABuilder builder = new JDABuilder(AccountType.BOT);
+    private static JDABuilder builder = new JDABuilder(AccountType.BOT);
 
     public static void main(String[] args) {
         // JDABuilder builder = new JDABuilder(AccountType.BOT);
@@ -46,7 +46,7 @@ public class Main {
         }
     }
 
-    public static void addListeners() {
+    private static void addListeners() {
 
         builder.addEventListeners(new commandListener());
         builder.addEventListeners(new ConfirmReactListener());
@@ -54,7 +54,7 @@ public class Main {
         builder.addEventListeners(new privateMessageListener());
     }
 
-    public static void addCommands() {
+    private static void addCommands() {
         commandHandler.commands.put("start", new cmdStart());
         commandHandler.commands.put("res", new cmdResult());
         commandHandler.commands.put("retry", new cmdRetry());
@@ -74,7 +74,7 @@ public class Main {
 
     }
 
-    public static void StartThreads(JDA jda) {
+    private static void StartThreads(JDA jda) {
         Thread autokick = new Thread(new AutoKickThread());
         autokick.start();
     }

@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import util.STATIC;
 
-import java.io.IOException;
 import java.util.Objects;
 
 public class cmdStart implements Command {

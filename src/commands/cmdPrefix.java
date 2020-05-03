@@ -27,6 +27,7 @@ public class cmdPrefix implements Command {
         }
 
         try {
+            //noinspection ResultOfMethodCallIgnored
             "abc".replaceFirst(args[0],"");
         } catch (Exception e) {
             event.getTextChannel().sendMessage("Dieses Prefix ist nicht zugelassen, bitte suche ein anderes!").queue();

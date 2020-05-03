@@ -11,15 +11,14 @@ import java.util.Objects;
 
 public class UnconfirmedResult {
 
-    int nid;
-    User winner;
-    Guild g;
-    User hasToReact;
-    public UnconfirmedResult(int NID, User wnnr,Guild guild,User htr) {
+    private int nid;
+    private User winner;
+    private Guild g;
+
+    UnconfirmedResult(int NID, User wnnr, Guild guild) {
         nid =  NID;
         winner=wnnr;
         g=guild;
-        hasToReact =htr;
     }
     public int getId() {
         return nid;
@@ -30,52 +29,55 @@ public class UnconfirmedResult {
         try {
             Logic.logresult(winner,true,g);
         } catch (Exception e) {
-            String msg = "";
+            StringBuilder msg = new StringBuilder();
             ArrayList<User> usrs = Logic.nodes.get(nid).players;
             for (User u: usrs) {
                 try {
                     Member m = g.getMember(u);
-                    msg+=m.getAsMention()+" ";
+                    assert m != null;
+                    msg.append(m.getAsMention()).append(" ");
 
                 } catch (Exception e2) {
-                    msg += u.getName()+" ";
+                    msg.append(u.getName()).append(" ");
                 }
             }
             try {
                 Member m = g.getMemberById(STATIC.OWNERID);
-                msg+=m.getAsMention()+" ";
+                msg.append(Objects.requireNonNull(m).getAsMention()).append(" ");
 
             } catch (Exception e3) {
-                msg += Objects.requireNonNull(g.getJDA().getUserById(STATIC.OWNERID)).getName()+" ";
+                msg.append(Objects.requireNonNull(g.getJDA().getUserById(STATIC.OWNERID)).getName()).append(" ");
                 e.printStackTrace();
             }
-            msg +=": "+e.getMessage();
-            Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage(msg).queue();
+            msg.append(": ").append(e.getMessage());
+            Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage(msg.toString()).queue();
 
         }
 
     }
     public void deny() {
-        String msg = "";
+        StringBuilder msg = new StringBuilder();
         ArrayList<User> usrs = Logic.nodes.get(nid).players;
         for (User u: usrs) {
             try {
                 Member m = g.getMember(u);
-                msg+=m.getAsMention()+" ";
+                assert m != null;
+                msg.append(m.getAsMention()).append(" ");
 
             } catch (Exception e) {
-                msg += u.getName()+" ";
+                msg.append(u.getName()).append(" ");
             }
         }
         try {
             Role r = g.getRoleById(STATIC.ROLE_HELPER);
-            msg+=r.getAsMention()+" ";
+            assert r != null;
+            msg.append(r.getAsMention()).append(" ");
 
         } catch (Exception e) {
-            msg += Objects.requireNonNull(g.getJDA().getUserById(STATIC.OWNERID)).getName()+" ";
+            msg.append(Objects.requireNonNull(g.getJDA().getUserById(STATIC.OWNERID)).getName()).append(" ");
         }
-        msg +=": Es gibt Probleme bei der Abstimmung. Bitte schlichten! Dann mit `t!set [User als @Erwähnung] [winner/looser]` korrigieren!";
-        Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage(msg).queue();
+        msg.append(": Es gibt Probleme bei der Abstimmung. Bitte schlichten! Dann mit `t!set [User als @Erwähnung] [winner/looser]` korrigieren!");
+        Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage(msg.toString()).queue();
     }
 
 

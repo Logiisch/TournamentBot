@@ -1,10 +1,7 @@
 package commands;
 
-import jdk.nashorn.internal.runtime.ECMAException;
-import listeners.commandListener;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import util.STATIC;
 
@@ -19,7 +16,6 @@ public class cmdMessage implements Command {
 
     @Override
     public void action(String[] args, MessageReceivedEvent event) {
-        String prefix = commandListener.getPrefix(event.getGuild());
         Role helper = event.getGuild().getRoleById(STATIC.ROLE_ADMIN);
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
             event.getTextChannel().sendMessage("Das kann nur ein Admin machen!").queue();
@@ -32,22 +28,22 @@ public class cmdMessage implements Command {
              member.add(m);
          }
          ArrayList<Member> notReachable = new ArrayList<>();
-         String Message = "";
+         StringBuilder Message = new StringBuilder();
          for (String s:args) {
-             Message+= " "+s;
+             Message.append(" ").append(s);
          }
-         Message = Message.replaceFirst(" ","");
+         Message = new StringBuilder(Message.toString().replaceFirst(" ", ""));
          for (Member m:member) {
              try {
-                 m.getUser().openPrivateChannel().complete().sendMessage(Message).complete();
+                 m.getUser().openPrivateChannel().complete().sendMessage(Message.toString()).complete();
              } catch (Exception e) {
                  notReachable.add(m);
              }
          }
          if (notReachable.isEmpty()) return;
-         String membs = "";
+         StringBuilder membs = new StringBuilder();
          for (Member m: notReachable) {
-             membs += m.getAsMention()+"\n";
+             membs.append(m.getAsMention()).append("\n");
          }
          Objects.requireNonNull(event.getGuild().getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage(membs+"\n"+Message).queue();
          event.getTextChannel().sendMessage("Die Message wurde an alle Teilnehmer zugestellt!").queue();

@@ -13,7 +13,7 @@ public class RoundTime  implements TimeKeeper{
     private ArrayList<User> hasReacted= new ArrayList<>();
     private Guild guild;
 
-    public RoundTime(int nID,int durInMin,Guild g) {
+    RoundTime(int nID, int durInMin, Guild g) {
         nid = nID;
         end = OffsetDateTime.now().plusMinutes(durInMin);
         guild=g;
@@ -38,7 +38,7 @@ public class RoundTime  implements TimeKeeper{
         }
         if(hasReacted.size()==1) {
             User hR = hasReacted.get(0);
-            User missingReaction = null;
+            User missingReaction;
             if (tn.players.get(0).getId().equalsIgnoreCase(hR.getId())) missingReaction=tn.players.get(1); else missingReaction=tn.players.get(0);
             hR.openPrivateChannel().complete().sendMessage("Da die Zeit deines Gegners abgelaufen ist, hast du automatisch gewonnen!").queue();
             try {

@@ -9,12 +9,12 @@ import helperCore.Logic;
 import helperCore.TournamentNode;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class STATIC {
     public static String ACTIVITY = "keine große Rolle";
@@ -23,8 +23,6 @@ public class STATIC {
     public static String CODELINK = "https://github.com/Logiisch/TournamentBot";
     public static String OWNERID = "318457868917407745";
 
-
-    public static String SELFID = "705567211380801598";
 
     public static String GUILDID = "676002000835444736";
 
@@ -87,13 +85,11 @@ public class STATIC {
         saveNotIncluded();
     }
     //true wenn User wirklich gekickt war, false wenn er eh schon dabei war
-    public static  boolean rejoinUser(User u) {
+    public static void rejoinUser(User u) {
         if (notincluded.contains(u.getId())) {
             notincluded.remove(u.getId());
             saveNotIncluded();
-            return true;
         }
-        return false;
     }
     public static void rejoinAll() {
         notincluded.clear();
@@ -101,13 +97,14 @@ public class STATIC {
     }
 
     public static Message trysend (User u, String msg) {
+        String SELFID = "705567211380801598";
         if (u.getId().equalsIgnoreCase(SELFID)||u.getJDA().getSelfUser().getId().equalsIgnoreCase(u.getId())) return null;
         try {
-            Message msgm =u.openPrivateChannel().complete().sendMessage(msg).complete(); //Zeile, die Fehler ausgibt, obwohl sie im Try-Block steht
-            return msgm;
+            return u.openPrivateChannel().complete().sendMessage(msg).complete();
         } catch (Exception e) {
-            Guild g = u.getJDA().getTextChannelById(CHANNEL_ALLGEMEIN).getGuild();
-            if (g.isMember(u)) {Message msgm =u.getJDA().getTextChannelById(CHANNEL_ALLGEMEIN).sendMessage(g.getMember(u).getAsMention()+":"+msg+"\nFür das Turnier öffne bite deine Privatnachrichten, da nicht alle Nachrichten über diesen Channel gesendet werden können!").complete(); return msgm;} else {return null;}
+            Guild g = Objects.requireNonNull(u.getJDA().getTextChannelById(CHANNEL_ALLGEMEIN)).getGuild();
+            if (g.isMember(u)) {
+                return Objects.requireNonNull(u.getJDA().getTextChannelById(CHANNEL_ALLGEMEIN)).sendMessage(Objects.requireNonNull(g.getMember(u)).getAsMention()+":"+msg+"\nFür das Turnier öffne bite deine Privatnachrichten, da nicht alle Nachrichten über diesen Channel gesendet werden können!").complete();} else {return null;}
         }
     }
     public static String getRoundname(int runde) {
@@ -132,6 +129,7 @@ public class STATIC {
     private static void saveNotIncluded() {
         File f = new File("data/");
         if (!f.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             f.mkdirs();
         }
 

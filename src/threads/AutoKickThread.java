@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class AutoKickThread implements Runnable {
     @Override
     public void run() {
+        //noinspection InfiniteLoopStatement
         while (true) {
             synchronized (this) {
                 ArrayList<Integer> nidsToRem = new ArrayList<>();
