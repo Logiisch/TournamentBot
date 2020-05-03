@@ -68,6 +68,7 @@ public class Main {
         commandHandler.commands.put("info", new cmdInfo());
         commandHandler.commands.put("prefix", new cmdPrefix());
         commandHandler.commands.put("leave", new cmdLeave());
+        commandHandler.commands.put("messagetorole",new cmdMessageRole());
 
 
     }

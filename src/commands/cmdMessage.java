@@ -20,9 +20,9 @@ public class cmdMessage implements Command {
     @Override
     public void action(String[] args, MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
-        Role helper = event.getGuild().getRoleById(STATIC.ROLE_HELPER);
+        Role helper = event.getGuild().getRoleById(STATIC.ROLE_ADMIN);
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
-            event.getTextChannel().sendMessage("Das kann nur ein Helfer machen!").queue();
+            event.getTextChannel().sendMessage("Das kann nur ein Admin machen!").queue();
             return;
         }
         ArrayList<Member> member = new ArrayList<>();
@@ -39,7 +39,7 @@ public class cmdMessage implements Command {
          Message = Message.replaceFirst(" ","");
          for (Member m:member) {
              try {
-                 m.getUser().openPrivateChannel().complete().sendMessage(Message).queue();
+                 m.getUser().openPrivateChannel().complete().sendMessage(Message).complete();
              } catch (Exception e) {
                  notReachable.add(m);
              }

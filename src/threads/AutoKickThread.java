@@ -10,21 +10,23 @@ public class AutoKickThread implements Runnable {
     @Override
     public void run() {
         while (true) {
-            ArrayList<Integer> nidsToRem = new ArrayList<>();
-            for (String s: ConfirmReactListener.rtimes.keySet()) {
-                RoundTime rt = ConfirmReactListener.rtimes.get(s);
-                if (rt.fireOn().isBefore(OffsetDateTime.now())) {
-                    boolean remove = rt.OnTimeRunOut();
-                    if (remove) nidsToRem.add(rt.getNid());
+            synchronized (this) {
+                ArrayList<Integer> nidsToRem = new ArrayList<>();
+                for (String s : ConfirmReactListener.rtimes.keySet()) {
+                    RoundTime rt = ConfirmReactListener.rtimes.get(s);
+                    if (rt.fireOn().isBefore(OffsetDateTime.now())) {
+                        boolean remove = rt.OnTimeRunOut();
+                        if (remove) nidsToRem.add(rt.getNid());
+                    }
                 }
-            }
-            ArrayList<String> msgidsTorem = new ArrayList<>();
-            for (String s: ConfirmReactListener.rtimes.keySet()) {
-                RoundTime rt = ConfirmReactListener.rtimes.get(s);
-                if (nidsToRem.contains(rt.getNid())) msgidsTorem.add(s);
-            }
-            for (String msg:msgidsTorem) {
-                ConfirmReactListener.rtimes.remove(msg);
+                ArrayList<String> msgidsTorem = new ArrayList<>();
+                for (String s : ConfirmReactListener.rtimes.keySet()) {
+                    RoundTime rt = ConfirmReactListener.rtimes.get(s);
+                    if (nidsToRem.contains(rt.getNid())) msgidsTorem.add(s);
+                }
+                for (String msg : msgidsTorem) {
+                    ConfirmReactListener.rtimes.remove(msg);
+                }
             }
             try {
                 Thread.sleep(60000);

@@ -20,7 +20,7 @@ public class cmdResult implements Command {
     public void action(String[] args, MessageReceivedEvent event)  {
         String prefix = commandListener.getPrefix(event.getGuild());
         if (Logic.nodes.size()==0) {
-            event.getTextChannel().sendMessage("Immer ruhig. Ds Turnier hat noch nicht einmal begonnen!").queue();
+            event.getTextChannel().sendMessage("Immer ruhig. Das Turnier hat noch nicht einmal begonnen!").queue();
             return;
         }
         if (args.length<1) {

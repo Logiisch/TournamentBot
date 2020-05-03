@@ -39,7 +39,7 @@ public class ConfirmReactListener extends ListenerAdapter {
             }
         }
         if (rtimes.containsKey(event.getMessageId())) {
-            if (!event.getReactionEmote().getEmoji().equalsIgnoreCase("✅")) return;
+            if (!event.getReactionEmote().getEmoji().equalsIgnoreCase("\uD83D\uDC4D")) return;
             RoundTime rt = rtimes.get(event.getMessageId());
             rt.userreact(event.getUser());
             rtimes.put(event.getMessageId(),rt);

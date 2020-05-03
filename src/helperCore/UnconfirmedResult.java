@@ -47,10 +47,11 @@ public class UnconfirmedResult {
 
             } catch (Exception e3) {
                 msg += Objects.requireNonNull(g.getJDA().getUserById(STATIC.OWNERID)).getName()+" ";
+                e.printStackTrace();
             }
             msg +=": "+e.getMessage();
             Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage(msg).queue();
-            e.printStackTrace();
+
         }
 
     }

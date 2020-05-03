@@ -14,10 +14,8 @@ import util.readInTxtFile;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 
 public class Logic {
 
@@ -51,12 +49,17 @@ public class Logic {
         }
 
         ArrayList<User> teilnehmer = new ArrayList<>();
-
+        Role tlt = event.getGuild().getRoleById(STATIC.ROLE_TESTLAUFTEILNEHMER);
         for (Member m:mbrs) {
-
-            if (!STATIC.getNotIncluded().contains(m.getUser().getId())&&!m.getUser().isBot()) teilnehmer.add(m.getUser());
+            if (!STATIC.getNotIncluded().contains(m.getUser().getId())&&!m.getUser().isBot()&&(!STATIC.dryRun||m.getRoles().contains(tlt))) teilnehmer.add(m.getUser());
 
         }
+        String out ="Folgende Nutzer spielen mit:\n";
+        for (User u:teilnehmer) {
+            if (u.getId().equalsIgnoreCase(event.getJDA().getSelfUser().getId())) continue;
+            out += u.getName()+"\n";
+        }
+        event.getTextChannel().sendMessage(out).queue();
 
         if (teilnehmer.size()>64) {
             return "Es können maximal 64 Leute teilnehmen, bitte enferne Spieler mit `"+prefix+"kick [Anzahl/User als @Mention]`!";
@@ -64,19 +67,15 @@ public class Logic {
         while (teilnehmer.size()<64) {
             teilnehmer.add(event.getJDA().getSelfUser());
         }
-        ;
+        Collections.shuffle(teilnehmer);
         for (int i:nodes.keySet()) {
             TournamentNode node = nodes.get(i);
             if (node.getRunde()==1) {
-                int tnnbr =(int)Math.round(Math.random()*teilnehmer.size());
-                if (tnnbr==teilnehmer.size()) tnnbr--;
-                User a = teilnehmer.get(tnnbr);
-                teilnehmer.remove(tnnbr);
+                User a = teilnehmer.get(0);
+                teilnehmer.remove(0);
 
-                 tnnbr =(int)Math.round(Math.random()*teilnehmer.size());
-                if (tnnbr==teilnehmer.size()) tnnbr--;
-                User b = teilnehmer.get(tnnbr);
-                teilnehmer.remove(tnnbr);
+                User b = teilnehmer.get(0);
+                teilnehmer.remove(0);
 
                 node.players.add(a);
                 node.players.add(b);
@@ -136,14 +135,14 @@ public class Logic {
             if (node.players.size()<2||node.winner!=null) continue;
             User a = node.players.get(0);
             User b = node.players.get(1);
-            String senda = "Dein Gegner ist nun "+b.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit ✅, dass du anwesend bist. Du hast dafür 15min Zeit!";
-            String sendb = "Dein Gegner ist nun "+a.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit ✅, dass du anwesend bist. Du hast dafür 15min Zeit!";
+            String senda = "Dein Gegner ist nun "+b.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit \uD83D\uDC4D, dass du anwesend bist. Du hast dafür 15min Zeit!";
+            String sendb = "Dein Gegner ist nun "+a.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit \uD83D\uDC4D, dass du anwesend bist. Du hast dafür 15min Zeit!";
             Message msga=STATIC.trysend(a,senda);
             Message msgb=STATIC.trysend(b,sendb);
             assert msga!=null;
             assert msgb!=null;
-            msga.addReaction("U+2705").queue();
-            msgb.addReaction("U+2705").queue();
+            msga.addReaction("U+1F44D").queue();
+            msgb.addReaction("U+1F44D").queue();
             RoundTime rt = new RoundTime(node.NID,15,event.getGuild());
             ConfirmReactListener.rtimes.put(msga.getId(),rt);
             ConfirmReactListener.rtimes.put(msgb.getId(),rt);
@@ -164,7 +163,7 @@ public class Logic {
             throw new Exception("Es konnte kein offenes Spiel passend zu dem Spieler gefunden werden!");
         }
          if(tn.players.size()<2) {
-             throw new Exception("Du kannst noch kein Ergebnis eintragen, da du noch kein gegner zugewiesen wurde");
+             throw new Exception("Du kannst noch kein Ergebnis eintragen, da du noch kein Gegner zugewiesen wurde! (matchID="+tn.NID+")");
          }
         User winner = null;
         if(haswon) {
@@ -179,12 +178,15 @@ public class Logic {
             throw new Exception("Interner Fehler:winner in line 158 still null");
         }
         if(tn.getRunde()==6) {
-            Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage("Das Turnier ist beendet, der Gewinnner steht fest: "+u.getName()+" hat gewonnen! Glückwunsch!").queue();
+            Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage("Das Turnier ist beendet, der Gewinnner steht fest: "+winner.getName()+" hat gewonnen! Glückwunsch!").queue();
+            g.addRoleToMember(Objects.requireNonNull(g.getMember(u)), Objects.requireNonNull(g.getRoleById(STATIC.ROLE_WINNER))).queue();
             return;
         }
+
         tn.winner=winner;
         TournamentNode promto = nodes.get(tn.promoteToNID);
         promto.players.add(winner);
+
         if (promto.players.size()==2) {
             if (promto.players.contains(g.getSelfMember().getUser())) {
                 tn.update();
@@ -197,30 +199,35 @@ public class Logic {
             String prefix = commandListener.getPrefix(g);
 
 
-            String senda = "Dein Gegner ist nun "+plb.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit ✅, dass du anwesend bist. Du hast dafür 15min Zeit!";
-            String sendb = "Dein Gegner ist nun "+pla.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit ✅, dass du anwesend bist. Du hast dafür 15min Zeit!";
+            String senda = "Dein Gegner ist nun "+plb.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit  \uD83D\uDC4D, dass du anwesend bist. Du hast dafür 15min Zeit!";
+            String sendb = "Dein Gegner ist nun "+pla.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit  \uD83D\uDC4D, dass du anwesend bist. Du hast dafür 15min Zeit!";
             Message msga=STATIC.trysend(pla,senda);
             Message msgb=STATIC.trysend(plb,sendb);
             assert msga!=null;
             assert msgb!=null;
-            msga.addReaction("U+2705").queue();
-            msgb.addReaction("U+2705").queue();
+            msga.addReaction("U+1F44D").queue();
+            msgb.addReaction("U+1F44D").queue();
             RoundTime rt = new RoundTime(promto.NID,15,g);
             ConfirmReactListener.rtimes.put(msga.getId(),rt);
             ConfirmReactListener.rtimes.put(msgb.getId(),rt);
         } else {
             STATIC.trysend(winner,"Dein Gegner ist noch nicht fertig. Warte noch einen Moment.");
+            return;
         }
         refreshRoles(g.getMember(winner),false,promto.getRunde());
         User looser = null;
         for (User us:tn.players) {
-            if (us.getId().equalsIgnoreCase(u.getId())) continue;
+            if (us.getId().equalsIgnoreCase(winner.getId())) continue;
             looser= us;
         }
-
         if (looser==null) {
             throw new Exception("Interner Fehler:looser in line 191 still null");
         }
+        if(winner.getId().equalsIgnoreCase(looser.getId())) {
+            throw new Exception("Interner Fehler:looser.id == winner.id");
+        }
+
+
         refreshRoles(g.getMember(looser),true,tn.getRunde());
         tn.update();
         promto.update();

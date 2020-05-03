@@ -40,7 +40,13 @@ public class cmdSet implements Command {
             return;
         }
         User u = event.getMessage().getMentionedUsers().get(0);
+
         if (event.getMessage().getContentDisplay().contains("winner")) {
+            if(u.getId().equalsIgnoreCase(event.getAuthor().getId())) {
+                event.getTextChannel().sendMessage("Sir-Mastermind-Sperre: Bitte lasse das von einem anderen Helfer eintragen :)").queue();
+                return;
+            }
+
             try {
                 Logic.logresult(u,true,event.getGuild());
                 event.getTextChannel().sendMessage("Erfolgreich Gewinner festgelgt!!").queue();
@@ -56,7 +62,7 @@ public class cmdSet implements Command {
                 event.getTextChannel().sendMessage("Erfolgreich Verlierer festgelgt!!").queue();
             } catch (Exception e) {
                 event.getTextChannel().sendMessage("Scheinbar ist ein Fehler aufgetreten\n"+e.getMessage()).queue();
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             return;
         }
