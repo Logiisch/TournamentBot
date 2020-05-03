@@ -22,25 +22,17 @@ public class cmdKick implements Command{
     public void action(String[] args, MessageReceivedEvent event)  {
         String prefix = commandListener.getPrefix(event.getGuild());
         Role admin = event.getGuild().getRoleById(STATIC.ROLE_ADMIN);
+        if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
+            event.getTextChannel().sendMessage("Das kann nur ein Admin machen").queue();
+            return;
+        }
 
         if (args.length<1) {
-            if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
-                event.getTextChannel().sendMessage("Bitte bestätige mit `"+prefix+"kick confirm`, dass du das Turnier verlassen willst.Das kannst du nicht mehr rückgängig machen!").queue();
-            } else {
-                event.getTextChannel().sendMessage("Usage: `"+prefix+"kick [Spieler als @Erwähnung/Anzahl zufälliger Nutzer]").queue();
-            }
+
+            event.getTextChannel().sendMessage("Usage: `"+prefix+"kick [Spieler als @Erwähnung/Anzahl zufälliger Nutzer]").queue();
             return;
         }
-        if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
-            if(args[0].equalsIgnoreCase("confirm")){
-                STATIC.kickUser(event.getAuthor());
-                event.getTextChannel().sendMessage("Du hast das Turnier verlassen!").queue();
-                return;
-            } else {
-                event.getTextChannel().sendMessage("Bitte bestätige mit `"+prefix+"kick confirm`, dass du das Turnier verlassen willst.Das kannst du nicht mehr rückgängig machen!").queue();
-            }
-            return;
-        }
+
         ArrayList<User> rem = new ArrayList<>();
         if (event.getMessage().getMentionedUsers().size()>0) {
             for (User u:event.getMessage().getMentionedUsers()) {
@@ -93,11 +85,11 @@ public class cmdKick implements Command{
 
     @Override
     public boolean isPrivate() {
-        return false;
+        return true;
     }
 
     @Override
     public String Def(String prefix) {
-        return "Verlasse das Turnier";
+        return "Kicke User vom Turnier";
     }
 }

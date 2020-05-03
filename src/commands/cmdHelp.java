@@ -18,7 +18,7 @@ public class cmdHelp implements Command {
     @Override
     public void action(String[] args, MessageReceivedEvent event)  {
         String prefix = commandListener.getPrefix(event.getGuild());
-        EmbedBuilder eb = new EmbedBuilder().setColor(getRandomColor()).setTitle("Xander's Hilfe");
+        EmbedBuilder eb = new EmbedBuilder().setColor(getRandomColor()).setTitle("Turnierhilfe");
         for (String s: commandHandler.commands.keySet()) {
             Command cmd = commandHandler.commands.get(s);
             if (cmd.isPrivate())continue;

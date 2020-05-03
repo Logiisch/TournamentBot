@@ -34,7 +34,7 @@ public class cmdReset implements Command {
             return;
         }
         Logic.nodes.clear();
-        ConfirmReactListener.toReact.clear();
+        ConfirmReactListener.toConfirmResult.clear();
         File f = new File ("data/nodes.txt");
         if (f.exists()) f.delete();
         TextChannel tc =event.getGuild().getTextChannelById(STATIC.CHANNEL_RESULTS);

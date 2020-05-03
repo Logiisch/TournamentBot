@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import threads.AutoKickThread;
 import util.SECRETS;
 import util.STATIC;
 
@@ -66,15 +67,17 @@ public class Main {
         commandHandler.commands.put("delete", new cmdReset());
         commandHandler.commands.put("info", new cmdInfo());
         commandHandler.commands.put("prefix", new cmdPrefix());
+        commandHandler.commands.put("leave", new cmdLeave());
 
 
     }
 
     public static void StartThreads(JDA jda) {
-
+        Thread autokick = new Thread(new AutoKickThread());
+        autokick.start();
     }
 
-    //TODO: Speicher und Post-offline Abfrage der IDs,block mutiple log reuests
+    //TODO: Speicher und Post-offline Abfrage der IDs
 
 
 

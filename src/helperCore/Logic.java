@@ -6,7 +6,6 @@ import listeners.commandListener;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import util.STATIC;
 import util.printOutTxtFile;
@@ -131,17 +130,23 @@ public class Logic {
         }
         if (changedsomething) refreshTournamnet(event,true);
         if(exitOnHalfway) return;
-
+        String prefix = commandListener.getPrefix(event.getGuild());
         for (int nid: nodes.keySet()) {
             TournamentNode node = nodes.get(nid);
             if (node.players.size()<2||node.winner!=null) continue;
             User a = node.players.get(0);
             User b = node.players.get(1);
-            String prefix = commandListener.getPrefix(event.getGuild());
-            String senda = "Dein Gegner ist nun "+b.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast!";
-            String sendb = "Dein Gegner ist nun "+a.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast!";
-            if (!a.isBot()) STATIC.trysend(a,senda);
-            if (!b.isBot()) STATIC.trysend(b,sendb);
+            String senda = "Dein Gegner ist nun "+b.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit ✅, dass du anwesend bist. Du hast dafür 15min Zeit!";
+            String sendb = "Dein Gegner ist nun "+a.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit ✅, dass du anwesend bist. Du hast dafür 15min Zeit!";
+            Message msga=STATIC.trysend(a,senda);
+            Message msgb=STATIC.trysend(b,sendb);
+            assert msga!=null;
+            assert msgb!=null;
+            msga.addReaction("U+2705").queue();
+            msgb.addReaction("U+2705").queue();
+            RoundTime rt = new RoundTime(node.NID,15,event.getGuild());
+            ConfirmReactListener.rtimes.put(msga.getId(),rt);
+            ConfirmReactListener.rtimes.put(msgb.getId(),rt);
 
         }
 
@@ -192,10 +197,17 @@ public class Logic {
             String prefix = commandListener.getPrefix(g);
 
 
-            String senda = "Dein Gegner ist nun "+plb.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast!";
-            String sendb = "Dein Gegner ist nun "+pla.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast!";
-            STATIC.trysend(pla,senda);
-            STATIC.trysend(plb,sendb);
+            String senda = "Dein Gegner ist nun "+plb.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit ✅, dass du anwesend bist. Du hast dafür 15min Zeit!";
+            String sendb = "Dein Gegner ist nun "+pla.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit ✅, dass du anwesend bist. Du hast dafür 15min Zeit!";
+            Message msga=STATIC.trysend(pla,senda);
+            Message msgb=STATIC.trysend(plb,sendb);
+            assert msga!=null;
+            assert msgb!=null;
+            msga.addReaction("U+2705").queue();
+            msgb.addReaction("U+2705").queue();
+            RoundTime rt = new RoundTime(promto.NID,15,g);
+            ConfirmReactListener.rtimes.put(msga.getId(),rt);
+            ConfirmReactListener.rtimes.put(msgb.getId(),rt);
         } else {
             STATIC.trysend(winner,"Dein Gegner ist noch nicht fertig. Warte noch einen Moment.");
         }
@@ -297,7 +309,7 @@ public class Logic {
             msg.addReaction("U+2705").queue();
             msg.addReaction("U+274E").queue();
             UnconfirmedResult ur = new UnconfirmedResult(nid,playerthathaswon,playerthathaswon.getJDA().getGuildById(STATIC.GUILDID),playerToNotify);
-            ConfirmReactListener.toReact.put(msg.getId(),ur);
+            ConfirmReactListener.toConfirmResult.put(msg.getId(),ur);
             tc.sendMessage(author.getAsMention()+": Dein Gegner wurde benachrichtigt!").queue();
 
         } catch (Exception e) {

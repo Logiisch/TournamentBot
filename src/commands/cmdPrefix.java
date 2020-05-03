@@ -33,8 +33,8 @@ public class cmdPrefix implements Command {
             return;
 
         }
-        STATIC.changePrefix(args[0]);
-        event.getTextChannel().sendMessage("Prefix erfogreich geändert!").queue();
+        STATIC.changePrefix(args[0].toLowerCase());
+        event.getTextChannel().sendMessage("Prefix erfogreich zu "+STATIC.PREFIX+" geändert!").queue();
     }
 
     @Override
