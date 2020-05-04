@@ -1,5 +1,6 @@
 package listeners;
 
+import commands.cmdUpdateStatus;
 import helperCore.Logic;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -20,5 +21,6 @@ public class readyListener extends ListenerAdapter {
         } else {
             System.out.println("Nodes konnte nicht geladen werden!");
         }
+        cmdUpdateStatus.load();
     }
 }

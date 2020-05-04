@@ -13,6 +13,8 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -47,6 +49,7 @@ public class STATIC {
     public static String CHANNEL_RESULTS = "705557075106988144";
     public static String CHANNEL_ALLGEMEIN = "676029060136042536";
 
+    public static OffsetDateTime NextTournament = OffsetDateTime.of(2020, 5,5,19,30,0,0, OffsetDateTime.now().getOffset());
 
     public static boolean dryRun = true;
 

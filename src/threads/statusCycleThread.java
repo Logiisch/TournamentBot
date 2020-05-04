@@ -1,17 +1,20 @@
 package threads;
 
+import helperCore.SimpleString;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class statusCycleThread implements Runnable {
-
+    public static HashMap<String, SimpleString> replacements= new HashMap<>();
     public static ArrayList<String> cycleList = new ArrayList<>();
     private static int count=-1;
-    public static int seksShowing=10;
+    public static int seksShowing=4;
     public static boolean cycle = false;
     public static JDA jda;
+    public static Activity.ActivityType at = Activity.ActivityType.DEFAULT;
     public statusCycleThread(JDA jd) {
         jda = jd;
         cycle= true;
@@ -22,7 +25,7 @@ public class statusCycleThread implements Runnable {
             count++;
             if (count>=cycleList.size()) count=0;
             String stat = cycleList.get(count);
-            jda.getPresence().setActivity(Activity.playing(stat));
+            jda.getPresence().setActivity(getActivity(replaceString(stat)));
             try {
                 Thread.sleep(seksShowing*1000);
             } catch (InterruptedException e) {
@@ -32,5 +35,17 @@ public class statusCycleThread implements Runnable {
     }
     public static void reset() {
         count=-1;
+    }
+
+    public static Activity getActivity(String whatToShow) {
+        return Activity.of(at,whatToShow);
+    }
+    public static String replaceString(String in) {
+        for (String part:replacements.keySet()) {
+            if (in.contains(part)) {
+                in = in.replace(part,replacements.get(part).getString());
+            }
+        }
+        return in;
     }
 }

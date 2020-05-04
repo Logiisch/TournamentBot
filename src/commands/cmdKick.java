@@ -20,9 +20,9 @@ public class cmdKick implements Command{
     @Override
     public void action(String[] args, MessageReceivedEvent event)  {
         String prefix = commandListener.getPrefix(event.getGuild());
-        Role admin = event.getGuild().getRoleById(STATIC.ROLE_ADMIN);
+        Role admin = event.getGuild().getRoleById(STATIC.ROLE_HELPER);
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
-            event.getTextChannel().sendMessage("Das kann nur ein Admin machen").queue();
+            event.getTextChannel().sendMessage("Das kann nur ein Helfer machen").queue();
             return;
         }
 
