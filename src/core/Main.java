@@ -70,7 +70,7 @@ public class Main {
         commandHandler.commands.put("leave", new cmdLeave());
         commandHandler.commands.put("messagetorole",new cmdMessageRole());
         commandHandler.commands.put("status", new cmdUpdateStatus());
-
+        commandHandler.commands.put("next", new cmdNext());
 
     }
 

@@ -219,7 +219,7 @@ public class cmdUpdateStatus implements Command {
         eb.addField("list","Zeige alle Befehlsersetzungen(für den Cycle-Mode)",false);
         eb.addField("type","Wechsle zwischen \"Spielt\",\"Schaut\" und \"Hört ... zu\"",false);
         eb.addField("help","Muss ich das wirklich erklären?",false);
-        eb.setDescription("Jeder Helfer hat vollen Zugriff auf die Status-Funktion. Wenn ich merke, dasss jemand damit Müll anstellt, ist der Zugriff darauf sofort wieder weg!");
+        eb.setDescription("Jeder Helfer hat vollen Zugriff auf die Status-Funktion. Wenn ich merke, dass jemand damit Müll anstellt, ist der Zugriff darauf sofort wieder weg!");
         eb.setFooter("Um Daten zu sparen, bitte ich euch, dass, wenn ihr nur eine Nachricht habt, ihr den Bot im Static-Mode verwendet ("+prefix+"status modus static)");
         event.getTextChannel().sendMessage(eb.build()).queue();
     }
