@@ -26,7 +26,7 @@ public class cmdReset implements Command {
             return;
         }
         if (args.length<1) {
-            event.getTextChannel().sendMessage("Nutze zum Bestätigen `"+prefix+"delete confirm`").queue();
+            event.getTextChannel().sendMessage("Nutze zum Bestätigen `"+prefix+"delete confirm`! Achtung: Wenn du das Ergebnis noch speichern willst, solltest du das vorher tun!").queue();
             return;
         }
         if(!args[0].equalsIgnoreCase("confirm")) {

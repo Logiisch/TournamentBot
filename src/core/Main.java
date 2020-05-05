@@ -72,6 +72,7 @@ public class Main {
         commandHandler.commands.put("status", new cmdUpdateStatus());
         commandHandler.commands.put("next", new cmdNext());
         commandHandler.commands.put("bracket", new cmdBracket());
+        commandHandler.commands.put("final", new cmdFinalDisplay());
 
     }
 

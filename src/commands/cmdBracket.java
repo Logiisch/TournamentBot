@@ -58,7 +58,7 @@ public class cmdBracket implements Command {
     public String Def(String prefix) {
         return "Schau dir die Bracket an. Fett sind die Rundengewinner, blau bist du!";
     }
-    private void drawImage(User author) throws Exception{
+    public static void drawImage(User author) throws Exception{
         String org = "original.jpg";
         File original = new File(org);
         File workingVersion = new File(path);
