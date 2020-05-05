@@ -28,7 +28,7 @@ public class Logic {
         List<Member> mbrs =event.getGuild().getMembers();
 
 
-        TournamentNode finale = new TournamentNode(1,0,6);
+        TournamentNode finale = new TournamentNode(1,0,6,127);
         int nid = 2;
         ArrayList<TournamentNode> temp = new ArrayList<>();
         temp.add(finale);
@@ -36,13 +36,17 @@ public class Logic {
         while (!temp.isEmpty()) {
             TournamentNode tn = temp.get(0);
             if (tn.getRunde()>1) {
-                TournamentNode a = new TournamentNode(nid++,tn.NID,tn.getRunde()-1);
-                TournamentNode b = new TournamentNode(nid++,tn.NID,tn.getRunde()-1);
+                TournamentNode a = new TournamentNode(nid++,tn.NID,tn.getRunde()-1,getSubs(tn.getBracketNbr()).get(0));
+                TournamentNode b = new TournamentNode(nid++,tn.NID,tn.getRunde()-1,getSubs(tn.getBracketNbr()).get(1));
 
                 tn.promoteFrom.add(a.NID);
                 tn.promoteFrom.add(b.NID);
                 temp.add(a);
                 temp.add(b);
+            } else {
+                for (int i:getSubs(tn.getBracketNbr())) {
+                    tn.addSub(i);
+                }
             }
             temp.remove(0);
             tn.update();
@@ -149,6 +153,279 @@ public class Logic {
 
         }
 
+
+    }
+
+    private static ArrayList<Integer> getSubs(int brckid) {
+        ArrayList<Integer> ret = new ArrayList<>();
+        switch (brckid) {
+            case 65:
+                ret.add(1);
+                ret.add(2);
+                break;
+            case 66:
+                ret.add(3);
+                ret.add(4);
+                break;
+            case 67:
+                ret.add(5);
+                ret.add(6);
+                break;
+            case 68:
+                ret.add(7);
+                ret.add(8);
+                break;
+            case 69:
+                ret.add(9);
+                ret.add(10);
+                break;
+            case 70:
+                ret.add(11);
+                ret.add(12);
+                break;
+            case 71:
+                ret.add(13);
+                ret.add(14);
+                break;
+            case 72:
+                ret.add(15);
+                ret.add(16);
+                break;
+            case 73:
+                ret.add(17);
+                ret.add(18);
+                break;
+            case 74:
+                ret.add(19);
+                ret.add(20);
+                break;
+            case 75:
+                ret.add(21);
+                ret.add(22);
+                break;
+            case 76:
+                ret.add(23);
+                ret.add(24);
+                break;
+            case 77:
+                ret.add(25);
+                ret.add(26);
+                break;
+            case 78:
+                ret.add(27);
+                ret.add(28);
+                break;
+            case 79:
+                ret.add(29);
+                ret.add(30);
+                break;
+            case 80:
+                ret.add(31);
+                ret.add(32);
+                break;
+
+            case 81:
+                ret.add(33);
+                ret.add(34);
+                break;
+            case 82:
+                ret.add(35);
+                ret.add(36);
+                break;
+            case 83:
+                ret.add(37);
+                ret.add(38);
+                break;
+            case 84:
+                ret.add(39);
+                ret.add(40);
+                break;
+            case 85:
+                ret.add(41);
+                ret.add(42);
+                break;
+            case 86:
+                ret.add(43);
+                ret.add(44);
+                break;
+            case 87:
+                ret.add(45);
+                ret.add(46);
+                break;
+            case 88:
+                ret.add(47);
+                ret.add(48);
+                break;
+            case 89:
+                ret.add(49);
+                ret.add(50);
+                break;
+            case 90:
+                ret.add(51);
+                ret.add(52);
+                break;
+            case 91:
+                ret.add(53);
+                ret.add(54);
+                break;
+            case 92:
+                ret.add(55);
+                ret.add(56);
+                break;
+            case 93:
+                ret.add(57);
+                ret.add(58);
+                break;
+            case 94:
+                ret.add(59);
+                ret.add(60);
+                break;
+            case 95:
+                ret.add(61);
+                ret.add(62);
+                break;
+            case 96:
+                ret.add(63);
+                ret.add(64);
+                break;
+
+            case 97:
+                ret.add(65);
+                ret.add(66);
+                break;
+            case 98:
+                ret.add(67);
+                ret.add(68);
+                break;
+            case 99:
+                ret.add(69);
+                ret.add(70);
+                break;
+            case 100:
+                ret.add(71);
+                ret.add(72);
+                break;
+            case 101:
+                ret.add(73);
+                ret.add(74);
+                break;
+            case 102:
+                ret.add(75);
+                ret.add(76);
+                break;
+            case 103:
+                ret.add(77);
+                ret.add(78);
+                break;
+            case 104:
+                ret.add(79);
+                ret.add(80);
+                break;
+
+            case 105:
+                ret.add(81);
+                ret.add(82);
+                break;
+            case 106:
+                ret.add(83);
+                ret.add(84);
+                break;
+            case 107:
+                ret.add(85);
+                ret.add(86);
+                break;
+            case 108:
+                ret.add(87);
+                ret.add(88);
+                break;
+            case 109:
+                ret.add(89);
+                ret.add(90);
+                break;
+            case 110:
+                ret.add(91);
+                ret.add(92);
+                break;
+            case 111:
+                ret.add(93);
+                ret.add(94);
+                break;
+            case 112:
+                ret.add(95);
+                ret.add(96);
+                break;
+
+            case 113:
+                ret.add(97);
+                ret.add(98);
+                break;
+            case 114:
+                ret.add(99);
+                ret.add(100);
+                break;
+            case 115:
+                ret.add(101);
+                ret.add(102);
+                break;
+            case 116:
+                ret.add(103);
+                ret.add(104);
+                break;
+
+            case 117:
+                ret.add(105);
+                ret.add(106);
+                break;
+            case 118:
+                ret.add(107);
+                ret.add(108);
+                break;
+            case 119:
+                ret.add(109);
+                ret.add(110);
+                break;
+            case 120:
+                ret.add(111);
+                ret.add(112);
+                break;
+
+            case 121:
+                ret.add(113);
+                ret.add(114);
+                break;
+            case 122:
+                ret.add(115);
+                ret.add(116);
+                break;
+
+            case 123:
+                ret.add(117);
+                ret.add(118);
+                break;
+            case 124:
+                ret.add(119);
+                ret.add(120);
+                break;
+
+            case 125:
+                ret.add(121);
+                ret.add(122);
+                break;
+
+            case 126:
+                ret.add(123);
+                ret.add(124);
+                break;
+
+            case 127:
+                ret.add(125);
+                ret.add(126);
+                break;
+
+
+
+        }
+        return ret;
 
     }
 
@@ -449,24 +726,31 @@ public class Logic {
                 out.append(node.players.get(0).getId()).append(",");
                 out.append("0");
             }
+
+
         } else {
             out.append("0,0");
         }
-
+        out.append(",").append(node.getBracketNbr()).append(",");
+        if(node.getBracketSub().isEmpty()) {
+            out.append("0,0");
+        } else {
+            out.append(node.getBracketSub().get(0)).append(",").append(node.getBracketSub().get(1));
+        }
         return out.toString();
     }
 
     /*
     Serialisation:
-    nid, promtonid, winner(id,0 wenn nicht gesetzt),runde,promotefrom[0](0 wenn nicht gsetzt),promotefrom[1](0 wenn nicht gsetzt),player[0](id,0 wenn nicht gsetzt),player[1](id,0 wenn nicht gsetzt)
+    nid, promtonid, winner(id,0 wenn nicht gesetzt),runde,promotefrom[0](0 wenn nicht gsetzt),promotefrom[1](0 wenn nicht gsetzt),player[0](id,0 wenn nicht gsetzt),player[1](id,0 wenn nicht gsetzt),bracketnode,bracketsub1,bracketsub2
     Seperator: ,
 
     */
 
     private static void load (String s, JDA jda) {
         String[] split = s.split(",");
-        long[] sp = new long[8];
-        if (split.length!=8) {
+        long[] sp = new long[11];
+        if (split.length!=11) {
             System.out.println("split lenght wrong: expectet 8, got"+split.length);
             return;
         }
@@ -504,7 +788,15 @@ public class Logic {
         if (plyrb!=0) {
             plyr.add(jda.getUserById(plyrb));
         }
-        TournamentNode tn = new TournamentNode(nid,promtoid,winner,runde,promfrom,plyr);
+        int brckt = (int)sp[8];
+        int suba = (int)sp[9];
+        int subb = (int)sp[10];
+        ArrayList<Integer> subs = new ArrayList<>();
+        if (suba!=0) {
+            subs.add(suba);
+            subs.add(subb);
+        }
+        TournamentNode tn = new TournamentNode(nid,promtoid,winner,runde,promfrom,plyr,brckt,subs);
         tn.update(false);
     }
     public static boolean loadNodes(JDA jda) {
