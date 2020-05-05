@@ -35,16 +35,19 @@ public class cmdNext implements Command {
             return;
         }
         if (args.length<1) {
+            String out ="";
             OffsetDateTime tn = STATIC.NextTournament;
-            String out ="Das nächste Turnier findet am "+digitadd(tn.getDayOfMonth(),2)+". "+digitadd(tn.getMonthValue(),2)+". "+tn.getYear()+" gegen "+digitadd(tn.getHour(),2)+":"+digitadd(tn.getMinute(),2)+" Uhr statt!";
             if(OffsetDateTime.now().isAfter(tn)) {
                 if(Logic.nodes.isEmpty()) {
-                    event.getTextChannel().sendMessage("Das Turnier startet in Kürze!").queue();
+                    event.getTextChannel().sendMessage("Der Termin für's nächste Turnier ist noch nicht eingestellt!").queue();
                 } else {
                     event.getTextChannel().sendMessage("Das Turnier läuft bereits!!").queue();
                 }
+            } else {
+
+                out += "Das nächste Turnier findet am " + digitadd(tn.getDayOfMonth(), 2) + ". " + digitadd(tn.getMonthValue(), 2) + ". " + tn.getYear() + " gegen " + digitadd(tn.getHour(), 2) + ":" + digitadd(tn.getMinute(), 2) + " Uhr statt!";
             }
-            out += "\nWenn du das Datum ändern willst, nutze `"+prefix+"next [Tag] [Monat] [Jahr] [Stunde] [Minute]`";
+            out += "\nWenn du das Datum ändern/setzen willst, nutze `"+prefix+"next [Tag] [Monat] [Jahr] [Stunde] [Minute]`";
             event.getTextChannel().sendMessage(out).queue();
             return;
         }
