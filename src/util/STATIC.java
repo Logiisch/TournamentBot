@@ -45,13 +45,14 @@ public class STATIC {
     public static String ROLE_HELPER = "677254731835637800";
 
     public static String ROLE_TESTLAUFTEILNEHMER = "706471180369920000";
+    public static String ROLE_TURNIERTEILNHEMER = "707266470371131412";
 
     public static String CHANNEL_RESULTS = "705557075106988144";
     public static String CHANNEL_ALLGEMEIN = "676029060136042536";
 
     public static OffsetDateTime NextTournament = OffsetDateTime.of(2020, 5,5,19,30,0,0, OffsetDateTime.now().getOffset());
 
-    public static boolean dryRun = true;
+    public static boolean dryRun = false;
 
 
     public static void changePrefix (String prefix){
@@ -71,6 +72,7 @@ public class STATIC {
 
                 if (tn.players.contains(u)) {
                     tn.players.remove(u);
+                    u.openPrivateChannel().complete().sendMessage("Du wurdest aus dem Turnier entfert!").queue();
                     User other = null;
                     if (!tn.players.isEmpty()) {
                         other = tn.players.get(0);

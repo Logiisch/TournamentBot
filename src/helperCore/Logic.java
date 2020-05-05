@@ -55,7 +55,7 @@ public class Logic {
         ArrayList<User> teilnehmer = new ArrayList<>();
         Role tlt = event.getGuild().getRoleById(STATIC.ROLE_TESTLAUFTEILNEHMER);
         for (Member m:mbrs) {
-            if (!STATIC.getNotIncluded().contains(m.getUser().getId())&&!m.getUser().isBot()&&(!STATIC.dryRun||m.getRoles().contains(tlt))) teilnehmer.add(m.getUser());
+            if (!STATIC.getNotIncluded().contains(m.getUser().getId())&&!m.getUser().isBot()&&((!STATIC.dryRun&&m.getRoles().contains(event.getGuild().getRoleById(STATIC.ROLE_TURNIERTEILNHEMER)))||m.getRoles().contains(tlt))) teilnehmer.add(m.getUser());
 
         }
         StringBuilder out = new StringBuilder("Folgende Nutzer spielen mit:\n");
@@ -454,9 +454,14 @@ public class Logic {
         if (winner==null) {
             throw new Exception("Interner Fehler:winner in line 158 still null");
         }
+        tn.winner=winner;
+        tn.update();
         if(tn.getRunde()==6) {
             Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage("Das Turnier ist beendet, der Gewinnner steht fest: "+winner.getName()+" hat gewonnen! Glückwunsch!").queue();
             g.addRoleToMember(Objects.requireNonNull(g.getMember(u)), Objects.requireNonNull(g.getRoleById(STATIC.ROLE_WINNER))).queue();
+            EmbedBuilder eb = new EmbedBuilder().setColor(roleOfRound(6,g).getColor()).setTitle("Endergebnis");
+            eb.setDescription("Das Turnier gewonnen hat: "+ winner.getName()+"\nHerzlichen Glückwunsch!\n\nAuf Platz zwei ist "+(tn.players.get(0).getId().equalsIgnoreCase(winner.getId())?tn.players.get(1).getName():tn.players.get(0).getName()));
+            Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_RESULTS)).sendMessage(eb.build()).queue();
             return;
         }
 
@@ -509,7 +514,7 @@ public class Logic {
         tn.update();
         promto.update();
         TextChannel tc=g.getTextChannelById(STATIC.CHANNEL_RESULTS);
-        EmbedBuilder eb = new EmbedBuilder().setColor(Color.green).setTitle("Matchergebnisse").setAuthor(STATIC.getRoundname(tn.getRunde()));
+        EmbedBuilder eb = new EmbedBuilder().setTitle("Matchergebnisse").setAuthor(STATIC.getRoundname(tn.getRunde()));
         if (tn.players.contains(g.getSelfMember().getUser())) {
             User named;
             if (tn.players.get(0).getId().equalsIgnoreCase(g.getJDA().getSelfUser().getId())) {
@@ -521,36 +526,19 @@ public class Logic {
         } else {
             eb.setDescription("Das Match zwischen " + tn.players.get(0).getName() + " und " + tn.players.get(1).getName() + " wurde ausgetragen. Der Gewinner ist " + tn.winner.getName() + " ! Dieser Spieler ist nun i" + ((promto.getRunde() < 3) ? "n " : "m ") + STATIC.getRoundname(promto.getRunde()) + "!");
         }
+        Role role = roleOfRound(tn.getRunde(),g);
+
+        assert role != null;
+        eb.setColor(role.getColor());
         assert tc != null;
         tc.sendMessage(eb.build()).queue();
     }
     private static void refreshRoles(Member m, boolean isdead, int round) throws Exception {
         if (m==null){
-            throw new Exception("Interner Fehler:m is null in Line 199");
+            throw new Exception("Interner Fehler:m is null in Line 552");
         }
-        Role role;
-        switch (round) {
-            case 1:
-                role = m.getGuild().getRoleById(STATIC.ROLE_VORRUNDE1);
-                break;
-            case 2:
-                role = m.getGuild().getRoleById(STATIC.ROLE_VORRUNDE2);
-                break;
-            case 3:
-                role = m.getGuild().getRoleById(STATIC.ROLE_ACHTELFINALE);
-                break;
-            case 4:
-                role = m.getGuild().getRoleById(STATIC.ROLE_VIERTELFINALE);
-                break;
-            case 5:
-                role = m.getGuild().getRoleById(STATIC.ROLE_HALBFINALE);
-                break;
-            case 6:
-                role = m.getGuild().getRoleById(STATIC.ROLE_FINALE);
-                break;
-                default:
-                    throw new Exception("Interner Fehler: Runde ="+round+ " in line 222");
-        }
+        Role role = roleOfRound(round,m.getGuild());
+
         assert role != null;
         m.getGuild().addRoleToMember(m,role).queue();
         if (isdead) {
@@ -559,6 +547,32 @@ public class Logic {
             m.getGuild().addRoleToMember(m,dead).queue();
         }
 
+    }
+    public static Role roleOfRound(int runde,Guild g) throws Exception {
+        Role role;
+        switch (runde) {
+            case 1:
+                role = g.getRoleById(STATIC.ROLE_VORRUNDE1);
+                break;
+            case 2:
+                role = g.getRoleById(STATIC.ROLE_VORRUNDE2);
+                break;
+            case 3:
+                role = g.getRoleById(STATIC.ROLE_ACHTELFINALE);
+                break;
+            case 4:
+                role = g.getRoleById(STATIC.ROLE_VIERTELFINALE);
+                break;
+            case 5:
+                role = g.getRoleById(STATIC.ROLE_HALBFINALE);
+                break;
+            case 6:
+                role = g.getRoleById(STATIC.ROLE_FINALE);
+                break;
+            default:
+                throw new Exception("Interner Fehler: Runde ="+runde+ " in line 611");
+        }
+        return role;
     }
     public static void trylog(MessageReceivedEvent event,boolean haswon) {
         boolean found =false;
@@ -783,10 +797,12 @@ public class Logic {
         long plyrb = sp[7];
         ArrayList<User> plyr = new ArrayList<>();
         if (plyra!=0) {
-            plyr.add(jda.getUserById(plyra));
+            User usera = jda.getUserById(plyra);
+            if (usera != null) plyr.add(usera); else plyr.add(jda.getSelfUser());
         }
         if (plyrb!=0) {
-            plyr.add(jda.getUserById(plyrb));
+            User userb = jda.getUserById(plyrb);
+            if (userb != null) plyr.add(userb); else plyr.add(jda.getSelfUser());
         }
         int brckt = (int)sp[8];
         int suba = (int)sp[9];

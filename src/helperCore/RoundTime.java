@@ -6,6 +6,7 @@ import util.STATIC;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class RoundTime  implements TimeKeeper{
     private OffsetDateTime end;
@@ -34,6 +35,7 @@ public class RoundTime  implements TimeKeeper{
                 STATIC.trysend(u,"Da sich keiner innerhalb des zeitlimits gemeldet hat, wurde die Zeit um 15min verlängert!");
             }
             end =end.plusMinutes(15);
+            Objects.requireNonNull(guild.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage("Sowohl Nutzer "+tn.players.get(0).getName()+" als auch Nutzer "+tn.players.get(1).getName()+" sind nicht aktiv. Es wird empfohlen, sie zu kicken!").queue();
             return true;
         }
         if(hasReacted.size()==1) {

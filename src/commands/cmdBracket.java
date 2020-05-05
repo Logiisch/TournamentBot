@@ -13,7 +13,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class cmdBracket implements Command {
-    private static final int fontsize = 26;
+    private static final int FontsizeSmall = 26;
+    private static final int FontsizeMedium=35;
+    private static final int FontsizeBig = 52;
     private static final String path = "bracket.jpg";
     @Override
     public boolean called(String[] args, MessageReceivedEvent event) {
@@ -58,9 +60,8 @@ public class cmdBracket implements Command {
     }
     private void drawImage(User author) throws Exception{
         String org = "original.jpg";
-        String wove = path;
         File original = new File(org);
-        File workingVersion = new File(wove);
+        File workingVersion = new File(path);
         BufferedImage myPicture;
 
         myPicture = ImageIO.read(original);
@@ -68,7 +69,7 @@ public class cmdBracket implements Command {
         Graphics2D g = (Graphics2D) myPicture.getGraphics();
         g.setStroke(new BasicStroke(3));
         g.setColor(Color.BLACK);
-        g.setFont(new Font(Font.DIALOG,Font.PLAIN,fontsize));
+        g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));
         for (int nid:Logic.nodes.keySet()) {
             TournamentNode tn = Logic.nodes.get(nid);
             draw(tn, author, g);
@@ -83,24 +84,28 @@ public class cmdBracket implements Command {
         int brcktnd = tn.getBracketNbr();
         if (tn.winner!=null) {
             if (tn.winner.getId().equalsIgnoreCase(u.getId())) g.setPaint(Color.blue); else g.setPaint(Color.black);
-            if (Logic.nodes.get(tn.promoteToNID).winner.getId().equalsIgnoreCase(tn.winner.getId())) g.setFont(new Font(Font.DIALOG,Font.BOLD,fontsize)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,fontsize));
+            if (Logic.nodes.containsKey(tn.promoteToNID)) if (Logic.nodes.get(tn.promoteToNID).winner==null ) g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall)); else if (Logic.nodes.get(tn.promoteToNID).winner.getId().equalsIgnoreCase(tn.winner.getId())) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeSmall)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));
+            if (tn.getBracketNbr()>64) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeMedium));
+            if (tn.getBracketNbr()==127) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeBig));
             g.drawString(bracketify(tn.winner),getx(brcktnd),gety(brcktnd));
         }
         if(!tn.getBracketSub().isEmpty()) {
+            if (tn.players.get(0) == null) System.out.println("Bei "+tn.NID+" ist player[0] null");
             if (tn.players.get(0).getId().equalsIgnoreCase(u.getId())) g.setPaint(Color.blue); else g.setPaint(Color.black);
-            if (tn.winner.getId().equalsIgnoreCase(tn.players.get(0).getId())) g.setFont(new Font(Font.DIALOG,Font.BOLD,fontsize)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,fontsize));
+           if (tn.winner!=null) if (tn.winner.getId().equalsIgnoreCase(tn.players.get(0).getId())) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeSmall)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));
             g.drawString(bracketify(tn.players.get(0)),getx(tn.getBracketSub().get(0)),gety(tn.getBracketSub().get(0)));
-            if (tn.players.get(1).getId().equalsIgnoreCase(u.getId())) g.setPaint(Color.blue); else g.setPaint(Color.black);
-            if (tn.winner.getId().equalsIgnoreCase(tn.players.get(1).getId())) g.setFont(new Font(Font.DIALOG,Font.BOLD,fontsize)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,fontsize));
+            if (tn.players.get(1) !=null) if (tn.players.get(1).getId().equalsIgnoreCase(u.getId())) g.setPaint(Color.blue); else g.setPaint(Color.black);else g.setPaint(Color.black);
+            if (tn.winner!=null&&tn.players.get(1)!=null) if (tn.winner.getId().equalsIgnoreCase(tn.players.get(1).getId())) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeSmall)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));
             g.drawString(bracketify(tn.players.get(1)),getx(tn.getBracketSub().get(1)),gety(tn.getBracketSub().get(1)));
         }
 
     }
     private static String bracketify(User u) {
+        if (u==null) return "[Freier Platz]";
         if (u.getId().equalsIgnoreCase(u.getJDA().getSelfUser().getId())) return "[Freier Platz]";
         String un = u.getName();
-        if (un.length()>15) {
-            un = un.substring(0,12)+"...";
+        if (un.length()>11) {
+            un = un.substring(0,8)+"...";
         }
         return un;
     }

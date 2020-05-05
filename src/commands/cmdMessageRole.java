@@ -17,7 +17,9 @@ public class cmdMessageRole implements Command {
     @Override
     public void action(String[] args, MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
-        if (!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) return;
+        if (!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)&&!Objects.requireNonNull(event.getMember()).getRoles().contains(event.getGuild().getRoleById(STATIC.ROLE_HELPER)))  {
+            event.getTextChannel().sendMessage("Du darfst das nicht!").queue();
+            return;}
         if (args.length<4) {
             event.getTextChannel().sendMessage("Usage: `"+prefix+"messagetorole [add/rem] [TextChannelID] [MessageID] [RoleID] [ReactEmoji]`").queue();
             return;
