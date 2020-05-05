@@ -95,6 +95,7 @@ public class cmdUpdateStatus implements Command {
         if (args[1].equalsIgnoreCase("static")) {
             statusCycleThread.cycle = false;
             event.getJDA().getPresence().setActivity(statusCycleThread.getActivity(statusCycleThread.replaceString(statusCycleThread.cycleList.get(0))));
+            STATIC.ACTIVITY = statusCycleThread.cycleList.get(0);
             statusCycleThread.cycleList.clear();
             event.getTextChannel().sendMessage("Na gut, bin ich eben jetzt ruhiger...").queue();
             return;

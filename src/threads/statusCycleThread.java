@@ -11,7 +11,7 @@ public class statusCycleThread implements Runnable {
     public static HashMap<String, SimpleString> replacements= new HashMap<>();
     public static ArrayList<String> cycleList = new ArrayList<>();
     private static int count=-1;
-    public static int seksShowing=4;
+    public static int seksShowing=6;
     public static boolean cycle = false;
     public static JDA jda;
     public static Activity.ActivityType at = Activity.ActivityType.DEFAULT;

@@ -54,7 +54,7 @@ public class cmdBracket implements Command {
 
     @Override
     public String Def(String prefix) {
-        return "Schau dir die Bracket an. Fett sind die Rungengewinner, blau bist du!";
+        return "Schau dir die Bracket an. Fett sind die Rundengewinner, blau bist du!";
     }
     private void drawImage(User author) throws Exception{
         String org = "original.jpg";
