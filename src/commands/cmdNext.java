@@ -24,7 +24,7 @@ public class cmdNext implements Command {
             OffsetDateTime tn = STATIC.NextTournament;
             if(OffsetDateTime.now().isAfter(tn)) {
                 if(Logic.nodes.isEmpty()) {
-                    event.getTextChannel().sendMessage("Das Turnier startet in Kürze!").queue();
+                    event.getTextChannel().sendMessage("Der Termin für's nächste Turnier ist noch nicht bekannt!").queue();
                 } else {
                     event.getTextChannel().sendMessage("Das Turnier läuft bereits!!").queue();
                 }
