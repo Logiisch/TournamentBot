@@ -2,11 +2,8 @@ package core;
 
 
 import commands.*;
-import listeners.ConfirmReactListener;
-import listeners.commandListener;
+import listeners.*;
 
-import listeners.privateMessageListener;
-import listeners.readyListener;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -52,6 +49,7 @@ public class Main {
         builder.addEventListeners(new ConfirmReactListener());
         builder.addEventListeners(new readyListener());
         builder.addEventListeners(new privateMessageListener());
+        builder.addEventListeners(new autoChannelListener());
     }
 
     private static void addCommands() {
@@ -73,6 +71,7 @@ public class Main {
         commandHandler.commands.put("next", new cmdNext());
         commandHandler.commands.put("bracket", new cmdBracket());
         commandHandler.commands.put("final", new cmdFinalDisplay());
+        commandHandler.commands.put("autochannel", new cmdAutoChannel());
 
     }
 
