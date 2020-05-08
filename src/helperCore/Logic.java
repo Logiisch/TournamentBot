@@ -53,9 +53,12 @@ public class Logic {
         }
 
         ArrayList<User> teilnehmer = new ArrayList<>();
-        Role tlt = event.getGuild().getRoleById(STATIC.ROLE_TESTLAUFTEILNEHMER);
+        Role tt = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_TURNIERTEILNEHMER"));
         for (Member m:mbrs) {
-            if (!STATIC.getNotIncluded().contains(m.getUser().getId())&&!m.getUser().isBot()&&((!STATIC.dryRun&&m.getRoles().contains(event.getGuild().getRoleById(STATIC.ROLE_TURNIERTEILNHEMER)))||m.getRoles().contains(tlt))) teilnehmer.add(m.getUser());
+            if (getNotIncluded().contains(m.getUser().getId())) continue;
+            if (!m.getRoles().contains(tt)) continue;
+            teilnehmer.add(m.getUser());
+
 
         }
         StringBuilder out = new StringBuilder("Folgende Nutzer spielen mit:\n");
@@ -88,7 +91,7 @@ public class Logic {
                 Member memb =event.getGuild().getMember(b);
                 assert mema!=null;
                 assert memb!=null;
-                Role vr1 = event.getGuild().getRoleById(STATIC.ROLE_VORRUNDE1);
+                Role vr1 = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_VORRUNDE_!"));
                 assert vr1 != null;
                 event.getGuild().addRoleToMember(mema,vr1).queue();
                 event.getGuild().addRoleToMember(memb,vr1).queue();
@@ -141,8 +144,8 @@ public class Logic {
             User b = node.players.get(1);
             String senda = "Dein Gegner ist nun "+b.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit \uD83D\uDC4D, dass du anwesend bist. Du hast dafür 15min Zeit!";
             String sendb = "Dein Gegner ist nun "+a.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit \uD83D\uDC4D, dass du anwesend bist. Du hast dafür 15min Zeit!";
-            Message msga=STATIC.trysend(a,senda);
-            Message msgb=STATIC.trysend(b,sendb);
+            Message msga=trysend(a,senda,event.getGuild());
+            Message msgb=trysend(b,sendb,event.getGuild());
             assert msga!=null;
             assert msgb!=null;
             msga.addReaction("U+1F44D").queue();
@@ -457,11 +460,11 @@ public class Logic {
         tn.winner=winner;
         tn.update();
         if(tn.getRunde()==6) {
-            Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage("Das Turnier ist beendet, der Gewinnner steht fest: "+winner.getName()+" hat gewonnen! Glückwunsch!").queue();
-            g.addRoleToMember(Objects.requireNonNull(g.getMember(u)), Objects.requireNonNull(g.getRoleById(STATIC.ROLE_WINNER))).queue();
+            Objects.requireNonNull(g.getTextChannelById(STATIC.getSettings(g,"CHANNEL_ALLGEMEIN"))).sendMessage("Das Turnier ist beendet, der Gewinnner steht fest: "+winner.getName()+" hat gewonnen! Glückwunsch!").queue();
+            g.addRoleToMember(Objects.requireNonNull(g.getMember(u)), Objects.requireNonNull(g.getRoleById(STATIC.getSettings(g,"ROLE_WINNER")))).queue();
             EmbedBuilder eb = new EmbedBuilder().setColor(roleOfRound(6,g).getColor()).setTitle("Endergebnis");
             eb.setDescription("Das Turnier gewonnen hat: "+ winner.getName()+"\nHerzlichen Glückwunsch!\n\nAuf Platz zwei ist "+(tn.players.get(0).getId().equalsIgnoreCase(winner.getId())?tn.players.get(1).getName():tn.players.get(0).getName()));
-            Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_RESULTS)).sendMessage(eb.build()).queue();
+            Objects.requireNonNull(g.getTextChannelById(STATIC.getSettings(g,"CHANNEL_RESULTS"))).sendMessage(eb.build()).queue();
             return;
         }
 
@@ -483,8 +486,8 @@ public class Logic {
 
             String senda = "Dein Gegner ist nun "+plb.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit  \uD83D\uDC4D, dass du anwesend bist. Du hast dafür 15min Zeit!";
             String sendb = "Dein Gegner ist nun "+pla.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit  \uD83D\uDC4D, dass du anwesend bist. Du hast dafür 15min Zeit!";
-            Message msga=STATIC.trysend(pla,senda);
-            Message msgb=STATIC.trysend(plb,sendb);
+            Message msga=trysend(pla,senda,g);
+            Message msgb=trysend(plb,sendb,g);
             assert msga!=null;
             assert msgb!=null;
             msga.addReaction("U+1F44D").queue();
@@ -493,7 +496,7 @@ public class Logic {
             ConfirmReactListener.rtimes.put(msga.getId(),rt);
             ConfirmReactListener.rtimes.put(msgb.getId(),rt);
         } else {
-            STATIC.trysend(winner,"Dein Gegner ist noch nicht fertig. Warte noch einen Moment.");
+            trysend(winner,"Dein Gegner ist noch nicht fertig. Warte noch einen Moment.",g);
             return;
         }
         refreshRoles(g.getMember(winner),false,promto.getRunde());
@@ -513,8 +516,8 @@ public class Logic {
         refreshRoles(g.getMember(looser),true,tn.getRunde());
         tn.update();
         promto.update();
-        TextChannel tc=g.getTextChannelById(STATIC.CHANNEL_RESULTS);
-        EmbedBuilder eb = new EmbedBuilder().setTitle("Matchergebnisse").setAuthor(STATIC.getRoundname(tn.getRunde()));
+        TextChannel tc=g.getTextChannelById(STATIC.getSettings(g,"CHANNEL_RESULTS"));
+        EmbedBuilder eb = new EmbedBuilder().setTitle("Matchergebnisse").setAuthor(getRoundname(tn.getRunde()));
         if (tn.players.contains(g.getSelfMember().getUser())) {
             User named;
             if (tn.players.get(0).getId().equalsIgnoreCase(g.getJDA().getSelfUser().getId())) {
@@ -522,9 +525,9 @@ public class Logic {
             } else {
                 named = tn.players.get(0);
             }
-            eb.setDescription("Da das Turnier nicht voll war, konnte "+named.getName()+" direkt in die Runde \""+STATIC.getRoundname(promto.getRunde())+"\" aufsteigen!");
+            eb.setDescription("Da das Turnier nicht voll war, konnte "+named.getName()+" direkt in die Runde \""+getRoundname(promto.getRunde())+"\" aufsteigen!");
         } else {
-            eb.setDescription("Das Match zwischen " + tn.players.get(0).getName() + " und " + tn.players.get(1).getName() + " wurde ausgetragen. Der Gewinner ist " + tn.winner.getName() + " ! Dieser Spieler ist nun i" + ((promto.getRunde() < 3) ? "n " : "m ") + STATIC.getRoundname(promto.getRunde()) + "!");
+            eb.setDescription("Das Match zwischen " + tn.players.get(0).getName() + " und " + tn.players.get(1).getName() + " wurde ausgetragen. Der Gewinner ist " + tn.winner.getName() + " ! Dieser Spieler ist nun i" + ((promto.getRunde() < 3) ? "n " : "m ") + getRoundname(promto.getRunde()) + "!");
         }
         Role role = roleOfRound(tn.getRunde(),g);
 
@@ -542,7 +545,7 @@ public class Logic {
         assert role != null;
         m.getGuild().addRoleToMember(m,role).queue();
         if (isdead) {
-            Role dead = m.getGuild().getRoleById(STATIC.ROLE_TOT);
+            Role dead = m.getGuild().getRoleById(STATIC.getSettings(m.getGuild().getId(),"ROLE_TOT"));
             assert dead != null;
             m.getGuild().addRoleToMember(m,dead).queue();
         }
@@ -552,22 +555,22 @@ public class Logic {
         Role role;
         switch (runde) {
             case 1:
-                role = g.getRoleById(STATIC.ROLE_VORRUNDE1);
+                role = g.getRoleById(STATIC.getSettings(g,"ROLE_VORRUNDE1"));
                 break;
             case 2:
-                role = g.getRoleById(STATIC.ROLE_VORRUNDE2);
+                role = g.getRoleById(STATIC.getSettings(g,"ROLE_VORRUNDE2"));
                 break;
             case 3:
-                role = g.getRoleById(STATIC.ROLE_ACHTELFINALE);
+                role = g.getRoleById(STATIC.getSettings(g,"ROLE_ACHTELFINALE"));
                 break;
             case 4:
-                role = g.getRoleById(STATIC.ROLE_VIERTELFINALE);
+                role = g.getRoleById(STATIC.getSettings(g,"ROLE_VIERTELFINALE"));
                 break;
             case 5:
-                role = g.getRoleById(STATIC.ROLE_HALBFINALE);
+                role = g.getRoleById(STATIC.getSettings(g,"ROLE_HALBFINALE"));
                 break;
             case 6:
-                role = g.getRoleById(STATIC.ROLE_FINALE);
+                role = g.getRoleById(STATIC.getSettings(g,"ROLE_FINALE"));
                 break;
             default:
                 throw new Exception("Interner Fehler: Runde ="+runde+ " in line 611");
@@ -606,7 +609,7 @@ public class Logic {
             Message msg =playerToNotify.openPrivateChannel().complete().sendMessage(msgs).complete();
             msg.addReaction("U+2705").queue();
             msg.addReaction("U+274E").queue();
-            UnconfirmedResult ur = new UnconfirmedResult(nid,playerthathaswon,playerthathaswon.getJDA().getGuildById(STATIC.GUILDID));
+            UnconfirmedResult ur = new UnconfirmedResult(nid,playerthathaswon,tc.getGuild());
             ConfirmReactListener.toConfirmResult.put(msg.getId(),ur);
             tc.sendMessage(author.getAsMention()+": Dein Gegner wurde benachrichtigt!").queue();
 
@@ -629,7 +632,7 @@ public class Logic {
         }
     }
 
-    public static void revert(User u) throws Exception{
+    public static void revert(User u,Guild g) throws Exception{
         for (int nid : nodes.keySet()) {
             TournamentNode node = nodes.get(nid);
             if (!node.players.contains(u)) continue;
@@ -639,51 +642,50 @@ public class Logic {
             TournamentNode a = nodes.get(from.get(0));
             TournamentNode b = nodes.get(from.get(1));
             if (a.players.contains(u)) {
-                revert(u,a,node);
+                revert(u,a,node,g);
                 return;
             }
             if (b.players.contains(u)) {
-                revert(u,b,node);
+                revert(u,b,node,g);
                 return;
             }
         }
         throw new Exception("Nimmt dieser Spieler überhaupt teil?");
     }
-    private static void revert(User u, TournamentNode revto, TournamentNode revfrom) throws Exception {
+    private static void revert(User u, TournamentNode revto, TournamentNode revfrom,Guild g) throws Exception {
         revto.winner =null;
         revfrom.players.remove(u);
         if (!revfrom.players.isEmpty()) {
-            STATIC.trysend(revfrom.players.get(0),"Das Ergebnis des vorherigen Spieles deines Gegners wurde zurückgesetzt: Bitte warte, bis eine Entscheidung getroffen ist!");
+            trysend(revfrom.players.get(0),"Das Ergebnis des vorherigen Spieles deines Gegners wurde zurückgesetzt: Bitte warte, bis eine Entscheidung getroffen ist!",g);
         }
         revfrom.update();
         revto.update();
         Role role;
         switch (revfrom.getRunde()) {
             case 1:
-                role = Objects.requireNonNull(u.getJDA().getGuildById(STATIC.GUILDID)).getRoleById(STATIC.ROLE_VORRUNDE1);
+                role = g.getRoleById(STATIC.getSettings(g,"ROLE_VORRUNDE1"));
                 break;
             case 2:
-                role = Objects.requireNonNull(u.getJDA().getGuildById(STATIC.GUILDID)).getRoleById(STATIC.ROLE_VORRUNDE2);
+                role = g.getRoleById(STATIC.getSettings(g,"ROLE_VORRUNDE2"));
                 break;
             case 3:
-                role = Objects.requireNonNull(u.getJDA().getGuildById(STATIC.GUILDID)).getRoleById(STATIC.ROLE_ACHTELFINALE);
+                role = g.getRoleById(STATIC.getSettings(g,"ROLE_ACHTELFINALE"));
                 break;
             case 4:
-                role = Objects.requireNonNull(u.getJDA().getGuildById(STATIC.GUILDID)).getRoleById(STATIC.ROLE_VIERTELFINALE);
+                role = g.getRoleById(STATIC.getSettings(g,"ROLE_VIERTELFINALE"));
                 break;
             case 5:
-                role = Objects.requireNonNull(u.getJDA().getGuildById(STATIC.GUILDID)).getRoleById(STATIC.ROLE_HALBFINALE);
+                role = g.getRoleById(STATIC.getSettings(g,"ROLE_HALBFINALE"));
                 break;
             case 6:
-                role = Objects.requireNonNull(u.getJDA().getGuildById(STATIC.GUILDID)).getRoleById(STATIC.ROLE_FINALE);
+                role = g.getRoleById(STATIC.getSettings(g,"ROLE_FINALE"));
                 break;
             default:
                 throw new Exception("Interner Fehler: Runde ="+revfrom.getRunde()+ " in line 222");
         }
         assert role != null;
-        Guild g = u.getJDA().getGuildById(STATIC.GUILDID);
         Objects.requireNonNull(g).removeRoleFromMember(Objects.requireNonNull(Objects.requireNonNull(g).getMember(u)), role).queue();
-        Role ded = Objects.requireNonNull(u.getJDA().getGuildById(STATIC.GUILDID)).getRoleById(STATIC.ROLE_TOT);
+        Role ded = g.getRoleById(STATIC.getSettings(g.getId(),"ROLE_TOT"));
         for (User us: revto.players) {
             if (us.getId().equalsIgnoreCase(u.getId())) continue;
             assert ded != null;
@@ -839,6 +841,107 @@ public class Logic {
         return null;
     }
 
+    public static void kickUser(User u,Guild g) {
+        notincluded.add(u.getId());
+        if (!Logic.nodes.isEmpty()) {
+            for (int nid:Logic.nodes.keySet()) {
+                TournamentNode tn = Logic.nodes.get(nid);
 
+                if (tn.players.contains(u)) {
+                    tn.players.remove(u);
+                    u.openPrivateChannel().complete().sendMessage("Du wurdest aus dem Turnier entfert!").queue();
+                    User other = null;
+                    if (!tn.players.isEmpty()) {
+                        other = tn.players.get(0);
+                    }
+                    tn.players.add(u.getJDA().getSelfUser());
+                    if (tn.players.size()==2&&tn.winner==null) try {
+                        Logic.logresult(u.getJDA().getSelfUser(),false,g);
+                    } catch (Exception e) {
+                        if (other!=null) other.openPrivateChannel().complete().sendMessage("Du bist eine Runde weiter, anscheinend ist aber ein Fehler aufgetreten, bitte melde dich bei Logii!\n"+e.getMessage()).queue();
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        saveNotIncluded();
+    }
+
+    //true wenn User wirklich gekickt war, false wenn er eh schon dabei war
+    public static void rejoinUser(User u) {
+        if (notincluded.contains(u.getId())) {
+            notincluded.remove(u.getId());
+            saveNotIncluded();
+        }
+    }
+    public static void rejoinAll() {
+        notincluded.clear();
+        saveNotIncluded();
+    }
+
+    public static ArrayList<String> notincluded = new ArrayList<>();
+
+    public static ArrayList<String> getNotIncluded() {
+        return notincluded;
+    }
+
+
+
+    public static Message trysend (User u, String msg,Guild g) {
+        String SELFID = "705567211380801598";
+        if (u.getId().equalsIgnoreCase(SELFID)||u.getJDA().getSelfUser().getId().equalsIgnoreCase(u.getId())) return null;
+        try {
+            return u.openPrivateChannel().complete().sendMessage(msg).complete();
+        } catch (Exception e) {
+
+            if (g.isMember(u)) {
+                return Objects.requireNonNull(u.getJDA().getTextChannelById(STATIC.getSettings(g,"CHANNEL_ALLGEMEIN"))).sendMessage(Objects.requireNonNull(g.getMember(u)).getAsMention()+":"+msg+"\nFür das Turnier öffne bite deine Privatnachrichten, da nicht alle Nachrichten über diesen Channel gesendet werden können!").complete();} else {return null;}
+        }
+    }
+    public static String getRoundname(int runde) {
+        switch (runde) {
+            case 1:
+                return "Vorrunde 1";
+            case 2:
+                return "Vorrunde 2";
+            case 3:
+                return "Achtelfinale";
+            case 4:
+                return "Viertelfinale";
+            case 5:
+                return "Halbfinale";
+            case 6:
+                return "Finale";
+            default:
+                return "undefined";
+        }
+    }
+
+    public static void saveNotIncluded() {
+        File f = new File("data/");
+        if (!f.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            f.mkdirs();
+        }
+
+
+        try {
+            printOutTxtFile.Write("data/notInc.txt",notincluded);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static boolean loadNotIncluded() {
+        File f = new File("data/notInc.txt");
+        if (!f.exists()) return false;
+        try {
+            notincluded= readInTxtFile.Read("data/notInc.txt");
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
 
 }

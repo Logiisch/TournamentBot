@@ -5,8 +5,10 @@ import Threads.TimerThread;
 import commands.cmdGetPoints;
 import listeners.activityListener;*/
 
+import helperCore.GuildSettings;
 import helperCore.Logic;
 import helperCore.TournamentNode;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -15,10 +17,10 @@ import java.io.File;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
 public class STATIC {
+    private static HashMap<String, GuildSettings> settings = new HashMap<>();
     public static String ACTIVITY = "keine große Rolle";
     public static String PREFIX = "t!";
     public static String ADDLINK = "https://discordapp.com/oauth2/authorize?client_id=705567211380801598&scope=bot&permissions=268692560";
@@ -26,12 +28,12 @@ public class STATIC {
     public static String OWNERID = "318457868917407745";
 
 
-    public static String GUILDID = "676002000835444736";
 
 
 
 
-    public static String ROLE_TOT = "678319461610029056";
+
+    /*public static String ROLE_TOT = "678319461610029056";
     public static String ROLE_FINALE = "705578400089112576";
     public static String ROLE_HALBFINALE = "705578401179631847";
     public static String ROLE_VIERTELFINALE = "705578402165555292";
@@ -48,114 +50,131 @@ public class STATIC {
     public static String ROLE_TURNIERTEILNHEMER = "707266470371131412";
 
     public static String CHANNEL_RESULTS = "705557075106988144";
-    public static String CHANNEL_ALLGEMEIN = "676029060136042536";
+    public static String CHANNEL_ALLGEMEIN = "676029060136042536";*/
+
+    public static String TESTGUILD = "676002000835444736";
 
     public static OffsetDateTime NextTournament = OffsetDateTime.of(2020, 5,5,19,30,0,0, OffsetDateTime.now().getOffset());
 
     public static boolean dryRun = false;
 
-
-    public static void changePrefix (String prefix){
-        PREFIX = prefix;
+    public static void setSettings(Guild g, String key, String value) {
+        setSettings(g.getId(),key,value);
     }
-    //Für User IDs
-    private static ArrayList<String> notincluded = new ArrayList<>();
-
-    public static ArrayList<String> getNotIncluded() {
-        return notincluded;
+    public static void setSettings(String guildid, String key, String value) {
+        GuildSettings gs = settings.getOrDefault(guildid,new GuildSettings());
+        gs.setString(key,value);
+        settings.put(guildid,gs);
+        saveSettings();
     }
-    public static void kickUser(User u) {
-        notincluded.add(u.getId());
-        if (!Logic.nodes.isEmpty()) {
-            for (int nid:Logic.nodes.keySet()) {
-                TournamentNode tn = Logic.nodes.get(nid);
+    public static String getSettings(Guild g, String key) {
+        return getSettings(g.getId(),key);
+    }
+    public static String getSettings(String guildid, String key) {
+        GuildSettings gs = settings.getOrDefault(guildid,new GuildSettings());
+        return gs.getString(key);
+    }
+    public static void setNextTournament(Guild g,OffsetDateTime nT) {
+        setNextTournament(g.getId(),nT);
+    }
+    public static void setNextTournament(String guildid,OffsetDateTime nT) {
+        GuildSettings gs = settings.getOrDefault(guildid,new GuildSettings());
+        gs.setNextTournament(nT);
+        settings.put(guildid,gs);
+        saveSettings();
+    }
+    public static OffsetDateTime getNextTournament(Guild g) {
+        return getNextTournament(g.getId());
+    }
+    public static OffsetDateTime getNextTournament(String guildid) {
+        GuildSettings gs = settings.getOrDefault(guildid,new GuildSettings());
+        return gs.getNextTournament();
+    }
+    public static boolean canStartTournament(Guild g) {
+        return canStartTournament(g.getId());
+    }
 
-                if (tn.players.contains(u)) {
-                    tn.players.remove(u);
-                    u.openPrivateChannel().complete().sendMessage("Du wurdest aus dem Turnier entfert!").queue();
-                    User other = null;
-                    if (!tn.players.isEmpty()) {
-                        other = tn.players.get(0);
-                    }
-                    tn.players.add(u.getJDA().getSelfUser());
-                    if (tn.players.size()==2&&tn.winner==null) try {
-                        Logic.logresult(u.getJDA().getSelfUser(),false,u.getJDA().getGuildById(GUILDID));
-                    } catch (Exception e) {
-                        if (other!=null) other.openPrivateChannel().complete().sendMessage("Du bist eine Runde weiter, anscheinend ist aber ein Fehler aufgetreten, bitte melde dich bei Logii!\n"+e.getMessage()).queue();
-                        e.printStackTrace();
-                    }
-                }
+    public static boolean canStartTournament(String guildid) {
+        if (!settings.containsKey(guildid)) return false;
+        GuildSettings gs = settings.get(guildid);
+        return gs.isFullySet();
+    }
+
+    public static Set<String> getAllKeys(String guildid) {
+        return settings.getOrDefault(guildid,new GuildSettings()).keys();
+    }
+    public static Set<String> getAllKeys(Guild g) {
+        return getAllKeys(g.getId());
+    }
+
+    public static void saveSettings() {
+        for (String id: settings.keySet()) {
+            ArrayList<String> in = saveSettings(settings.get(id));
+            try {
+                printOutTxtFile.Write("data/guilds/"+id+"/settings.txt",in);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-        saveNotIncluded();
     }
-    //true wenn User wirklich gekickt war, false wenn er eh schon dabei war
-    public static void rejoinUser(User u) {
-        if (notincluded.contains(u.getId())) {
-            notincluded.remove(u.getId());
-            saveNotIncluded();
-        }
-    }
-    public static void rejoinAll() {
-        notincluded.clear();
-        saveNotIncluded();
-    }
-
-    public static Message trysend (User u, String msg) {
-        String SELFID = "705567211380801598";
-        if (u.getId().equalsIgnoreCase(SELFID)||u.getJDA().getSelfUser().getId().equalsIgnoreCase(u.getId())) return null;
-        try {
-            return u.openPrivateChannel().complete().sendMessage(msg).complete();
-        } catch (Exception e) {
-            Guild g = Objects.requireNonNull(u.getJDA().getTextChannelById(CHANNEL_ALLGEMEIN)).getGuild();
-            if (g.isMember(u)) {
-                return Objects.requireNonNull(u.getJDA().getTextChannelById(CHANNEL_ALLGEMEIN)).sendMessage(Objects.requireNonNull(g.getMember(u)).getAsMention()+":"+msg+"\nFür das Turnier öffne bite deine Privatnachrichten, da nicht alle Nachrichten über diesen Channel gesendet werden können!").complete();} else {return null;}
-        }
-    }
-    public static String getRoundname(int runde) {
-        switch (runde) {
-            case 1:
-                return "Vorrunde 1";
-            case 2:
-                return "Vorrunde 2";
-            case 3:
-                return "Achtelfinale";
-            case 4:
-                return "Viertelfinale";
-            case 5:
-                return "Halbfinale";
-            case 6:
-                return "Finale";
-                default:
-                    return "undefined";
-        }
-    }
-
-    private static void saveNotIncluded() {
-        File f = new File("data/");
-        if (!f.exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            f.mkdirs();
-        }
+    public static ArrayList<String> saveSettings(GuildSettings gs) {
+        ArrayList<String> out = new ArrayList<>();
 
 
-        try {
-            printOutTxtFile.Write("data/notInc.txt",notincluded);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    public static boolean loadNotIncluded() {
-        File f = new File("data/notInc.txt");
-        if (!f.exists()) return false;
-        try {
-            notincluded= readInTxtFile.Read("data/notInc.txt");
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        for (String s:gs.keys()) {
 
+
+            String temp = s.toUpperCase() + ":" + gs.getString(s.toUpperCase());
+            out.add(temp);
+
+        }
+        OffsetDateTime nt = gs.getNextTournament();
+        String time = nt.getDayOfMonth()+" "+nt.getMonthValue()+" "+nt.getYear()+" "+nt.getHour()+" "+nt.getMinute();
+        out.add("NEXT_TOURNAMENT:"+time);
+        return out;
+    }
+    public static GuildSettings loadSettings(ArrayList<String> in) {
+        OffsetDateTime nt = OffsetDateTime.now();
+        HashMap<String,String> out = new HashMap<>();
+        for (String part:in) {
+            String[] sp = part.split(":");
+            String key = sp[0];
+            if (sp.length<2) {
+                out.put(key,"");
+                continue;
+            }
+            String value = sp[1];
+            if (key.equalsIgnoreCase("NEXT_TOURNAMENT")) {
+                String[] ts = value.split(" ");
+                int[] time = new int[ts.length];
+                for (int i=0;i<ts.length;i++) {
+                    time[i] = Integer.parseInt(ts[i]);
+                }
+                nt = OffsetDateTime.of(time[2],time[1],time[0],time[3],time[4],0,0,nt.getOffset());
+            } else out.put(key,value);
+        }
+        return new GuildSettings(out,nt);
+    }
+    public static void loadSettings() {
+        String path = "data/guilds/";
+        File f = new File(path);
+        if (!f.exists()) return;
+        File[] files = f.listFiles();
+        for (File fc:files) {
+            String pathnew = path+fc.getName()+"/settings.txt";
+            File fnew = new File(pathnew);
+            if (!fnew.exists()) continue;
+            ArrayList<String> in= new ArrayList<>();
+            try {
+                in = readInTxtFile.Read(pathnew);
+            } catch (IOException e) {
+                e.printStackTrace();
+                continue;
+            }
+            GuildSettings gs =loadSettings(in);
+            settings.put(fc.getName(),gs);
+
+        }
     }
 
 

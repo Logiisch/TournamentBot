@@ -1,5 +1,7 @@
 package commands;
 
+import helperCore.Logic;
+import helperCore.PermissionLevel;
 import listeners.commandListener;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -18,10 +20,15 @@ public class cmdKick implements Command{
     }
 
     @Override
+    public PermissionLevel PermLevel() {
+        return PermissionLevel.HELPER;
+    }
+
+    @Override
     public void action(String[] args, MessageReceivedEvent event)  {
         String prefix = commandListener.getPrefix(event.getGuild());
-        Role admin = event.getGuild().getRoleById(STATIC.ROLE_HELPER);
-        if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
+        Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
+        if (!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
             event.getTextChannel().sendMessage("Das kann nur ein Helfer machen").queue();
             return;
         }
@@ -35,7 +42,7 @@ public class cmdKick implements Command{
         ArrayList<User> rem = new ArrayList<>();
         if (event.getMessage().getMentionedUsers().size()>0) {
             for (User u:event.getMessage().getMentionedUsers()) {
-                STATIC.kickUser(u);
+                Logic.kickUser(u,event.getGuild());
                 rem.add(u);
             }
         } else {
@@ -51,13 +58,13 @@ public class cmdKick implements Command{
 
                 for (Member m:event.getGuild().getMembers()) {
 
-                    if (!STATIC.getNotIncluded().contains(m.getUser().getId())&&!m.getUser().isBot()) teilnehmer.add(m.getUser());
+                    if (!Logic.getNotIncluded().contains(m.getUser().getId())&&!m.getUser().isBot()) teilnehmer.add(m.getUser());
 
                 }
                 int i = (int)Math.round(Math.random()*teilnehmer.size());
                 while (i>=teilnehmer.size()) i--;
                 User u = teilnehmer.get(i);
-                STATIC.kickUser(u);
+                Logic.kickUser(u,event.getGuild());
                 rem.add(u);
                 tokick--;
             }

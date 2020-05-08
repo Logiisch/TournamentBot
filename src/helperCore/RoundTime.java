@@ -32,10 +32,10 @@ public class RoundTime  implements TimeKeeper{
         if (tn.winner!=null) return true;
         if (hasReacted.size()==0) {
             for (User u:tn.players) {
-                STATIC.trysend(u,"Da sich keiner innerhalb des zeitlimits gemeldet hat, wurde die Zeit um 15min verlängert!");
+                Logic.trysend(u,"Da sich keiner innerhalb des zeitlimits gemeldet hat, wurde die Zeit um 15min verlängert!",guild);
             }
             end =end.plusMinutes(15);
-            Objects.requireNonNull(guild.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage("Sowohl Nutzer "+tn.players.get(0).getName()+" als auch Nutzer "+tn.players.get(1).getName()+" sind nicht aktiv. Es wird empfohlen, sie zu kicken!").queue();
+            Objects.requireNonNull(guild.getTextChannelById(STATIC.getSettings(guild,"CHANNEL_ALLGEMEIN"))).sendMessage("Sowohl Nutzer "+tn.players.get(0).getName()+" als auch Nutzer "+tn.players.get(1).getName()+" sind nicht aktiv. Es wird empfohlen, sie zu kicken!").queue();
             return true;
         }
         if(hasReacted.size()==1) {

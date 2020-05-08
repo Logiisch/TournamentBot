@@ -30,7 +30,7 @@ public class cmdInfo implements Command {
             return;
         }
         EmbedBuilder eb = new EmbedBuilder().setColor(Color.green);
-        eb.setTitle(u.getName()).setAuthor(STATIC.getRoundname(tn.getRunde()));
+        eb.setTitle(u.getName()).setAuthor(Logic.getRoundname(tn.getRunde()));
         String geg;
         if (tn.players.size()==2) {
             User gegner;

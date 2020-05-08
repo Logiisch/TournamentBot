@@ -3,6 +3,8 @@ package threads;
 import helperCore.SimpleString;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import util.STATIC;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +27,7 @@ public class statusCycleThread implements Runnable {
             count++;
             if (count>=cycleList.size()) count=0;
             String stat = cycleList.get(count);
-            jda.getPresence().setActivity(getActivity(replaceString(stat)));
+            jda.getPresence().setActivity(getActivity(replaceString(stat,jda.getGuildById(STATIC.TESTGUILD))));
             try {
                 Thread.sleep(seksShowing*1000);
             } catch (InterruptedException e) {
@@ -40,10 +42,10 @@ public class statusCycleThread implements Runnable {
     public static Activity getActivity(String whatToShow) {
         return Activity.of(at,whatToShow);
     }
-    public static String replaceString(String in) {
+    public static String replaceString(String in, Guild g) {
         for (String part:replacements.keySet()) {
             if (in.contains(part)) {
-                in = in.replace(part,replacements.get(part).getString());
+                in = in.replace(part,replacements.get(part).getString(g));
             }
         }
         return in;

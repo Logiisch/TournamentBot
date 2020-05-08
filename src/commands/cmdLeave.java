@@ -1,7 +1,9 @@
 package commands;
 
+import helperCore.Logic;
 import listeners.commandListener;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import sun.util.calendar.LocalGregorianCalendar;
 import util.STATIC;
 
 public class cmdLeave implements Command{
@@ -21,7 +23,7 @@ public class cmdLeave implements Command{
             event.getTextChannel().sendMessage("Bitte bestätige mit `"+prefix+"kick confirm`, dass du das Turnier verlassen willst.Das kannst du nicht mehr rückgängig machen!").queue();
             return;
         }
-        STATIC.kickUser(event.getAuthor());
+        Logic.kickUser(event.getAuthor(),event.getGuild());
         event.getTextChannel().sendMessage("Du hast das Turnier verlassen!").queue();
     }
 

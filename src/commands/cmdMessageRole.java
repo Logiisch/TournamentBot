@@ -1,5 +1,6 @@
 package commands;
 
+import helperCore.PermissionLevel;
 import listeners.commandListener;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -15,9 +16,15 @@ public class cmdMessageRole implements Command {
     }
 
     @Override
+    public PermissionLevel PermLevel() {
+        return PermissionLevel.BOTOWNER;
+    }
+
+    @Override
     public void action(String[] args, MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
-        if (!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)&&!Objects.requireNonNull(event.getMember()).getRoles().contains(event.getGuild().getRoleById(STATIC.ROLE_HELPER)))  {
+        Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
+        if (!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)&&!Objects.requireNonNull(event.getMember()).getRoles().contains(helper))  {
             event.getTextChannel().sendMessage("Du darfst das nicht!").queue();
             return;}
         if (args.length<4) {

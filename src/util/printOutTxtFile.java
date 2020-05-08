@@ -9,7 +9,14 @@ public class printOutTxtFile
   
   public static void Write(String dest, java.util.ArrayList<String> content) throws java.io.IOException {
 
-      java.io.FileWriter fw = new java.io.FileWriter(dest);
+    String[] split = dest.split("/");
+    if (split.length>1) {
+      int last =dest.lastIndexOf("/");
+      String subs = dest.substring(0,last+1);
+      File f = new File(subs);
+      if (!f.exists()) f.mkdirs();
+    }
+    java.io.FileWriter fw = new java.io.FileWriter(dest);
     BufferedWriter bw = new BufferedWriter(fw);
     
     for (String s : content) {

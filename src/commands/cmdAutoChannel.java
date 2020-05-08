@@ -1,5 +1,6 @@
 package commands;
 
+import helperCore.PermissionLevel;
 import listeners.autoChannelListener;
 import listeners.commandListener;
 import net.dv8tion.jda.api.entities.Role;
@@ -18,7 +19,7 @@ public class cmdAutoChannel implements Command{
     @Override
     public void action(String[] args, MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
-        Role helper = event.getGuild().getRoleById(STATIC.ROLE_HELPER);
+        Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
             event.getTextChannel().sendMessage("Das kann nur ein Helfer machen!").queue();
             return;
@@ -99,5 +100,10 @@ public class cmdAutoChannel implements Command{
     @Override
     public String Def(String prefix) {
         return "Erstelle oder lösche einen AutoChannel";
+    }
+
+    @Override
+    public PermissionLevel PermLevel() {
+        return PermissionLevel.HELPER;
     }
 }

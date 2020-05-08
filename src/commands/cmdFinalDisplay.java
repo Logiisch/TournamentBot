@@ -1,6 +1,7 @@
 package commands;
 
 import helperCore.Logic;
+import helperCore.PermissionLevel;
 import helperCore.TournamentNode;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -20,8 +21,13 @@ public class cmdFinalDisplay implements Command {
     }
 
     @Override
+    public PermissionLevel PermLevel() {
+        return PermissionLevel.ADMIN;
+    }
+
+    @Override
     public void action(String[] args, MessageReceivedEvent event) {
-        Role admin = event.getGuild().getRoleById(STATIC.ROLE_ADMIN);
+        Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
             event.getTextChannel().sendMessage("Das kann nur ein Admin machen!").queue();
             return;

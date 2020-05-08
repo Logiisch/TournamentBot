@@ -9,6 +9,7 @@ import java.awt.*;
 import java.util.Objects;
 
 public class cmdHelp implements Command {
+
     @Override
     public boolean called(String[] args, MessageReceivedEvent event) {
         return false;

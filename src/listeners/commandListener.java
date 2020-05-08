@@ -70,7 +70,7 @@ public class commandListener extends ListenerAdapter {
 
     }
     public static String getPrefix(Guild g) {
-        return STATIC.PREFIX;
+        return STATIC.getSettings(g.getId(),"PREFIX");
     }
     private static void writeCmd(MessageReceivedEvent event) {
         int Stunde = event.getMessage().getTimeCreated().getHour();

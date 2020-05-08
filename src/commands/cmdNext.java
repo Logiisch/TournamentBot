@@ -19,9 +19,9 @@ public class cmdNext implements Command {
     @Override
     public void action(String[] args, MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
-        Role admin = event.getGuild().getRoleById(STATIC.ROLE_ADMIN);
+        Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
-            OffsetDateTime tn = STATIC.NextTournament;
+            OffsetDateTime tn = STATIC.getNextTournament(event.getGuild());
             if(OffsetDateTime.now().isAfter(tn)) {
                 if(Logic.nodes.isEmpty()) {
                     event.getTextChannel().sendMessage("Der Termin für's nächste Turnier ist noch nicht bekannt!").queue();
@@ -36,7 +36,7 @@ public class cmdNext implements Command {
         }
         if (args.length<1) {
             String out ="";
-            OffsetDateTime tn = STATIC.NextTournament;
+            OffsetDateTime tn = STATIC.getNextTournament(event.getGuild());
             if(OffsetDateTime.now().isAfter(tn)) {
                 if(Logic.nodes.isEmpty()) {
                     event.getTextChannel().sendMessage("Der Termin für's nächste Turnier ist noch nicht eingestellt!").queue();
@@ -101,8 +101,8 @@ public class cmdNext implements Command {
             event.getTextChannel().sendMessage("Dieser Zeitpunkt liegt in der Vergangenheit!").queue();
             return;
         }
-        STATIC.NextTournament = next;
-        OffsetDateTime tn = STATIC.NextTournament;
+        STATIC.setNextTournament(event.getGuild(),next);
+        OffsetDateTime tn = next;
         String out ="Das nächste Turnier findet am "+digitadd(tn.getDayOfMonth(),2)+". "+digitadd(tn.getMonthValue(),2)+". "+tn.getYear()+" gegen "+digitadd(tn.getHour(),2)+":"+digitadd(tn.getMinute(),2)+" Uhr statt!";
         event.getTextChannel().sendMessage(out).queue();
     }

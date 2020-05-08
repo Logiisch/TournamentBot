@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 public class readyListener extends ListenerAdapter {
 
     public void onReady(@Nonnull ReadyEvent event) {
-       if(STATIC.loadNotIncluded()) {
+       if(Logic.loadNotIncluded()) {
            System.out.println("notIncluded geladen!");
        } else {
            System.out.println("notIncluded konnte nicht geladen werden!");
@@ -22,5 +22,6 @@ public class readyListener extends ListenerAdapter {
             System.out.println("Nodes konnte nicht geladen werden!");
         }
         cmdUpdateStatus.load();
+        STATIC.loadSettings();
     }
 }

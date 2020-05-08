@@ -1,6 +1,7 @@
 package commands;
 
 import helperCore.Logic;
+import helperCore.PermissionLevel;
 import listeners.commandListener;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -16,9 +17,14 @@ public class cmdSet implements Command {
     }
 
     @Override
+    public PermissionLevel PermLevel() {
+        return PermissionLevel.HELPER;
+    }
+
+    @Override
     public void action(String[] args, MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
-        Role helper = event.getGuild().getRoleById(STATIC.ROLE_HELPER);
+        Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
             event.getTextChannel().sendMessage("Das kann nur ein Helfer machen!").queue();
             return;

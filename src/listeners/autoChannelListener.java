@@ -40,7 +40,7 @@ public class autoChannelListener extends ListenerAdapter {
             vc.getGuild().moveVoiceMember(m,vcnew).queue();
             VC_AUTOCHANNEL_CHILDS.add(vcnew.getId());
         } catch (Exception e) {
-            Objects.requireNonNull(vc.getGuild().getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage("Aufgrund eines Fehlers konnte kein AutoChannel erstellt werden: "+e.getMessage()).queue();
+            Objects.requireNonNull(vc.getGuild().getTextChannelById(STATIC.getSettings(vc.getGuild(),"CHANNEL_ALLGEMEIN"))).sendMessage("Aufgrund eines Fehlers konnte kein AutoChannel erstellt werden: "+e.getMessage()).queue();
             e.printStackTrace();
         }
 
@@ -51,7 +51,7 @@ public class autoChannelListener extends ListenerAdapter {
             VC_AUTOCHANNEL_CHILDS.remove(vc.getId());
             if (vc.getMembers().isEmpty()) vc.delete().reason("AutoChannel remove").queue();
         } catch (Exception e) {
-            Objects.requireNonNull(vc.getGuild().getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage("Aufgrund eines Fehlers konnte ein AutoChannel nicht gelöscht werden: "+e.getMessage()).queue();
+            Objects.requireNonNull(vc.getGuild().getTextChannelById(STATIC.getSettings(vc.getGuild(),"CHANNEL_ALLGEMEIN"))).sendMessage("Aufgrund eines Fehlers konnte ein AutoChannel nicht gelöscht werden: "+e.getMessage()).queue();
             e.printStackTrace();
         }
     }

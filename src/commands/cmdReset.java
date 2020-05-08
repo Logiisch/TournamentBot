@@ -1,6 +1,7 @@
 package commands;
 
 import helperCore.Logic;
+import helperCore.PermissionLevel;
 import listeners.ConfirmReactListener;
 import listeners.commandListener;
 import net.dv8tion.jda.api.entities.*;
@@ -18,9 +19,14 @@ public class cmdReset implements Command {
     }
 
     @Override
+    public PermissionLevel PermLevel() {
+        return PermissionLevel.ADMIN;
+    }
+
+    @Override
     public void action(String[] args, MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
-        Role admin = event.getGuild().getRoleById(STATIC.ROLE_ADMIN);
+        Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));;
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
             event.getTextChannel().sendMessage("Das kann nur ein Admin machen!").queue();
             return;
@@ -38,7 +44,7 @@ public class cmdReset implements Command {
         File f = new File ("data/nodes.txt");
         if (f.exists()) //noinspection ResultOfMethodCallIgnored
             f.delete();
-        TextChannel tc =event.getGuild().getTextChannelById(STATIC.CHANNEL_RESULTS);
+        TextChannel tc =event.getGuild().getTextChannelById(STATIC.getSettings(event.getGuild(),"CHANNEL_RESULTS"));
         assert tc != null;
         try {
             tc.deleteMessages(tc.getHistoryFromBeginning(100).complete().getRetrievedHistory()).queue();
@@ -76,13 +82,13 @@ public class cmdReset implements Command {
 
     private void removeRoles(Member m) {
         ArrayList<Role> roles = new ArrayList<>();
-        roles.add(m.getGuild().getRoleById(STATIC.ROLE_TOT));
-        roles.add(m.getGuild().getRoleById(STATIC.ROLE_FINALE));
-        roles.add(m.getGuild().getRoleById(STATIC.ROLE_HALBFINALE));
-        roles.add(m.getGuild().getRoleById(STATIC.ROLE_VIERTELFINALE));
-        roles.add(m.getGuild().getRoleById(STATIC.ROLE_ACHTELFINALE));
-        roles.add(m.getGuild().getRoleById(STATIC.ROLE_VORRUNDE2));
-        roles.add(m.getGuild().getRoleById(STATIC.ROLE_VORRUNDE1));
+        roles.add(m.getGuild().getRoleById(STATIC.getSettings(m.getGuild().getId(),"ROLE_TOT")));
+        roles.add(m.getGuild().getRoleById(STATIC.getSettings(m.getGuild().getId(),"ROLE_FINALE")));
+        roles.add(m.getGuild().getRoleById(STATIC.getSettings(m.getGuild().getId(),"ROLE_HALBFINALE")));
+        roles.add(m.getGuild().getRoleById(STATIC.getSettings(m.getGuild().getId(),"ROLE_VIERTELFINALE")));
+        roles.add(m.getGuild().getRoleById(STATIC.getSettings(m.getGuild().getId(),"ROLE_ACHTELFINALE")));
+        roles.add(m.getGuild().getRoleById(STATIC.getSettings(m.getGuild().getId(),"ROLE_VORRUNDE2")));
+        roles.add(m.getGuild().getRoleById(STATIC.getSettings(m.getGuild().getId(),"ROLE_VORRUNDE1")));
         for (Role r:roles) {
             //if (m.getRoles().contains(r))
                 m.getGuild().removeRoleFromMember(m,r).queue();

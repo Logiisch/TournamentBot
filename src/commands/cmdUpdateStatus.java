@@ -1,9 +1,11 @@
 package commands;
 
+import helperCore.PermissionLevel;
 import helperCore.SimpleString;
 import listeners.commandListener;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
@@ -24,10 +26,15 @@ public class cmdUpdateStatus implements Command {
     }
 
     @Override
+    public PermissionLevel PermLevel() {
+        return PermissionLevel.BOTOWNER;
+    }
+
+    @Override
     public void action(String[] args, MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
-        Role admin = event.getGuild().getRoleById(STATIC.ROLE_HELPER);
-        if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
+        Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
+        if (!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
             event.getTextChannel().sendMessage("Das kann nur ein Helfer machen").queue();
             return;
         }
@@ -94,7 +101,7 @@ public class cmdUpdateStatus implements Command {
         }
         if (args[1].equalsIgnoreCase("static")) {
             statusCycleThread.cycle = false;
-            event.getJDA().getPresence().setActivity(statusCycleThread.getActivity(statusCycleThread.replaceString(statusCycleThread.cycleList.get(0))));
+            event.getJDA().getPresence().setActivity(statusCycleThread.getActivity(statusCycleThread.replaceString(statusCycleThread.cycleList.get(0),event.getGuild())));
             STATIC.ACTIVITY = statusCycleThread.cycleList.get(0);
             statusCycleThread.cycleList.clear();
             event.getTextChannel().sendMessage("Na gut, bin ich eben jetzt ruhiger...").queue();
@@ -129,7 +136,7 @@ public class cmdUpdateStatus implements Command {
             event.getTextChannel().sendMessage("Dann lasse ich jetzt das im Kreis laufen!").queue();
         } else {
             STATIC.ACTIVITY = out.toString();
-            event.getJDA().getPresence().setActivity(statusCycleThread.getActivity(statusCycleThread.replaceString(STATIC.ACTIVITY)));
+            event.getJDA().getPresence().setActivity(statusCycleThread.getActivity(statusCycleThread.replaceString(STATIC.ACTIVITY,event.getGuild())));
             event.getTextChannel().sendMessage("Na gut, überredet!").queue();
         }
     }
@@ -205,7 +212,7 @@ public class cmdUpdateStatus implements Command {
                     return;
         }
         if (!statusCycleThread.cycle) {
-            event.getJDA().getPresence().setActivity(statusCycleThread.getActivity(statusCycleThread.replaceString(STATIC.ACTIVITY)));
+            event.getJDA().getPresence().setActivity(statusCycleThread.getActivity(statusCycleThread.replaceString(STATIC.ACTIVITY,event.getGuild())));
         }
         event.getTextChannel().sendMessage("Ab und zu muss man ja auch mal was anderes machen..").queue();
 
@@ -227,8 +234,8 @@ public class cmdUpdateStatus implements Command {
     public static void load() {
         SimpleString seksToTourn = new SimpleString() {
             @Override
-            public String getString() {
-                OffsetDateTime nT = STATIC.NextTournament;
+            public String getString(Guild g) {
+                OffsetDateTime nT = STATIC.getNextTournament(g);
                 OffsetDateTime now = OffsetDateTime.now();
                 long secs =now.until(nT, ChronoUnit.SECONDS);
                 return secs + "";
@@ -237,8 +244,8 @@ public class cmdUpdateStatus implements Command {
         statusCycleThread.replacements.put("%SEKUNDEN%",seksToTourn);
         SimpleString minundsek = new SimpleString() {
             @Override
-            public String getString() {
-                OffsetDateTime nT = STATIC.NextTournament;
+            public String getString(Guild g) {
+                OffsetDateTime nT = STATIC.getNextTournament(g);
                 OffsetDateTime now = OffsetDateTime.now();
                 if(nT.isBefore(now)) return "wenige Sekunden";
                 long secs =now.until(nT, ChronoUnit.SECONDS);
@@ -250,8 +257,8 @@ public class cmdUpdateStatus implements Command {
         statusCycleThread.replacements.put("%SECSANDMINS%",minundsek);
         SimpleString hoursundminundsek = new SimpleString() {
             @Override
-            public String getString() {
-                OffsetDateTime nT = STATIC.NextTournament;
+            public String getString(Guild g) {
+                OffsetDateTime nT = STATIC.getNextTournament(g);
                 OffsetDateTime now = OffsetDateTime.now();
                 if(nT.isBefore(now)) return "wenige Sekunden";
                 long secs =now.until(nT, ChronoUnit.SECONDS);
@@ -266,8 +273,8 @@ public class cmdUpdateStatus implements Command {
 
         SimpleString hoursundminundseksundtage = new SimpleString() {
             @Override
-            public String getString() {
-                OffsetDateTime nT = STATIC.NextTournament;
+            public String getString(Guild g) {
+                OffsetDateTime nT = STATIC.getNextTournament(g);
                 OffsetDateTime now = OffsetDateTime.now();
                 if(!nT.isAfter(now)) return "wenige Sekunden";
                 long secs =now.until(nT, ChronoUnit.SECONDS);

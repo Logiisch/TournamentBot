@@ -1,5 +1,6 @@
 package commands;
 
+import helperCore.PermissionLevel;
 import listeners.commandListener;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -14,9 +15,14 @@ public class cmdPrefix implements Command {
     }
 
     @Override
+    public PermissionLevel PermLevel() {
+        return PermissionLevel.ADMIN;
+    }
+
+    @Override
     public void action(String[] args, MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
-        Role helper = event.getGuild().getRoleById(STATIC.ROLE_HELPER);
+        Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
             event.getTextChannel().sendMessage("Das kann nur ein Helfer machen!").queue();
             return;
@@ -34,8 +40,8 @@ public class cmdPrefix implements Command {
             return;
 
         }
-        STATIC.changePrefix(args[0].toLowerCase());
-        event.getTextChannel().sendMessage("Prefix erfogreich zu "+STATIC.PREFIX+" geändert!").queue();
+        STATIC.setSettings(event.getGuild().getId(),"PREFIX",args[0]);
+        event.getTextChannel().sendMessage("Prefix erfogreich zu "+STATIC.getSettings(event.getGuild().getId(),"PREFIX")+" geändert!").queue();
     }
 
     @Override

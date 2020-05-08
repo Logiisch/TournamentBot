@@ -1,9 +1,15 @@
 package core;
 
 import commands.Command;
+import helperCore.PermissionLevel;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import util.STATIC;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
 
 //import commands.cmdServerSettings;
 
@@ -20,6 +26,19 @@ public class commandHandler {
                     cmd.event.getTextChannel().sendMessage("Dieser Befehl ist auf dem Server deaktiviert!").queue();
                     return;
                 }
+                if (!STATIC.canStartTournament(cmd.event.getGuild())) {
+                    if (!cmd.invoke.equalsIgnoreCase("setup")) {
+                        cmd.event.getTextChannel().sendMessage("Please set up the bot using `t!setup` first!").queue();
+                        return;
+                    }
+                }
+
+                PermissionLevel perm = commands.get(cmd.invoke).PermLevel();
+                if (!hasPermission(perm,cmd.event)) {
+                    cmd.event.getTextChannel().sendMessage("Dazu hast du keinerlei Berechtigungen! Benötigte Berechtigung: "+perm.name()).queue();
+                    return;
+                }
+
             }
             /*if (!cmdServerSettings.allowedToUseCmd(cmd.invoke,cmd.event.getGuild(),cmd.event.getAuthor())&&!cmd.event.getAuthor().getId().equalsIgnoreCase("318457868917407745")) {
                 cmd.event.getTextChannel().sendMessage("Du hast keine Berechtigungen, diesen Befehl zu nutzen!").queue();
@@ -37,6 +56,16 @@ public class commandHandler {
 
         }
 
+    }
+    private static boolean hasPermission(PermissionLevel pm, MessageReceivedEvent event)  {
+        if (event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) return true;
+        if (pm.equals(PermissionLevel.BOTOWNER)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) return false;
+        if (pm.equals(PermissionLevel.GUILDOWNER)&&!event.getAuthor().getId().equalsIgnoreCase(Objects.requireNonNull(event.getGuild().getOwner()).getUser().getId())) return false;
+        Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
+        if (pm.equals(PermissionLevel.HELPER)&&!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)) return false;
+        Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));
+        if (pm.equals(PermissionLevel.HELPER)&&!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)) return false;
+        return true;
     }
 
 }

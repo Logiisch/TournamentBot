@@ -1,6 +1,7 @@
 package commands;
 
 import helperCore.Logic;
+import helperCore.PermissionLevel;
 import helperCore.TournamentNode;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -52,6 +53,11 @@ public class cmdBracket implements Command {
     @Override
     public boolean isPrivate() {
         return false;
+    }
+
+    @Override
+    public PermissionLevel PermLevel() {
+        return PermissionLevel.EVERYONE;
     }
 
     @Override

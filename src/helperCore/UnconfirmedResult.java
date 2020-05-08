@@ -50,7 +50,7 @@ public class UnconfirmedResult {
                 e.printStackTrace();
             }
             msg.append(": ").append(e.getMessage());
-            Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage(msg.toString()).queue();
+            g.getTextChannelById(STATIC.getSettings(g, "CHANNEL_ALLGEMEIN")).sendMessage(msg.toString()).queue();
 
         }
 
@@ -69,7 +69,7 @@ public class UnconfirmedResult {
             }
         }
         try {
-            Role r = g.getRoleById(STATIC.ROLE_HELPER);
+            Role r = g.getRoleById(STATIC.getSettings(g,"ROLE_HELPER"));
             assert r != null;
             msg.append(r.getAsMention()).append(" ");
 
@@ -77,7 +77,7 @@ public class UnconfirmedResult {
             msg.append(Objects.requireNonNull(g.getJDA().getUserById(STATIC.OWNERID)).getName()).append(" ");
         }
         msg.append(": Es gibt Probleme bei der Abstimmung. Bitte schlichten! Dann mit `t!set [User als @Erwähnung] [winner/looser]` korrigieren!");
-        Objects.requireNonNull(g.getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage(msg.toString()).queue();
+        Objects.requireNonNull(g.getTextChannelById(STATIC.getSettings(g, "CHANNEL_ALLGEMEIN"))).sendMessage(msg.toString()).queue();
     }
 
 

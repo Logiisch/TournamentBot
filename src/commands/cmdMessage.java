@@ -1,5 +1,7 @@
 package commands;
 
+import helperCore.Logic;
+import helperCore.PermissionLevel;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -15,15 +17,20 @@ public class cmdMessage implements Command {
     }
 
     @Override
+    public PermissionLevel PermLevel() {
+        return PermissionLevel.ADMIN;
+    }
+
+    @Override
     public void action(String[] args, MessageReceivedEvent event) {
-        Role helper = event.getGuild().getRoleById(STATIC.ROLE_ADMIN);
-        if (!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
+        Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));
+        if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
             event.getTextChannel().sendMessage("Das kann nur ein Admin machen!").queue();
             return;
         }
         ArrayList<Member> member = new ArrayList<>();
          for (Member m:event.getGuild().getMembers()) {
-             if (STATIC.getNotIncluded().contains(m.getUser().getId())) continue;
+             if (Logic.getNotIncluded().contains(m.getUser().getId())) continue;
              if (m.getUser().isBot()) continue;
              member.add(m);
          }
@@ -45,7 +52,7 @@ public class cmdMessage implements Command {
          for (Member m: notReachable) {
              membs.append(m.getAsMention()).append("\n");
          }
-         Objects.requireNonNull(event.getGuild().getTextChannelById(STATIC.CHANNEL_ALLGEMEIN)).sendMessage(membs+"\n"+Message).queue();
+         Objects.requireNonNull(event.getGuild().getTextChannelById(STATIC.getSettings(event.getGuild(),"CHANNEL_ALLGEMEIN"))).sendMessage(membs+"\n"+Message).queue();
          event.getTextChannel().sendMessage("Die Message wurde an alle Teilnehmer zugestellt!").queue();
 
     }

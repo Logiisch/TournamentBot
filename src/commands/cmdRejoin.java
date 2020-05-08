@@ -1,6 +1,7 @@
 package commands;
 
 import helperCore.Logic;
+import helperCore.PermissionLevel;
 import listeners.commandListener;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -16,9 +17,14 @@ public class cmdRejoin implements Command {
     }
 
     @Override
+    public PermissionLevel PermLevel() {
+        return PermissionLevel.ADMIN;
+    }
+
+    @Override
     public void action(String[] args, MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
-        Role admin = event.getGuild().getRoleById(STATIC.ROLE_ADMIN);
+        Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
             event.getTextChannel().sendMessage("Das kann nur ein Admin machen!").queue();
             return;
@@ -32,7 +38,7 @@ public class cmdRejoin implements Command {
             return;
         }
         if (args[0].equalsIgnoreCase("all")) {
-            STATIC.rejoinAll();
+            Logic.rejoinAll();
             event.getTextChannel().sendMessage("Alle User dürfen nun wieder mitspielen!").queue();
             return;
         }
@@ -41,7 +47,7 @@ public class cmdRejoin implements Command {
             return;
         }
         for (User u: event.getMessage().getMentionedUsers()) {
-            STATIC.rejoinUser(u);
+            Logic.rejoinUser(u);
         }
         event.getTextChannel().sendMessage("Es dürfen/darf nun "+event.getMessage().getMentionedUsers().size()+" Spieler wieder mitspielen!").queue();
     }

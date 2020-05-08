@@ -72,6 +72,7 @@ public class Main {
         commandHandler.commands.put("bracket", new cmdBracket());
         commandHandler.commands.put("final", new cmdFinalDisplay());
         commandHandler.commands.put("autochannel", new cmdAutoChannel());
+        commandHandler.commands.put("setup", new cmdSetup());
 
     }
 
