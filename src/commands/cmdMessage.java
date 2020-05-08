@@ -1,7 +1,9 @@
 package commands;
 
+import helperCore.LangManager;
 import helperCore.Logic;
 import helperCore.PermissionLevel;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -25,7 +27,7 @@ public class cmdMessage implements Command {
     public void action(String[] args, MessageReceivedEvent event) {
         Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
-            event.getTextChannel().sendMessage("Das kann nur ein Admin machen!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralOnlyAdmin")).queue();
             return;
         }
         ArrayList<Member> member = new ArrayList<>();
@@ -53,7 +55,7 @@ public class cmdMessage implements Command {
              membs.append(m.getAsMention()).append("\n");
          }
          Objects.requireNonNull(event.getGuild().getTextChannelById(STATIC.getSettings(event.getGuild(),"CHANNEL_ALLGEMEIN"))).sendMessage(membs+"\n"+Message).queue();
-         event.getTextChannel().sendMessage("Die Message wurde an alle Teilnehmer zugestellt!").queue();
+         event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdMessageSuccess")).queue();
 
     }
 
@@ -73,7 +75,7 @@ public class cmdMessage implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Sende eine Nachricht an alle Teilnehmer!";
+    public String Def(String prefix, Guild g) {
+        return LangManager.get(g,"cmdMessageDef");
     }
 }

@@ -1,8 +1,10 @@
 package commands;
 
+import helperCore.LangManager;
 import helperCore.Logic;
 import helperCore.PermissionLevel;
 import listeners.commandListener;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -26,36 +28,36 @@ public class cmdSet implements Command {
         String prefix = commandListener.getPrefix(event.getGuild());
         Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
-            event.getTextChannel().sendMessage("Das kann nur ein Helfer machen!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralOnlyHelper")).queue();
             return;
         }
         if (Logic.nodes.size()==0) {
-            event.getTextChannel().sendMessage("Immer ruhig. Das Turnier hat noch nicht einmal begonnen!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralDidntStartYet")).queue();
             return;
         }
         if (args.length<1||(event.getMessage().getMentionedUsers().size()==0)&&event.getMessage().getMentionedMembers().size()==0) {
-            event.getTextChannel().sendMessage("Usage: `"+prefix+"set [User als @Erwähnung] [winner/looser]`").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdSetUsage").replace("%PREFIX%",prefix)).queue();
             return;
         }
         if (event.getMessage().getContentDisplay().contains("loser")&&event.getMessage().getContentDisplay().contains("winner")) {
-            event.getTextChannel().sendMessage("Du musst dich schon zwischen looser oder winner entscheiden!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdSetNoWinnerLoser")).queue();
             return;
         }
         if (event.getMessage().getMentionedUsers().size()!=1) {
-            event.getTextChannel().sendMessage("Du musst dich schon für genau einen User entscheiden!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdSetNoUser")).queue();
             return;
         }
         User u = event.getMessage().getMentionedUsers().get(0);
 
         if (event.getMessage().getContentDisplay().contains("winner")) {
             if(u.getId().equalsIgnoreCase(event.getAuthor().getId())) {
-                event.getTextChannel().sendMessage("Sir-Mastermind-Sperre: Bitte lasse das von einem anderen Helfer eintragen :)").queue();
+                event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdSetSMMS")).queue();
                 return;
             }
 
             try {
                 Logic.logresult(u,true,event.getGuild());
-                event.getTextChannel().sendMessage("Erfolgreich Gewinner festgelgt!!").queue();
+                event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdSetSuccessWinner")).queue();
             } catch (Exception e) {
                 event.getTextChannel().sendMessage("Scheinbar ist ein Fehler aufgetreten\n"+e.getMessage()).queue();
                 e.printStackTrace();
@@ -65,14 +67,14 @@ public class cmdSet implements Command {
         if (event.getMessage().getContentDisplay().contains("loser")) {
             try {
                 Logic.logresult(u,false,event.getGuild());
-                event.getTextChannel().sendMessage("Erfolgreich Verlierer festgelgt!!").queue();
+                event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdSetSuccessLoser")).queue();
             } catch (Exception e) {
-                event.getTextChannel().sendMessage("Scheinbar ist ein Fehler aufgetreten\n"+e.getMessage()).queue();
+                event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdSetError").replace("%MSG%",e.getMessage())).queue();
                 //e.printStackTrace();
             }
             return;
         }
-        event.getTextChannel().sendMessage("Du musst mir schon sagen, ob der Spieler verloren oder gewonnen hat...").queue();
+        event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdSetNoWinnerLoser")).queue();
     }
 
     @Override
@@ -91,7 +93,7 @@ public class cmdSet implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Setze das Ergebnis eines noch nicht eingetragenen Matches!";
+    public String Def(String prefix, Guild g) {
+        return LangManager.get(g,"cmdSetDef");
     }
 }

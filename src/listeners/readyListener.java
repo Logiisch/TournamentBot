@@ -1,6 +1,7 @@
 package listeners;
 
 import commands.cmdUpdateStatus;
+import helperCore.LangManager;
 import helperCore.Logic;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -23,5 +24,6 @@ public class readyListener extends ListenerAdapter {
         }
         cmdUpdateStatus.load();
         STATIC.loadSettings();
+        LangManager.load();
     }
 }

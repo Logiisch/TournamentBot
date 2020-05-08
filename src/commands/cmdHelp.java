@@ -1,8 +1,10 @@
 package commands;
 
 import core.commandHandler;
+import helperCore.LangManager;
 import listeners.commandListener;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.*;
@@ -18,15 +20,15 @@ public class cmdHelp implements Command {
     @Override
     public void action(String[] args, MessageReceivedEvent event)  {
         String prefix = commandListener.getPrefix(event.getGuild());
-        EmbedBuilder eb = new EmbedBuilder().setColor(getRandomColor()).setTitle("Turnierhilfe");
+        EmbedBuilder eb = new EmbedBuilder().setColor(getRandomColor()).setTitle(LangManager.get(event.getGuild(),"cmdHelpTitle"));
         for (String s: commandHandler.commands.keySet()) {
             Command cmd = commandHandler.commands.get(s);
             if (cmd.isPrivate())continue;
-            String def = cmd.Def(prefix);
-            if (def==null) def = "<Keine Beschreibung verfügbar!>";
+            String def = cmd.Def(prefix,event.getGuild());
+            if (def==null) def = LangManager.get(event.getGuild(),"cmdHelpNoDef");
             eb.addField(s,def,false);
         }
-        eb.setFooter("Angefordert von "+ Objects.requireNonNull(event.getMember()).getEffectiveName());
+        eb.setFooter(LangManager.get(event.getGuild(),"cmdHelpFooter").replace("%NAME%",Objects.requireNonNull(event.getMember()).getEffectiveName()));
         event.getTextChannel().sendMessage(eb.build()).queue();
     }
 
@@ -46,8 +48,8 @@ public class cmdHelp implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Erhalte Hilfe zu allen Befehlen.";
+    public String Def(String prefix, Guild g) {
+        return LangManager.get(g,"cmdHelpDef");
     }
 
     private Color getRandomColor() {

@@ -1,7 +1,9 @@
 .idea/
-*.txt
-data/
+Tokens_Discord_Bot.txt
+cmdLog.txt
+data/guilds/
 META-INF/*
 out/*
 *.iml
 *.jpg
+notInc.txt

@@ -1,17 +1,17 @@
 package commands;
 
+import helperCore.LangManager;
 import helperCore.Logic;
 import helperCore.PermissionLevel;
 import helperCore.TournamentNode;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.AttachmentOption;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 public class cmdBracket implements Command {
     private static final int FontsizeSmall = 26;
@@ -26,14 +26,14 @@ public class cmdBracket implements Command {
     @Override
     public void action(String[] args, MessageReceivedEvent event) {
         if (Logic.nodes.isEmpty()) {
-            event.getTextChannel().sendMessage("Das Turnier hat noch nicht mal angefangen...").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralDidntStartYet")).queue();
             return;
         }
-        event.getTextChannel().sendMessage("Die Bracket wird erstellt. Dies kann ein paar Sekunden dauern...").queue();
+        event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdBracketSuccess")).queue();
         try {
-            drawImage(event.getAuthor());
+            drawImage(event.getAuthor(),event.getGuild());
         } catch (Exception e) {
-            event.getTextChannel().sendMessage("Anscheinend ist ein Fehler aufgetreten! \n"+e.getMessage()).queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdBracketFailure").replace("%MSG%",e.getMessage())).queue();
             e.printStackTrace();
             return;
         }
@@ -61,10 +61,10 @@ public class cmdBracket implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Schau dir die Bracket an. Fett sind die Rundengewinner, blau bist du!";
+    public String Def(String prefix, Guild g) {
+        return LangManager.get(g,"cmdBracketDef");
     }
-    public static void drawImage(User author) throws Exception{
+    public static void drawImage(User author,Guild gl) throws Exception{
         String org = "original.jpg";
         File original = new File(org);
         File workingVersion = new File(path);
@@ -78,7 +78,7 @@ public class cmdBracket implements Command {
         g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));
         for (int nid:Logic.nodes.keySet()) {
             TournamentNode tn = Logic.nodes.get(nid);
-            draw(tn, author, g);
+            draw(tn, author, g,gl);
         }
 
 
@@ -86,29 +86,29 @@ public class cmdBracket implements Command {
 
 
     }
-    private static void draw(TournamentNode tn, User u, Graphics2D g) {
+    private static void draw(TournamentNode tn, User u, Graphics2D g,Guild gl) {
         int brcktnd = tn.getBracketNbr();
         if (tn.winner!=null) {
             if (tn.winner.getId().equalsIgnoreCase(u.getId())) g.setPaint(Color.blue); else g.setPaint(Color.black);
             if (Logic.nodes.containsKey(tn.promoteToNID)) if (Logic.nodes.get(tn.promoteToNID).winner==null ) g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall)); else if (Logic.nodes.get(tn.promoteToNID).winner.getId().equalsIgnoreCase(tn.winner.getId())) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeSmall)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));
             if (tn.getBracketNbr()>64) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeMedium));
             if (tn.getBracketNbr()==127) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeBig));
-            g.drawString(bracketify(tn.winner),getx(brcktnd),gety(brcktnd));
+            g.drawString(bracketify(tn.winner,gl),getx(brcktnd),gety(brcktnd));
         }
         if(!tn.getBracketSub().isEmpty()) {
             if (tn.players.get(0) == null) System.out.println("Bei "+tn.NID+" ist player[0] null");
             if (tn.players.get(0).getId().equalsIgnoreCase(u.getId())) g.setPaint(Color.blue); else g.setPaint(Color.black);
            if (tn.winner!=null) if (tn.winner.getId().equalsIgnoreCase(tn.players.get(0).getId())) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeSmall)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));
-            g.drawString(bracketify(tn.players.get(0)),getx(tn.getBracketSub().get(0)),gety(tn.getBracketSub().get(0)));
+            g.drawString(bracketify(tn.players.get(0),gl),getx(tn.getBracketSub().get(0)),gety(tn.getBracketSub().get(0)));
             if (tn.players.get(1) !=null) if (tn.players.get(1).getId().equalsIgnoreCase(u.getId())) g.setPaint(Color.blue); else g.setPaint(Color.black);else g.setPaint(Color.black);
             if (tn.winner!=null&&tn.players.get(1)!=null) if (tn.winner.getId().equalsIgnoreCase(tn.players.get(1).getId())) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeSmall)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));
-            g.drawString(bracketify(tn.players.get(1)),getx(tn.getBracketSub().get(1)),gety(tn.getBracketSub().get(1)));
+            g.drawString(bracketify(tn.players.get(1),gl),getx(tn.getBracketSub().get(1)),gety(tn.getBracketSub().get(1)));
         }
 
     }
-    private static String bracketify(User u) {
-        if (u==null) return "[Freier Platz]";
-        if (u.getId().equalsIgnoreCase(u.getJDA().getSelfUser().getId())) return "[Freier Platz]";
+    private static String bracketify(User u,Guild g) {
+        if (u==null) return "["+LangManager.get(g,"cmdBracketEmptySpace")+"]";
+        if (u.getId().equalsIgnoreCase(u.getJDA().getSelfUser().getId())) return "["+LangManager.get(g,"cmdBracketEmptySpace")+"]";
         String un = u.getName();
         if (un.length()>11) {
             un = un.substring(0,8)+"...";

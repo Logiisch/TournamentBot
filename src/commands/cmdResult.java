@@ -1,7 +1,9 @@
 package commands;
 
+import helperCore.LangManager;
 import helperCore.Logic;
 import listeners.commandListener;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Objects;
@@ -18,11 +20,11 @@ public class cmdResult implements Command {
     public void action(String[] args, MessageReceivedEvent event)  {
         String prefix = commandListener.getPrefix(event.getGuild());
         if (Logic.nodes.size()==0) {
-            event.getTextChannel().sendMessage("Immer ruhig. Das Turnier hat noch nicht einmal begonnen!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralDidntStartYet")).queue();
             return;
         }
         if (args.length<1) {
-            event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": Bitte gib an, ob du gewonnen (`"+ prefix+"res [w/win/g/gewonnen]`) oder verloren (`"+prefix+"res [l/lose/v/verloren]`) hast!").queue();
+            event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": "+LangManager.get(event.getGuild(),"cmdResultUsage").replace("%PREFIX%",prefix)).queue();
             return;
         }
         boolean found = false;
@@ -60,7 +62,7 @@ public class cmdResult implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Trage das Ergebnis eines Matches ein. Nutze \""+prefix+"res win\", wenn du gewonnen hast oder \""+prefix+"res lose\", wenn du verloren hast!";
+    public String Def(String prefix, Guild g) {
+        return LangManager.get(g,"cmdResultDef").replace("%PREFIX%",prefix);
     }
 }

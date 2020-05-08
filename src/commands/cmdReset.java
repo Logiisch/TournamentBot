@@ -1,5 +1,6 @@
 package commands;
 
+import helperCore.LangManager;
 import helperCore.Logic;
 import helperCore.PermissionLevel;
 import listeners.ConfirmReactListener;
@@ -28,15 +29,15 @@ public class cmdReset implements Command {
         String prefix = commandListener.getPrefix(event.getGuild());
         Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));;
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
-            event.getTextChannel().sendMessage("Das kann nur ein Admin machen!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralOnlyAdmin")).queue();
             return;
         }
         if (args.length<1) {
-            event.getTextChannel().sendMessage("Nutze zum Bestätigen `"+prefix+"delete confirm`! Achtung: Wenn du das Ergebnis noch speichern willst, solltest du das vorher tun!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdResetConfirm").replace("%PREFIX",prefix)).queue();
             return;
         }
         if(!args[0].equalsIgnoreCase("confirm")) {
-            event.getTextChannel().sendMessage("Nutze zum Bestätigen `"+prefix+"delete confirm`").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdresetConfirm").replace("%PREFIX",prefix)).queue();
             return;
         }
         Logic.nodes.clear();
@@ -49,15 +50,15 @@ public class cmdReset implements Command {
         try {
             tc.deleteMessages(tc.getHistoryFromBeginning(100).complete().getRetrievedHistory()).queue();
         } catch (Exception e) {
-            event.getTextChannel().sendMessage("Anscheinend gab es beim Löschen der Nachrichten einen Fehler: "+e.getMessage()).queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdResetError").replace("%MSG%",e.getMessage())).queue();
         }
-        event.getTextChannel().sendMessage("Es werden nun noch die Chatverläufe der Privathchats geleert. Dies kann einen Moment dauern. Bitte starte in der zeit noch kein Turnier, da sonst das Risiko besteht, dass neue Nachrichten gelöscht werden").queue();
+        event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdResetMsgClear")).queue();
         for (Member m:event.getGuild().getMembers()) {
             removeRoles(m);
             removeMemberConversation(m);
         }
 
-        event.getTextChannel().sendMessage("Das Turnier wurde erfolgreich gelöscht. Starte es wieder mit `"+prefix+"start`!").queue();
+        event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdResetSuccess").replace("%PREFIX%",prefix)).queue();
     }
 
     @Override
@@ -76,8 +77,8 @@ public class cmdReset implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Setzte das Turnier zurück!";
+    public String Def(String prefix,Guild g) {
+        return LangManager.get(g,"cmdResetDef");
     }
 
     private void removeRoles(Member m) {

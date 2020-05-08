@@ -1,8 +1,10 @@
 package commands;
 
+import helperCore.LangManager;
 import helperCore.Logic;
 import helperCore.PermissionLevel;
 import listeners.commandListener;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -29,13 +31,13 @@ public class cmdKick implements Command{
         String prefix = commandListener.getPrefix(event.getGuild());
         Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
-            event.getTextChannel().sendMessage("Das kann nur ein Helfer machen").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralOnlyHelper")).queue();
             return;
         }
 
         if (args.length<1) {
 
-            event.getTextChannel().sendMessage("Usage: `"+prefix+"kick [Spieler als @Erwähnung/Anzahl zufälliger Nutzer]").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdKickUsage").replace("%PREFIX%",prefix)).queue();
             return;
         }
 
@@ -50,7 +52,7 @@ public class cmdKick implements Command{
             try {
                 tokick=Integer.parseInt(args[0]);
             } catch (Exception e) {
-                event.getTextChannel().sendMessage("Usage: `"+prefix+"kick [Spieler als @Erwähnung/Anzahl zufälliger Nutzer]`").queue();
+                event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdKickUsage").replace("%PREFIX%",prefix)).queue();
                 return;
             }
             while (tokick>0) {
@@ -71,7 +73,7 @@ public class cmdKick implements Command{
 
 
         }
-        StringBuilder out = new StringBuilder("Folgende(r) User wurde(n) gekickt:\n");
+        StringBuilder out = new StringBuilder(LangManager.get(event.getGuild(),"cmdKickSuccess")+"\n");
         for (User u: rem) {
             out.append(u.getName()).append("\n");
         }
@@ -95,7 +97,7 @@ public class cmdKick implements Command{
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Kicke User vom Turnier";
+    public String Def(String prefix, Guild g) {
+        return LangManager.get(g,"cmdKickDef");
     }
 }

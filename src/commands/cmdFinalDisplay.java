@@ -1,8 +1,10 @@
 package commands;
 
+import helperCore.LangManager;
 import helperCore.Logic;
 import helperCore.PermissionLevel;
 import helperCore.TournamentNode;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -29,19 +31,19 @@ public class cmdFinalDisplay implements Command {
     public void action(String[] args, MessageReceivedEvent event) {
         Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
-            event.getTextChannel().sendMessage("Das kann nur ein Admin machen!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralOnlyAdmin")).queue();
             return;
         }
         if (Logic.nodes.isEmpty()) {
-            event.getTextChannel().sendMessage("Das Turnier hat noch nicht gestartet!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralDidntStartYet")).queue();
             return;
         }
         if (Logic.nodes.get(1).winner==null) {
-            event.getTextChannel().sendMessage("Der Gewinner steht noch nicht fest!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdFinalNoWinnerYet")).queue();
             return;
         }
          if (event.getMessage().getMentionedChannels().isEmpty()) {
-             event.getTextChannel().sendMessage("Bitte gib einen Channel an, um das Endergebnis dort reinzusenden!!").queue();
+             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdFinalNoChannel")).queue();
              return;
          }
         User winner = Logic.nodes.get(1).winner;
@@ -56,14 +58,14 @@ public class cmdFinalDisplay implements Command {
         }
         users.remove(event.getJDA().getSelfUser().getId());
         try {
-            cmdBracket.drawImage(winner);
+            cmdBracket.drawImage(winner,event.getGuild());
         } catch (Exception e) {
-            event.getTextChannel().sendMessage("Leider trat beim versuch ein Fehler auf!"+e.getMessage()).queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdFinalFailure").replace("%MSG%",e.getMessage())).queue();
             e.printStackTrace();
             return;
         }
         OffsetDateTime now = OffsetDateTime.now();
-        String out = "Das Turnier vom "+now.getDayOfMonth()+". "+now.getMonthValue()+". "+now.getYear()+ " hat der Spieler "+wstring+" gewonnen. Insgesamt haben "+users.size()+" Spieler teilgenommen. Wir bedanken uns bei allen Spielern!";
+        String out = LangManager.get(event.getGuild(),"cmdFinalOut").replace("%DAY%",now.getDayOfMonth()+"").replace("%MONTH%",now.getMonth()+"").replace("%YEAR%",now.getYear()+"").replace("%WINNER%",wstring).replace("%COUNT%",users.size()+"");
         TextChannel sendto = event.getMessage().getMentionedChannels().get(0);
         sendto.sendMessage(out).queue();
         sendto.sendFile(new File("bracket.jpg")).queue();
@@ -86,7 +88,7 @@ public class cmdFinalDisplay implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return "sende das Endergebnis eines Turniers in einen Channel";
+    public String Def(String prefix, Guild g) {
+        return LangManager.get(g,"cmdFinalDef");
     }
 }

@@ -1,10 +1,10 @@
 package commands;
 
+import helperCore.LangManager;
 import helperCore.Logic;
 import listeners.commandListener;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import sun.util.calendar.LocalGregorianCalendar;
-import util.STATIC;
 
 public class cmdLeave implements Command{
     @Override
@@ -16,15 +16,15 @@ public class cmdLeave implements Command{
     public void action(String[] args, MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
         if(args.length<1) {
-            event.getTextChannel().sendMessage("Bitte bestätige mit `"+prefix+"leave confirm`, dass du das Turnier verlassen willst.Das kannst du nicht mehr rückgängig machen!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdLeaveConfirm").replace("%PREFIX%",prefix)).queue();
             return;
         }
         if (!args[0].equalsIgnoreCase("confirm")) {
-            event.getTextChannel().sendMessage("Bitte bestätige mit `"+prefix+"kick confirm`, dass du das Turnier verlassen willst.Das kannst du nicht mehr rückgängig machen!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdLeaveConfirm").replace("%PREFIX%",prefix)).queue();
             return;
         }
         Logic.kickUser(event.getAuthor(),event.getGuild());
-        event.getTextChannel().sendMessage("Du hast das Turnier verlassen!").queue();
+        event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdLeaveSuccess")).queue();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class cmdLeave implements Command{
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Verlasse das Turnier vorzeitig. Achtung: Unumkehrbar";
+    public String Def(String prefix, Guild g) {
+        return LangManager.get(g,"cmdLeaveDef");
     }
 }

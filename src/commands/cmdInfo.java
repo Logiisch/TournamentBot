@@ -1,11 +1,12 @@
 package commands;
 
+import helperCore.LangManager;
 import helperCore.Logic;
 import helperCore.TournamentNode;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import util.STATIC;
 
 import java.awt.*;
 
@@ -26,7 +27,7 @@ public class cmdInfo implements Command {
         }
         tn = Logic.getCurrentNode(u);
         if (tn==null) {
-            event.getTextChannel().sendMessage("Kein offenes Match gefunden!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralNoOpenMatch")).queue();
             return;
         }
         EmbedBuilder eb = new EmbedBuilder().setColor(Color.green);
@@ -41,9 +42,9 @@ public class cmdInfo implements Command {
             }
             geg = gegner.getName();
         } else {
-            geg = "Steht noch nicht fest!";
+            geg = LangManager.get(event.getGuild(),"cmdInfoNotSetYet");
         }
-        eb.addField("Aktueller Gegner",geg,false);
+        eb.addField(LangManager.get(event.getGuild(),"cmdInfoCurrent"),geg,false);
         event.getTextChannel().sendMessage(eb.build()).queue();
     }
 
@@ -63,7 +64,7 @@ public class cmdInfo implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Zeige deine Aktuelle Position und deinen aktuellen Gegner an";
+    public String Def(String prefix, Guild g) {
+        return LangManager.get(g,"cmdInfoDef");
     }
 }

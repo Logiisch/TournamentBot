@@ -1,8 +1,10 @@
 package commands;
 
+import helperCore.LangManager;
 import helperCore.Logic;
 import helperCore.PermissionLevel;
 import listeners.commandListener;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -26,27 +28,27 @@ public class cmdRevert implements Command {
         String prefix = commandListener.getPrefix(event.getGuild());
         Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
-            event.getTextChannel().sendMessage("Das kann nur ein Helfer machen!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralOnlyHelper")).queue();
             return;
         }
         if (args.length<1||event.getMessage().getMentionedUsers().size()==0) {
-            event.getTextChannel().sendMessage("Usage: `"+prefix+"revert [User als @Erwähnung]`").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdRevertUsage").replace("%PREFIX%",prefix)).queue();
             return;
         }
         if (event.getMessage().getMentionedUsers().size()>1) {
-            event.getTextChannel().sendMessage("Bitte immer nur für alle user einzeln durchführen!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdRevertSingleOnly")).queue();
             return;
         }
         User u = event.getMessage().getMentionedUsers().get(0);
         if (!event.getMessage().getContentDisplay().toLowerCase().contains("confirm")) {
-            event.getTextChannel().sendMessage("Bist du dir sicher, den User "+u.getName()+" eine Stufe zurück zu setzen? Dann wiederhole den Befehl bitte und füge `confirm` am Ende an!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdRevertConfim").replace("%NAME%",u.getName()).replace("%PREFIX%",prefix)).queue();
             return;
         }
         try {
             Logic.revert(u,event.getGuild());
-            event.getTextChannel().sendMessage("User erfolgreich zurückgesetzt!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdRevertSuccess")).queue();
         } catch (Exception e) {
-            event.getTextChannel().sendMessage("Anscheinend gab es beim Zurücksetzen eine Fehler "+e.getMessage()).queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdRevertError").replace("%MSG%",e.getMessage())).queue();
             e.printStackTrace();
         }
     }
@@ -67,7 +69,7 @@ public class cmdRevert implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Setze einen Spieler eine Stufe zurück!";
+    public String Def(String prefix, Guild g) {
+        return LangManager.get(g,"cmdRevertDef");
     }
 }

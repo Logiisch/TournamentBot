@@ -91,7 +91,7 @@ public class cmdUpdateStatus implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
+    public String Def(String prefix,Guild g) {
         return "Ändere meinen Status!";
     }
     private void modus(MessageReceivedEvent event, String[] args,String prefix){

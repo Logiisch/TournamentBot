@@ -73,6 +73,7 @@ public class Main {
         commandHandler.commands.put("final", new cmdFinalDisplay());
         commandHandler.commands.put("autochannel", new cmdAutoChannel());
         commandHandler.commands.put("setup", new cmdSetup());
+        commandHandler.commands.put("reload",new cmdReload());
 
     }
 

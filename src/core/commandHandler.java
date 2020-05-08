@@ -58,9 +58,9 @@ public class commandHandler {
 
     }
     private static boolean hasPermission(PermissionLevel pm, MessageReceivedEvent event)  {
+        if (pm.equals(PermissionLevel.GUILDOWNER)&&event.getAuthor().getId().equalsIgnoreCase(Objects.requireNonNull(event.getGuild().getOwner()).getUser().getId())) return true;
         if (event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) return true;
         if (pm.equals(PermissionLevel.BOTOWNER)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) return false;
-        if (pm.equals(PermissionLevel.GUILDOWNER)&&!event.getAuthor().getId().equalsIgnoreCase(Objects.requireNonNull(event.getGuild().getOwner()).getUser().getId())) return false;
         Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
         if (pm.equals(PermissionLevel.HELPER)&&!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)) return false;
         Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));

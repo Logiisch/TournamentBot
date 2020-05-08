@@ -1,0 +1,143 @@
+//IMPORTANT:
+//Lines starting with // are ignored and can be placed anywhere
+//This Document ist divided in paragraphs. Every paragraph starts with a head line.
+//Each head line starts with "-#". PLEASE DONT change anything at this line
+//You only need to translate the part after the #. PLEASE DONT change anything before the #!
+//Word in CAPS within percent sings like %THIS% are variabes. You can move them inside the line, but PLEASE DONT translate whats between the percent sings. Just move it to the position where ust needed in your language
+//If you need, for any reason, switch two lines, please make sure, they stay in the same paragraph
+//If you done translating, please rename the file to [LANG].txt and replace the [LANG] wit the two or three letter long representation of you language (Ex. "ENG.txt" for english or "FR.txt" for france)
+//Please send it to Logii#6557 (Discord) or translate@logii.de (E-Mail). Thanks you!
+
+
+
+
+-#cmdGeneral
+-OnlyHelper#Das kann nur ein Helfer machen!
+-OnlyAdmin#Das kann nur ein Admin machen!
+-DidntStartYet#Das Turnier hat noch nicht einmal angefangen..
+-NoOpenMatch#Kein offenes Match gefunden!
+
+-#cmdAutoChannel
+-OffNotSet#AutoChannel ist aktuell aus, es ist noch kein Channel festgelegt. lege einen mit `%PREFIX%autochannel  set [ChannelID]` fest!
+-CurrentlyOff#Der AutoChannel ist aktuell aus!
+-CurrentlyOn#Der AutoChannel ist aktuell an!
+-LoadingError#Beim Laden des AutoChannels ist ein Fehler aufgetreten. Bitte lege einen neuen Channel mit `%PREFIX%autochannel set [ChannelID]` fest!
+-CurrentChannel#Der aktuelle AutoChannel ist `%NAME% (ID=%ID%)`!
+-Usage#Usage: `%PREFIX%autochannel [enable/on/disable/off/set]`
+-SetFirst#Bitte setze zuerst einen Channel mit`%PREFIX%autochannel set [ChannelID]`!
+-NowOff#Der AutoChannel ist nun aus!
+-NowOn#Der AutoChannel ist nun an!
+-UsageSet#Usage: `%PREFIX%autochannel set [ChannelID]`
+-InvalidID#Hast du dich vielleicht bei der ID vertippt? Probiere es nochmal!
+-ChannelNow#Der aktuelle AutoChannel ist nun `%NAME% (ID=%ID%)`!
+-Def#Erstelle,bearbeite und lösche AutoChannels!
+
+-#cmdBracket
+-Success#Die Bracket wird erstellt. Dis kann einen Moment dauern...
+-Failure#Anscheinend ist ein Fehler aufgetreten: %MSG%
+-EmptySpace#Freier Platz
+-Def#Schau dir die Bracket an. Fett sind die Rundengewinner, blau bist du!
+
+-#cmdFinal
+-NoWinnerYet#Der Gewinner steht noch nicht fest!
+-NoChannel#Bitte gib einen Channel als #Erwähnung an, wohin die Nachricht gesendet werden soll!
+-Failure#Leider trat beim Versuch ein Fehler auf: %MSG%
+-Out#Das Turnier vom %DAY%. %MONTH%. %YEAR% hat %WINNER% gewonnen! Insgesamt haben %COUNT% Spieler mitgemacht. Wir bedanken uns bei allen Spielern!
+-Def#Sende das Endergebnis des letzten Turniers in einen Channel
+
+-#cmdHelp
+-Title#Turnierhilfe
+-NoDef#<Keine Beschreibung verfügbar!>
+-Footer#Angefordert von %NAME%
+-Def#Erhalte Hilfe zu allen Befehlen. Aber das konntest du dir sicher denken...
+
+-#cmdInfo
+-NotSetYet#Steht noch nicht fest
+-Current#Aktueller Gegner
+-Def#Zeige deine aktuelle Position und deinen aktuellen Gegner an
+
+-#cmdKick
+-Usage#Usage: `%PREFIX%kick [Spieler als @Erwähnung/Anzahl zufälliger Nutzer]`
+-Success#Folgende(r) User wurde(n) gekickt:
+-Def#Kick User vom Turnier!
+
+-#cmdLeave
+-Confirm#Bitte bestätige mit `%PREFIX%leave confirm`, dass du das Turnier verlassen willst.Das kannst du nicht mehr rückgängig machen!
+-Success#Du hast das Turnier verlassen!
+-Def#Verlasse das Turnier vorzeitig. Achtung:Unumkehrbar!
+
+-#cmdMessage
+-Success#Die Nachricht wurde an alle Teilnehmer zugestellt!
+-Def#Sende eine Nachricht an alle Turnierteilnehmer!
+
+-#cmdNext
+-NotSet#Der Termin fürs nächste Turnier steht noch nicht fest!
+-AlreadyRunning#Das Turnier läuft bereits!
+-Get#Das nächste Turnier findet am %DAY%. %MONTH%. %YEAR% gegen %HOUR%:%MINUTE% Uhr statt!
+-Usage#Wenn du das Datum ändern/setzen willst, nutze `%PREFIX%next [Tag] [Monat] [Jahr] [Stunde] [Minute]`
+-Error#Fehler bei der Verarbeitung der Eingabe: %MSG%
+-NEDay#Dieser Tag existiert nicht!
+-NEMonth#Dieser Monat existiert nicht!
+-NEHour#Diese Stunde existiert nicht!
+-NEMinute#Diese Minute existiert nicht!
+-ParseError# Fehler beim Parsen der Zeit: %MSG%
+-PastError#Dieser Zeitpunkt Liegt in der Vergangenheit!
+-Def#Erfahre den Zeitpunkt des nächsten Turniers!
+
+-#cmdPrefix
+-Usage#Usage: `%PREFIX%prefix [Neues Prefix]`
+-NotAllowed#Dieses Präfix ist nicht zugelassen. Bitte suche dir ein anderes aus!
+-Success#Prefix erfolgreich zu %PREFIX% geändert!
+-Def#Ändere das Prefix
+
+-#cmdRejoin
+-AlreadyStarted#Das Turnier hat bereits gestartet, aus technischen Gründen ist es daher nicht mehr möglich, noch Spieler hinzuzufügen!
+-Usage#Usage: `%PREFIX%rejoin [Spieler als @Erwähnung/all]
+-All#Alle Spieler dürfen nun wieder mitspielen!
+-Success#Es dürfen nun %COUNT% Spieler wieder mitspielen
+-Def#Hole bereits gekickte User wieder zurück ins Match. Funktioniert nur vor dem Turnier!
+
+-#cmdReset
+-Confirm#Nutze zum Bestätigen `%PREFIX%delete confirm`! Achtung: Wenn du das Ergebnis noch speichern willst, solltest du das vorher tun!
+-Error# BEim Löschen der Nachrichten gab es einen Fehler: %MSG%
+-MsgClear#Es werden nun noch die Chatverläufe gelöscht. Bitte gedulde dich noch, bis das abgeschlossen ist, bevor du einneues Turnier startest!
+-Success#Löschen erfolgreich. Du kannst ein neues Turnier mit `%PREFIX%start` starten!
+-Def#Setzte das Turnier zurück!
+
+-#cmdResult
+-Usage#Bitte gib an, ob du gewonnen (`%PREFIX%res [w/win]`) oder verloren (`%PREFIX%res [l/lose]`) hast!
+-Def#Trage das Ergebnis eines Matches ein. Nutze "%PREFIX%res win", wenn du gewonnen hast und "%PREFIX%res lose", wenn du verloren hast!
+
+-#cmdRetry
+-NothingToDo#Aktuell gibt es nichts, was zu tun wäre!
+-Success#Erfolgreich!
+-Failure#Das scheint nicht geklappt zu haben: %MSG%
+-Def#Befehl zur Wiederholung von Aufgaben, die zunächst gescheitert sind
+
+-#cmdRevert
+-Usage#Usage: `%PREFIX%revert [User als @Erwähnung]`
+-SingleOnly#Bitte führe den Befehl für ale User einzeln durch!
+-Confirm# Bist du sicher, dass du den Spieler %NAME% eine Runde zurücksetzten willst? Dann nutze `%PREFIX%revert [User als @Erwähnung] confirm`!
+-Success#Erolgreich zurückgesetzt!
+-Error#Anscheinend ist ein Fehler aufgetreten: %MSG%
+-Def#Setze einen Spieler eine Stufe zurück!
+
+-#cmdSet
+-Usage#Usage: `%PREFIX%set [User als @Erwähnung] [winner/loser]`
+-NoWinnerLoser#Du musst dich schon entscheiden, ob der Spieler ein `winner` oder ein `loser?`ist!
+-NoUser#Du musst schon einen User @erwähnen!
+-SMMS#Um Missbrauch zu vermeiden, musst du deinen eigenen Sieg von einem anderen Helfer eintragen lassen!
+-SuccessWinner#Erfolgreich Gewinner festgelegt!
+-SuccessLoser#Erfolgreich Verlierer festgelegt!
+-Error#Anscheinend ist ein Fehler aufgetreten: %MSG%
+-Def#Setze das Ergebnis eines noch nicht eingetragenen Spiels
+
+-#cmdSetup
+-AllThese#Alle diese Werte müssen eingestelt sein,um mit dem Bot zu arbeiten.
+-ServerSettings#Servereinstelllungen
+-Usage#Nutze "%PREFIX%setup [Eigenschaft] [Wert]". Bitte nutze immer die entsprechenden ID'S!
+-InvalidKey#Diese Eigenschaft existiert nicht!
+-UseID#Bitte nutze die ID, nicht den Namen!
+-Success#Erfolgreich gespeichert!
+-Complete#Setup abgeschlossen. Der Bot ist nun vollständig nutzbar!
+-Def#Passe den Bot an den Server an!

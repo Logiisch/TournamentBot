@@ -1,8 +1,11 @@
 package commands;
 
+import com.sun.org.apache.bcel.internal.generic.LADD;
+import helperCore.LangManager;
 import helperCore.Logic;
 import helperCore.PermissionLevel;
 import listeners.commandListener;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -26,30 +29,30 @@ public class cmdRejoin implements Command {
         String prefix = commandListener.getPrefix(event.getGuild());
         Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
-            event.getTextChannel().sendMessage("Das kann nur ein Admin machen!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralOnlyAdmin")).queue();
             return;
         }
         if (!Logic.nodes.isEmpty()) {
-            event.getTextChannel().sendMessage("Das Turnier hat schon gestartet, Aus technischen Gründen ist es daher nicht möglich, den User wieder hinzuzufüügen!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdRejoinAlreadyStarted")).queue();
             return;
         }
         if (args.length<1) {
-            event.getTextChannel().sendMessage("Usage: `"+prefix+"rejojn [Spieler als @Erwähnung/all]").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdRejoinUsage").replace("%PREFIX%",prefix)).queue();
             return;
         }
         if (args[0].equalsIgnoreCase("all")) {
             Logic.rejoinAll();
-            event.getTextChannel().sendMessage("Alle User dürfen nun wieder mitspielen!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdRejoinAll")).queue();
             return;
         }
         if(event.getMessage().getMentionedUsers().isEmpty()) {
-            event.getTextChannel().sendMessage("Usage: `"+prefix+"rejojn [Spieler als @Erwähnung/all]").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdRejoinUsage").replace("%PREFIX%",prefix)).queue();
             return;
         }
         for (User u: event.getMessage().getMentionedUsers()) {
             Logic.rejoinUser(u);
         }
-        event.getTextChannel().sendMessage("Es dürfen/darf nun "+event.getMessage().getMentionedUsers().size()+" Spieler wieder mitspielen!").queue();
+        event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdRejojnSuccess").replace("%COUNT%",event.getMessage().getMentionedMembers().size()+"")).queue();
     }
 
     @Override
@@ -68,7 +71,7 @@ public class cmdRejoin implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Hole bereits gekickte Personen zurück ins Turnier!";
+    public String Def(String prefix, Guild g) {
+        return LangManager.get(g,"cmdRejoinDef");
     }
 }

@@ -25,7 +25,7 @@ public class cmdMessageRole implements Command {
         String prefix = commandListener.getPrefix(event.getGuild());
         Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
         if (!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)&&!Objects.requireNonNull(event.getMember()).getRoles().contains(helper))  {
-            event.getTextChannel().sendMessage("Du darfst das nicht!").queue();
+            //event.getTextChannel().sendMessage("Du darfst das nicht!").queue();
             return;}
         if (args.length<4) {
             event.getTextChannel().sendMessage("Usage: `"+prefix+"messagetorole [add/rem] [TextChannelID] [MessageID] [RoleID] [ReactEmoji]`").queue();
@@ -83,7 +83,7 @@ public class cmdMessageRole implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Administartionscommand";
+    public String Def(String prefix,Guild g) {
+        return "Administrationscommand";
     }
 }

@@ -1,5 +1,6 @@
 package commands;
 
+import helperCore.LangManager;
 import helperCore.PermissionLevel;
 import listeners.commandListener;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -31,18 +32,18 @@ public class cmdSetup implements Command {
        String value = args[1];
 
        if (!STATIC.getAllKeys(event.getGuild()).contains(key.toUpperCase())) {
-           event.getTextChannel().sendMessage("Thats not a valid key!").queue();
+           event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdSetupInvalidKey")).queue();
            event.getTextChannel().sendMessage(getEmbed(event.getGuild())).queue();
            return;
        }
        if (!onlyNumber(value)) {
-           event.getTextChannel().sendMessage("Please use the ID of the Role or Channel!").queue();
+           event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdSetupUseID")).queue();
            return;
        }
        STATIC.setSettings(event.getGuild(),key,value);
-       event.getTextChannel().sendMessage("Sucessfully set!").queue();
+       event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdSetupSuccess")).queue();
        event.getTextChannel().sendMessage(getEmbed(event.getGuild())).queue();
-       if(STATIC.canStartTournament(event.getGuild())) event.getTextChannel().sendMessage("Setup complete! You can now use all functions of the bot!").queue();
+       if(STATIC.canStartTournament(event.getGuild())) event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdSetupComplete")).queue();
 
 
     }
@@ -63,14 +64,14 @@ public class cmdSetup implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return null;
+    public String Def(String prefix,Guild g) {
+        return LangManager.get(g,"cmdSetupDef");
     }
 
     private static MessageEmbed getEmbed(Guild g,boolean footer,String prefix) {
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setDescription("All these values have to been set to work with the bot.");
-        eb.setTitle("Server Settings").setAuthor(g.getName());
+        eb.setDescription(LangManager.get(g,"cmdSetupAllThese"));
+        eb.setTitle(LangManager.get(g,"cmdSetupServerSettings")).setAuthor(g.getName());
         if (STATIC.canStartTournament(g)) {
             eb.setColor(Color.green);
         } else {
@@ -80,7 +81,7 @@ public class cmdSetup implements Command {
             String value = STATIC.getSettings(g,key);
             eb.addField(key,value,false);
         }
-        if(footer) eb.setFooter("Use \""+prefix+"setup [key] [new Value]\".Please use the corresponding ID's!");
+        if(footer) eb.setFooter(LangManager.get(g,"cmdSetupUaage").replace("%PREFIX%",prefix));
         return eb.build();
     }
     private static MessageEmbed getEmbed(Guild g) {

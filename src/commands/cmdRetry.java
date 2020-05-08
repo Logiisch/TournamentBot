@@ -1,6 +1,8 @@
 package commands;
 
+import helperCore.LangManager;
 import helperCore.retryOnDemand;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -17,15 +19,15 @@ public class cmdRetry implements Command {
     @Override
     public void action(String[] args, MessageReceivedEvent event)  {
         if (!retryLater.containsKey(event.getAuthor())) {
-            event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": Aktuell gibt es nichts, was zu tun ist!").queue();
+            event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": "+ LangManager.get(event.getGuild(),"cmdRetryNothingToDo")).queue();
             return;
         }
         boolean res = retryLater.get(event.getAuthor()).tryRun(event.getAuthor());
         if (res) {
-            event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": Erfolgreich!").queue();
+            event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": "+LangManager.get(event.getGuild(),"cmdRetrySuccess")).queue();
             retryLater.remove(event.getAuthor());
         } else {
-            event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": Hm, das scheint nicht geklappt zu haben...\n"+retryLater.get(event.getAuthor()).whatiscurrentlywrong()).queue();
+            event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+":" +LangManager.get(event.getGuild(),"cmdRetryFailure").replace("%MSG%",retryLater.get(event.getAuthor()).whatiscurrentlywrong())).queue();
         }
     }
 
@@ -45,7 +47,7 @@ public class cmdRetry implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Befehl, um bei unzustellbaren Nachrichten die Zustellung erneut zu probieren. ";
+    public String Def(String prefix, Guild g) {
+        return LangManager.get(g,"cmdRetryDef");
     }
 }

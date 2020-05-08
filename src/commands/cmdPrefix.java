@@ -1,7 +1,9 @@
 package commands;
 
+import helperCore.LangManager;
 import helperCore.PermissionLevel;
 import listeners.commandListener;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import util.STATIC;
@@ -22,13 +24,9 @@ public class cmdPrefix implements Command {
     @Override
     public void action(String[] args, MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
-        Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
-        if (!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
-            event.getTextChannel().sendMessage("Das kann nur ein Helfer machen!").queue();
-            return;
-        }
+
         if (args.length<1) {
-            event.getTextChannel().sendMessage("Usage: `"+prefix+"`prefix [Neues Prefix]`").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdPrefixUsage").replace("%PREFIX%",prefix)).queue();
             return;
         }
 
@@ -36,12 +34,12 @@ public class cmdPrefix implements Command {
             //noinspection ResultOfMethodCallIgnored
             "abc".replaceFirst(args[0],"");
         } catch (Exception e) {
-            event.getTextChannel().sendMessage("Dieses Prefix ist nicht zugelassen, bitte suche ein anderes!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdPrefixNotAllowed")).queue();
             return;
 
         }
         STATIC.setSettings(event.getGuild().getId(),"PREFIX",args[0]);
-        event.getTextChannel().sendMessage("Prefix erfogreich zu "+STATIC.getSettings(event.getGuild().getId(),"PREFIX")+" geändert!").queue();
+        event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdPrefixSuccess").replace("%PREFIX%",STATIC.getSettings(event.getGuild(),"PREFIX"))).queue();
     }
 
     @Override
@@ -60,7 +58,7 @@ public class cmdPrefix implements Command {
     }
 
     @Override
-    public String Def(String prefix) {
-        return "Ändere das Prefix!";
+    public String Def(String prefix, Guild g) {
+        return LangManager.get(g,"cmdPrefixDef");
     }
 }
