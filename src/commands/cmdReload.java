@@ -30,7 +30,7 @@ public class cmdReload implements Command{
 
     @Override
     public boolean isPrivate() {
-        return false;
+        return true;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package helperCore;
 
+import listeners.commandListener;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -50,7 +51,7 @@ public class UnconfirmedResult {
                 e.printStackTrace();
             }
             msg.append(": ").append(e.getMessage());
-            g.getTextChannelById(STATIC.getSettings(g, "CHANNEL_ALLGEMEIN")).sendMessage(msg.toString()).queue();
+            Objects.requireNonNull(g.getTextChannelById(STATIC.getSettings(g, "CHANNEL_ALLGEMEIN"))).sendMessage(msg.toString()).queue();
 
         }
 
@@ -76,7 +77,7 @@ public class UnconfirmedResult {
         } catch (Exception e) {
             msg.append(Objects.requireNonNull(g.getJDA().getUserById(STATIC.OWNERID)).getName()).append(" ");
         }
-        msg.append(": Es gibt Probleme bei der Abstimmung. Bitte schlichten! Dann mit `t!set [User als @Erwähnung] [winner/looser]` korrigieren!");
+        msg.append(": ").append(LangManager.get(g, "UCRDeny").replace("%PREFIX%", commandListener.getPrefix(g)));
         Objects.requireNonNull(g.getTextChannelById(STATIC.getSettings(g, "CHANNEL_ALLGEMEIN"))).sendMessage(msg.toString()).queue();
     }
 

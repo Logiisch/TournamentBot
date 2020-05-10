@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class LangManager {
     private static final String seperator = "#";
@@ -82,6 +83,9 @@ public class LangManager {
         }
         langs.put(lang,out);
         System.out.println("Successfully loaded lang "+lang+"!");
+    }
+    public static Set<String> getPossible() {
+        return langs.keySet();
     }
 
 }

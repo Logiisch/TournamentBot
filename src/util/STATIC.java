@@ -26,7 +26,7 @@ public class STATIC {
     public static String ADDLINK = "https://discordapp.com/oauth2/authorize?client_id=705567211380801598&scope=bot&permissions=268692560";
     public static String CODELINK = "https://github.com/Logiisch/TournamentBot";
     public static String OWNERID = "318457868917407745";
-
+    public static String EMAIL = "tournamentbot@logii.de";
 
 
 

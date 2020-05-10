@@ -1,0 +1,218 @@
+//IMPORTANT:
+//Lines starting with // are ignored and can be placed anywhere
+//This Document ist divided in paragraphs. Every paragraph starts with a head line.
+//Each head line starts with "-#". PLEASE DONT change anything at this line
+//You only need to translate the part after the #. PLEASE DONT change anything before the #!
+//Word in CAPS within percent sings like %THIS% are variabes. You can move them inside the line, but PLEASE DONT translate whats between the percent sings. Just move it to the position where ust needed in your language
+//If you need, for any reason, switch two lines, please make sure, they stay in the same paragraph
+//If you done translating, please rename the file to [LANG].txt and replace the [LANG] wit the two or three letter long representation of you language (Ex. "ENG.txt" for english or "FR.txt" for france)
+//Please send it to Logii#6557 (Discord) or translate@logii.de (E-Mail). Thanks you!
+
+
+//TRANSLATED BY Benny#8635
+
+-#cmdGeneral
+-OnlyHelper#Only a helper can do that!
+-OnlyAdmin#Only an admin can do that!
+-DidntStartYet#The tournament didn't even start ..
+-NoOpenMatch#No open match found!
+
+-#cmdAutoChannel
+-OffNotSet#AutoChannel is currently off, no channel has been defined yet. set one with `%PREFIX%autochannel  set [ChannelID]`!
+-CurrentlyOff#The AutoChannel is currently off!
+-CurrentlyOn#The AutoChannel is currently on!
+-LoadingError#An error occurred while loading the AutoChannel. Please set a new channel with `%PREFIX%autochannel set [ChannelID]`!
+-CurrentChannel#The current AutoChannel is `%NAME% (ID=%ID%)`!
+-Usage#Usage: `%PREFIX%autochannel [enable/on/disable/off/set]`
+-SetFirst#Please set up a channel first with `%PREFIX%autochannel set [ChannelID]`!
+-NowOff#The AutoChannel is now off!
+-NowOn#The AutoChannel is now on!
+-UsageSet#Usage: `%PREFIX%autochannel set [ChannelID]`
+-InvalidID#Did you make a typing mistake with the ID? Try again!
+-ChannelNow#The current AutoChannel is now `%NAME% (ID=%ID%)`!
+-Def#Create, edit and delete AutoChannels!
+
+-#cmdBracket
+-Success#The bracket will be created. This can take a moment...
+-Failure#Apparently an error has occurred: %MSG%
+-EmptySpace#Empty
+-Def#Look at the bracket. The round winners are written in bold, you are in blue!
+
+-#cmdFinal
+-NoWinnerYet#The winner has not yet been determined!
+-NoChannel#Please enter a channel as #mention where the message should be sent!
+-Failure#Unfortunately, an error occurred while trying: %MSG%
+-Out#The tournament from %DAY%. %MONTH%. %YEAR% won %WINNER%! Overall, %COUNT% players participated. We thank all players!
+-Def#Send the final result of the last tournament to a channel
+
+-#cmdHelp
+-Title#Tournament help
+-NoDef#<No description available!>
+-Footer#Requested by %NAME%
+-Def#Get help on all commands. But you could have guessed that ...
+
+-#cmdInfo
+-NotSetYet#Is not yet clear
+-Current#Current opponent
+-Def#Show your current position and your current opponent
+
+-#cmdKick
+-Usage#Usage: `%PREFIX%kick [Player as @mention/number of random users]`
+-Success#The following user(s) was (were) kicked:
+-Def#Kick user from the tournament!
+
+-#cmdLeave
+-Confirm#Please confirm with `%PREFIX%leave confirm`, that you want to leave the tournament, you can't undo it!
+-Success#You have left the tournament!
+-Def#Leave the tournament early. Warning: irreversible!
+
+-#cmdMessage
+-Success#The message was sent to all participants!
+-Def#Send a message to all tournament participants!
+
+-#cmdNext
+-NotSet#The date for the next tournament has not yet been fixed!
+-AlreadyRunning#The tournament is already running!
+-Get#The next tournament will take place on %DAY%. %MONTH%. %YEAR% at %HOUR%:%MINUTE% clock!
+-Usage#If you want to change / set the date, use `%PREFIX%next [day] [month] [year] [hour] [minute]`
+-Error#Error processing input: %MSG%
+-NEDay#This day does not exist!
+-NEMonth#This month does not exist!
+-NEHour#This hour does not exist!
+-NEMinute#This minute does not exist!
+-ParseError# Error parsing time: %MSG%
+-PastError#This time is in the past!
+-Def#Find out the time of the next tournament!
+
+//TRANSLATED BY JasonAimer#9118
+
+-#cmdPrefix
+-Usage#Usage: `%PREFIX%prefix [New prefix]`
+-NotAllowed#This prefix is not allowed. Please choose another one!
+-Success#Prefix successfully changed to %PREFIX%!
+-Def#Change the Prefix
+
+-#cmdRejoin
+-AlreadyStarted#The tournament has already started, due to technical reasons it is not possible to add player to the tournament!
+-Usage#Usage: `%PREFIX%rejoin [Player as @mention/all]
+-All#All players can now play again!
+-Success#Now %COUNT% players can play again
+-Def#Already kicked Users will be fetched back. Works only before the tournament!
+
+-#cmdReset
+-Confirm#To confirm, use `%PREFIX%delete confirm`! Attention: If you want to save the result, you should do that before.
+-Error#At deleting the messages it came to an error: %MSG%
+-MsgClear#Now the messages will be deleted. Please be patient until this is done, before you start a new tournament!
+-Success#Deleting messages was successful. Now you can start a new tournament using `%PREFIX%start`!
+-Def#Reset the tournament!
+
+-#cmdResult
+-Usage#Please indicate whether you won (`%PREFIX%res [w/win]`) or lost (`%PREFIX%res [l/lose]`)!
+-Def#Please write in the result of a match. Use "%PREFIX%res win", if you won and "%PREFIX%res lose", if you have lost the Game!
+
+-#cmdRetry
+-NothingToDo#At now there is nothing to do here!
+-Success#Successful!
+-Failure#It looks like this did not work: %MSG%
+-Def#Command for retrying commands, which did not work before.
+
+-#cmdRevert
+-Usage#Usage: `%PREFIX%revert [User as @mention]`
+-SingleOnly#Please use this command for all Users seperate!
+-Confirm#Are you sure about setting player %NAME% back for one round? If yes, then use `%PREFIX%revert [User as @mention] confirm`!
+-Success#Succsessfully resetted player for one round!
+-Error#It looks like that it came to an error: %MSG%
+-Def#Set back a player for a round!
+
+-#cmdSet
+-Usage#Usage: `%PREFIX%set [User as @mention] [winner/loser]`
+-NoWinnerLoser#You need to choose, is the player a `winner` or a `loser`!
+-NoUser#You need to @mention a user!
+-SMMS# To prevent abusing, you need to let an other helper sign in your own win!
+-SuccessWinner#Successfully choosen winner!
+-SuccessLoser#Successfully choosen loser!
+-Error#It looks like that it came to an error: %MSG%
+-Def#Set the result of a not signed game
+
+-#cmdSetup
+-AllThese#All these Values have to been set, to work with this bot.
+-ServerSettings#Serversettings
+-Usage#Use "%PREFIX%setup [key] [value]". Please always use the relevant ID's!
+-InvalidKey#This key is not existing!
+-UseID#Please use the ID, not the username!
+-Success#Successfully saved!
+-Complete#Setup complete. Now the bot is fully usable!
+-Def#Adjust this bot to your server!
+
+-#cmdLang
+-Usage#Usage: `%PREFIX%lang [New Language]`
+-LangDidntExist#I cant speak this language right now. Help me learn it. Contact `Logii#6557` or `translate@logii.de`
+-PossibleLangs#Current Languages: %MSG%
+-Success#Im now speaking English!
+-Def#Change the bot Language. BETA
+
+//TRANSLATED BY Sir Mastermind#6913
+
+-#cmdStart
+-StillRunning#The tournament is still running. Stop it first with `%PREFIX%delete`
+
+-#cmdHandler
+-Deactivated#This command is deactivated on this server!
+-Permission#You don’t have the authorization for that, therefore you need: %MSG%
+
+-#Logic
+-Participants#Following users are playing:
+-Max64#A maximum of 64 players can participate, please delete users with `%PREFIX%kick`!
+-TLS#The test-run has started!
+-TS#The tournament has started!
+-EnemyNow#Your opponent for this game is %NAME%. Please communicate with him independently. Use `%PREFIX%res`, to note down your result. Please confirm your presence with a react with the following emoji! 👍
+-NoOpenGame#No open game matching the player could be found!
+-NoEnemyYet#You can’t enter a result, because the player has not yet been assigned an opponent! (MatchID=%ID%)
+-EndGeneral#The tournament has finished now, the winner has been decided: %NAME% won! Congratulations!
+-EndResults#The tournament won: %WINNER%%LB%Congratulations!%LB%%LB%In second place is:
+-FinalRes#Final results
+-EnemyNotReadyYet#Your opponent is still in an other game. Please wait just a few moments!
+-MatchResult#Matchresults
+-DirectPromote#Since the match wasn’t full, %NAME% could move up to "%ROUND%"!
+-Result#The match between %PLAYERA% and %PLAYERB% has finished, the winner is: %WINNER%. This play is now in round "%ROUND%"!
+-ResultAlready#A result has already been entered for this match. Please check your DM's!
+-WaitingForEnemyResponse#You’ve to await the confirmation of your opponent, before the result is entered!
+-NoCurrentMatch#No pending match was found, for which you could already rate!
+-NotifyYouHaveWon#Please confirm the match between you and %ENEMY%: You won!
+-NotifyEnemyHasWon#Please confirm the match between you and %ENEMY%: You lost!
+-PleaseVerify#Please verify with ✅ or demonstrate with ❎!
+-EnemyWasNotified#Your opponent has been notified!
+-PleaseOpenPNs#Please open your DM’s. Then use the command `%PREFIX%retry`, that your message can be delivered to you!
+-PlayerStillPre1#This player is still in pre-round 1!
+-IsntParticipant#Does this player participate at all??
+-RevertedEnemy#The result of the previous player of your opponent has been reverted: Please wait, till the result is hit!
+-YouGotRemoved#You got kicked out of the tournament!
+-RoundUp#You are one round ahead, but apparently there was a mistake:
+
+-#RoundName
+-VR1#pre-round 1
+-VR2#pre-round 2
+-AF#eight-final
+-VF#quarter-final
+-HF#semi-final
+-F#final
+
+-#ROD
+-OpenDMs#Please open you DM’s!
+
+-#RoundTime
+-Nobody#Since no one has reported, the time is extended by 15 minutes!
+-Warning#Both %USERA% and %USERB% are inactive, it’s recommended to kick them by `%prefix%kick`!
+-Won#Since your opponents time has running out, you’re automatically one round ahead!
+-Error#Unfortunately, an error occurred during the entry: %MSG% %BR%Please inform @Logii#6557 %EMAIL%
+-Lost#Your time has running out, that’s why you kicked out of the tournament!
+
+-#UCR
+-Deny#There’s a problem at the poll. Please settle with `%PREFIX%set [User as @mention] [winner/loser]`!
+
+-#ACL
+-ErrorMake#Unfortunately, an error occurred while creating: %MSG% %BR% Please get in touch with @Logii#6557 (%EMAIL%)!
+-ErrorRem#Unfortunately, an error occurred while kicking: %MSG% %BR% Please get in touch with @Logii#6557 (%EMAIL%)!
+
+-#CRL
+-Success#Thank you, that you’ve confirmed you presence. Please remember your opponent to do this!

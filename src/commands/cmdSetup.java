@@ -81,7 +81,7 @@ public class cmdSetup implements Command {
             String value = STATIC.getSettings(g,key);
             eb.addField(key,value,false);
         }
-        if(footer) eb.setFooter(LangManager.get(g,"cmdSetupUaage").replace("%PREFIX%",prefix));
+        if(footer) eb.setFooter(LangManager.get(g,"cmdSetupUsage").replace("%PREFIX%",prefix));
         return eb.build();
     }
     private static MessageEmbed getEmbed(Guild g) {

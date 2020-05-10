@@ -33,7 +33,7 @@
 -Def#Erstelle,bearbeite und lösche AutoChannels!
 
 -#cmdBracket
--Success#Die Bracket wird erstellt. Dis kann einen Moment dauern...
+-Success#Die Bracket wird erstellt. Dies kann einen Moment dauern...
 -Failure#Anscheinend ist ein Fehler aufgetreten: %MSG%
 -EmptySpace#Freier Platz
 -Def#Schau dir die Bracket an. Fett sind die Rundengewinner, blau bist du!
@@ -141,3 +141,74 @@
 -Success#Erfolgreich gespeichert!
 -Complete#Setup abgeschlossen. Der Bot ist nun vollständig nutzbar!
 -Def#Passe den Bot an den Server an!
+
+-#cmdLang
+-Usage#Usage: `%PREFIX%lang [Neue Sprache]`
+-LangDidntExist#Diese Sprache ist leider noch nicht verfügbar. Wenn du sie hinzufügen willst, melde dich unter translate@logii.de oder bei Logii#6557
+-PossibleLangs#Verfügbare Sprachen: %MSG%
+-Success#Sprache erfolgreich auf Deutsch geändert!
+-Def#Ändere die Sprache des Bots. BETA
+
+-#cmdStart
+-StillRunning#Das Turnier läuft noch. Stoppe es zunächst mit `%PREFIX%delete`
+
+-#cmdHandler
+-Deactivated#Dieser Befehl ist auf dem Server deaktiviert!
+-Permission#Dazu hast du keine Berechtigung, dafür brauchst du: %MSG%
+
+-#Logic
+-Participants#Folgende User spielen mit:
+-Max64#Es können maximal 64 Spieler teilnehmen, bitte entferne Nutzer mit `%PREFIX%kick`!
+-TLS#Der Testlauf hat gestartet!
+-TS#Das Turnier hat gestartet!
+-EnemyNow#Dein Gegner ist nun %NAME%. Bitte verständige dich mit ihm selbstständig. Nutze `%PREFIX%res`, um eurer Ergebnsi einzutragen. Bitte bestätige  nun mit 👍, dass du anwesend bist!
+-NoOpenGame#Es konnte kein offenes Spiel passend zu dem Spieler gefunden werden!
+-NoEnemyYet#Du kannst noch kein Ergebnis eintragen, da dem Spieler noch kein Gegner zugewiesen wurde! (MatchID=%ID%)
+-EndGeneral#Das Turnier ist beendet, der Gewinner steht fest: %NAME% hat gewonnen! Herzlichen Glückwunsch!
+-EndResults#Das Turnier gewonnen hat: %WINNER%%LB%Herzlichen Glückwunsch!%LB%%LB%Auf Platz zwei ist:
+-FinalRes#Endergebnis
+-EnemyNotReadyYet#Dein gegner ist noch in einem anderen Spiel. Bitte warte noch einen Moment!
+-MatchResult#Matchergebnisse
+-DirectPromote#Da das Match nicht voll war, konnte %NAME% direkt in Runde "%ROUND%" aufsteigen!
+-Result#Das Match zwischen %PLAYERA% und %PLAYERB% ist zuende, gewonnen hat %WINNER%. Dieser Spieler ist nun in Runde "%ROUND%"!
+-ResultAlready#Für dieses Match wurde bereits ein Ergebnis eingetragen. Bitte schaue in deinen DM's nach!
+-WaitingForEnemyResponse#Es wird noch auf die Bestätigung deines Gegners gewartet, bevor das Ergebnis eingetragen wird!
+-NoCurrentMatch#Es wurde kein ausstehendes Match gefunden, für das du schon eine Bewertung abgeben könntest!
+-NotifyYouHaveWon#Bitte bestätige das Ergebnis des Matchtes zwischen dir und %ENEMY%: Du hast gewonnen!
+-NotifyEnemyHasWon#Bitte bestätige das Ergebnis des Matchtes zwischen dir und %ENEMY%: Dein Gegner hast gewonnen!
+-PleaseVerify#Bitte bestätige mit ✅ oder protestiere mit ❎!
+-EnemyWasNotified#Dein Gegner wurde benachrichtigt!
+-PleaseOpenPNs#Bitte öffne deine PN's. Nutze dann den befehl `%PREFIX%retry`, damit dir deine Nachricht zugestellt werden kann!
+-PlayerStillPre1#Dieser Spieler ist noch in Vorrunde 1!
+-IsntParticipant#Nimmt dieser Spieler überhaupt teil?
+-RevertedEnemy#Das Ergebnis des vorherigen Spieles deines Gegners wurde zurückgesetzt: Bitte warte, bis eine Entscheidung getroffen ist!
+-YouGotRemoved#Du wurdest aus dem Turnier entfernt!
+-RoundUp#Du bist eine Runde weiter, aber anscheined gab es einen Fehler:
+
+-#RoundName
+-VR1#Vorrunde 1
+-VR2#Vorrunde 2
+-AF#Achtelfinale
+-VF#Viertelfinale
+-HF#Halbfinale
+-F#Finale
+
+-#ROD
+-OpenDMs#Bitte öffne deine DM's!
+
+-#RoundTime
+-Nobody#Da sich niemand gemeldet hat, wird die zeit um 15 Minuten verlängert!
+-Warning#Sowohl %USERA% als auch %USERB% sind inaktiv, es wird empfohlen, sie zu kicken!
+-Won#Da die Zeit deines Gegners abgelaufen ist, bist du automatisch eine Runde weiter!
+-Error#Leider ist ein Fehler beim Eintragen aufgetreten: %MSG% %BR%Bitte informiere Logii unter %EMAIL%
+-Lost#Deine Zeit ist abgelaufen, daher wurdest du vom Turnier entfernt!
+
+-#UCR
+-Deny#Es gab Probleme bei der Abstimmung. Bitte schlichten mit `%PREFIX%set [User als @Erwähnung] [winner/loser]`!
+
+-#ACL
+-ErrorMake#Leider ist beim Erstellen ein Fehler aufgetreten: %MSG% %BR% Bitte melde dich bei Logii (%EMAIL%)!
+-ErrorRem#Leider ist beim Entfernen ein Fehler aufgetreten: %MSG% %BR% Bitte melde dich bei Logii (%EMAIL%)!
+
+-#CRL
+-Success#Danke, dass du deine Anwesenheit bestätigt hast. Bitte erinnere auch deinen Gegner dran, dies zu tun!

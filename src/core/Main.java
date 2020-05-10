@@ -74,6 +74,7 @@ public class Main {
         commandHandler.commands.put("autochannel", new cmdAutoChannel());
         commandHandler.commands.put("setup", new cmdSetup());
         commandHandler.commands.put("reload",new cmdReload());
+        commandHandler.commands.put("lang", new cmdLang());
 
     }
 

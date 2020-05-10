@@ -8,6 +8,6 @@ import javax.annotation.Nonnull;
 public class privateMessageListener extends ListenerAdapter {
     public void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent event) {
         if (event.getAuthor().getId().equalsIgnoreCase(event.getJDA().getSelfUser().getId())) return;
-        event.getChannel().sendMessage("Wenn du entwas an mich richten willst, nutze bitte einen Channel auf dem Turnier-Server dafür").queue();
+        event.getChannel().sendMessage("If you want to say something to me, please use a channel on a guild where I am also running!").queue();
     }
 }

@@ -61,7 +61,7 @@ public class Logic {
 
 
         }
-        StringBuilder out = new StringBuilder("Folgende Nutzer spielen mit:\n");
+        StringBuilder out = new StringBuilder(LangManager.get(event.getGuild(),"LogicParticipants")+"\n");
         for (User u:teilnehmer) {
             if (u.getId().equalsIgnoreCase(event.getJDA().getSelfUser().getId())) continue;
             out.append(u.getName()).append("\n");
@@ -69,7 +69,7 @@ public class Logic {
         event.getTextChannel().sendMessage(out.toString()).queue();
 
         if (teilnehmer.size()>64) {
-            return "Es können maximal 64 Leute teilnehmen, bitte enferne Spieler mit `"+prefix+"kick [Anzahl/User als @Mention]`!";
+            return LangManager.get(event.getGuild(),"logicMax64".replace("%PREFIX%",prefix));
         }
         while (teilnehmer.size()<64) {
             teilnehmer.add(event.getJDA().getSelfUser());
@@ -91,7 +91,7 @@ public class Logic {
                 Member memb =event.getGuild().getMember(b);
                 assert mema!=null;
                 assert memb!=null;
-                Role vr1 = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_VORRUNDE_!"));
+                Role vr1 = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_VORRUNDE1"));
                 assert vr1 != null;
                 event.getGuild().addRoleToMember(mema,vr1).queue();
                 event.getGuild().addRoleToMember(memb,vr1).queue();
@@ -102,9 +102,9 @@ public class Logic {
         refreshTournamnet(event,false);
 
         if (STATIC.dryRun) {
-            return "Der Testlauf wurde gestartet! Alle, die michmacheen wollen, können es tun. Folgt dazu den Anweisungen, die ihr erhalten werdet/habt!";
+            return LangManager.get(event.getGuild(),"LogicTLS");
         }
-        return "Das Turnier wurde gestartet!";
+        return LangManager.get(event.getGuild(),"LogicTS");
     }
 
     private static void refreshTournamnet(MessageReceivedEvent event, boolean exitOnHalfway) {
@@ -142,8 +142,8 @@ public class Logic {
             if (node.players.size()<2||node.winner!=null) continue;
             User a = node.players.get(0);
             User b = node.players.get(1);
-            String senda = "Dein Gegner ist nun "+b.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit \uD83D\uDC4D, dass du anwesend bist. Du hast dafür 15min Zeit!";
-            String sendb = "Dein Gegner ist nun "+a.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit \uD83D\uDC4D, dass du anwesend bist. Du hast dafür 15min Zeit!";
+            String senda = LangManager.get(event.getGuild(),"LogicEnemyNow").replace("%NAME%",b.getName()).replace("%PREFIX%",prefix);
+            String sendb = LangManager.get(event.getGuild(),"LogicEnemyNow").replace("%NAME%",a.getName()).replace("%PREFIX%",prefix);
             Message msga=trysend(a,senda,event.getGuild());
             Message msgb=trysend(b,sendb,event.getGuild());
             assert msga!=null;
@@ -440,10 +440,10 @@ public class Logic {
             if (node.winner==null&&node.players.contains(u)) tn = node;
         }
         if (tn==null) {
-            throw new Exception("Es konnte kein offenes Spiel passend zu dem Spieler gefunden werden!");
+            throw new Exception(LangManager.get(g,"LogicNoOpenGame"));
         }
          if(tn.players.size()<2) {
-             throw new Exception("Du kannst noch kein Ergebnis eintragen, da du noch kein Gegner zugewiesen wurde! (matchID="+tn.NID+")");
+             throw new Exception(LangManager.get(g,"LogicNoEnemyYet").replace("%ID%",tn.NID+""));
          }
         User winner = null;
         if(haswon) {
@@ -455,15 +455,15 @@ public class Logic {
             }
         }
         if (winner==null) {
-            throw new Exception("Interner Fehler:winner in line 158 still null");
+            throw new Exception("Internal Error:winner in line 158 still null");
         }
         tn.winner=winner;
         tn.update();
         if(tn.getRunde()==6) {
-            Objects.requireNonNull(g.getTextChannelById(STATIC.getSettings(g,"CHANNEL_ALLGEMEIN"))).sendMessage("Das Turnier ist beendet, der Gewinnner steht fest: "+winner.getName()+" hat gewonnen! Glückwunsch!").queue();
+            Objects.requireNonNull(g.getTextChannelById(STATIC.getSettings(g,"CHANNEL_ALLGEMEIN"))).sendMessage(LangManager.get(g,"LogicEndGeneral").replace("%NAME%",winner.getName())).queue();
             g.addRoleToMember(Objects.requireNonNull(g.getMember(u)), Objects.requireNonNull(g.getRoleById(STATIC.getSettings(g,"ROLE_WINNER")))).queue();
-            EmbedBuilder eb = new EmbedBuilder().setColor(roleOfRound(6,g).getColor()).setTitle("Endergebnis");
-            eb.setDescription("Das Turnier gewonnen hat: "+ winner.getName()+"\nHerzlichen Glückwunsch!\n\nAuf Platz zwei ist "+(tn.players.get(0).getId().equalsIgnoreCase(winner.getId())?tn.players.get(1).getName():tn.players.get(0).getName()));
+            EmbedBuilder eb = new EmbedBuilder().setColor(roleOfRound(6,g).getColor()).setTitle(LangManager.get(g,"LogicFinalRes"));
+            eb.setDescription(LangManager.get(g,"LogicEndResults").replace("%WINNER%",winner.getName()).replace("%LB%","\n")+(tn.players.get(0).getId().equalsIgnoreCase(winner.getId())?tn.players.get(1).getName():tn.players.get(0).getName()));
             Objects.requireNonNull(g.getTextChannelById(STATIC.getSettings(g,"CHANNEL_RESULTS"))).sendMessage(eb.build()).queue();
             return;
         }
@@ -483,9 +483,8 @@ public class Logic {
             User plb = promto.players.get(1);
             String prefix = commandListener.getPrefix(g);
 
-
-            String senda = "Dein Gegner ist nun "+plb.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit  \uD83D\uDC4D, dass du anwesend bist. Du hast dafür 15min Zeit!";
-            String sendb = "Dein Gegner ist nun "+pla.getName()+"! Bitte verständigt euch selbstständig, wann ihr das Spiel spielt. Wenn ihr fertig seid, gib bitte `"+prefix+"res [win/loose]` ein, abhängig davon, ob du gewonnen oder verloren hast! Bitte bestätige mit  \uD83D\uDC4D, dass du anwesend bist. Du hast dafür 15min Zeit!";
+            String senda = LangManager.get(g,"LogicEnemyNow").replace("%NAME%",plb.getName()).replace("%PREFIX%",prefix);
+            String sendb = LangManager.get(g,"LogicEnemyNow").replace("%NAME%",pla.getName()).replace("%PREFIX%",prefix);
             Message msga=trysend(pla,senda,g);
             Message msgb=trysend(plb,sendb,g);
             assert msga!=null;
@@ -496,8 +495,8 @@ public class Logic {
             ConfirmReactListener.rtimes.put(msga.getId(),rt);
             ConfirmReactListener.rtimes.put(msgb.getId(),rt);
         } else {
-            trysend(winner,"Dein Gegner ist noch nicht fertig. Warte noch einen Moment.",g);
-            return;
+            trysend(winner,LangManager.get(g,"LogicEnemyNotReadyYet"),g);
+            //return;
         }
         refreshRoles(g.getMember(winner),false,promto.getRunde());
         User looser = null;
@@ -506,10 +505,10 @@ public class Logic {
             looser= us;
         }
         if (looser==null) {
-            throw new Exception("Interner Fehler:looser in line 191 still null");
+            throw new Exception("Internal Error:looser in line 191 still null");
         }
         if(winner.getId().equalsIgnoreCase(looser.getId())) {
-            throw new Exception("Interner Fehler:looser.id == winner.id");
+            throw new Exception("Internal Error:looser.id == winner.id");
         }
 
 
@@ -517,7 +516,7 @@ public class Logic {
         tn.update();
         promto.update();
         TextChannel tc=g.getTextChannelById(STATIC.getSettings(g,"CHANNEL_RESULTS"));
-        EmbedBuilder eb = new EmbedBuilder().setTitle("Matchergebnisse").setAuthor(getRoundname(tn.getRunde()));
+        EmbedBuilder eb = new EmbedBuilder().setTitle(LangManager.get(g,"LogicMatchResult")).setAuthor(getRoundname(tn.getRunde(),g));
         if (tn.players.contains(g.getSelfMember().getUser())) {
             User named;
             if (tn.players.get(0).getId().equalsIgnoreCase(g.getJDA().getSelfUser().getId())) {
@@ -525,9 +524,9 @@ public class Logic {
             } else {
                 named = tn.players.get(0);
             }
-            eb.setDescription("Da das Turnier nicht voll war, konnte "+named.getName()+" direkt in die Runde \""+getRoundname(promto.getRunde())+"\" aufsteigen!");
+            eb.setDescription(LangManager.get(g,"LogicDirectPromote").replace("%NAME%",named.getName()).replace("%ROUND%",getRoundname(promto.getRunde(),g)));
         } else {
-            eb.setDescription("Das Match zwischen " + tn.players.get(0).getName() + " und " + tn.players.get(1).getName() + " wurde ausgetragen. Der Gewinner ist " + tn.winner.getName() + " ! Dieser Spieler ist nun i" + ((promto.getRunde() < 3) ? "n " : "m ") + getRoundname(promto.getRunde()) + "!");
+            eb.setDescription(LangManager.get(g,"LogicResult").replace("%PLAYERA%",tn.players.get(0).getName()).replace("%PLAYERB%",tn.players.get(1).getName()).replace("%WINNER%",tn.winner.getName()).replace("%ROUND%",getRoundname(promto.getRunde(),g)));
         }
         Role role = roleOfRound(tn.getRunde(),g);
 
@@ -538,7 +537,7 @@ public class Logic {
     }
     private static void refreshRoles(Member m, boolean isdead, int round) throws Exception {
         if (m==null){
-            throw new Exception("Interner Fehler:m is null in Line 552");
+            throw new Exception("Internal Error:m is null in Line 540");
         }
         Role role = roleOfRound(round,m.getGuild());
 
@@ -573,7 +572,7 @@ public class Logic {
                 role = g.getRoleById(STATIC.getSettings(g,"ROLE_FINALE"));
                 break;
             default:
-                throw new Exception("Interner Fehler: Runde ="+runde+ " in line 611");
+                throw new Exception("Internal Error: Runde ="+runde+ " in line 575");
         }
         return role;
     }
@@ -584,39 +583,40 @@ public class Logic {
             if (node.winner==null&&node.players.contains(event.getAuthor())&&node.players.size()==2) {
                 User tosend;
                 if (ConfirmReactListener.alreadyLogged(nid)) {
-                    event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": Für dieses Match wurde schon ein Ergebnis eingegeben!").queue();
+                    event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": "+LangManager.get(event.getGuild(),"LogicResultAlready")).queue();
                     return;
                 }
                 if (node.players.get(0).getId().equalsIgnoreCase(event.getAuthor().getId())) tosend=node.players.get(1); else tosend=node.players.get(0);
                 if (haswon) {
                     sendConfirmationMessage(nid,tosend,event.getAuthor(),event.getTextChannel(),event.getMember());
-                    event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": Es wird noch auf die Bestätigung durch deinen Gegner gewartet, bevor das Ergebnis eingetragen wird!!").queue();
+                    event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": "+LangManager.get(event.getGuild(),"LogicWaitingForEnemyResponse")).queue();
                 } else {
                     sendConfirmationMessage(nid,tosend,tosend,event.getTextChannel(),event.getMember());
-                    event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": Es wird noch auf die Bestätigung durch deinen Gegner gewartet, bevor das Ergebnis eingetragen wird!!").queue();
+                    event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": "+LangManager.get(event.getGuild(),"LogicWaitingForEnemyResponse")).queue();
                 }
                 found = true;
             }
         }
         if (!found) {
-            event.getTextChannel().sendMessage("Es wurde kein ausstehendes Match gefunden, für das du schon eine Bewertung abgeben könntest!").queue();
+            event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"LogicNoCurrentMatch")).queue();
         }
     }
     private static void sendConfirmationMessage(int nid, User playerToNotify, User playerthathaswon,TextChannel tc,Member author) {
-        String msgs = "Bitte bestätige das Ergebnis des Matches: "+(playerToNotify.getId().equalsIgnoreCase(playerthathaswon.getId())?"Du hast":playerthathaswon.getName()+"hat")+"gewonnen!";
-        msgs += "\nBitte bestätige mit ✅ oder protestiere mit ❎!";
+        TournamentNode tourni = nodes.get(nid);
+        String enemy = tourni.players.get(0).getId().equalsIgnoreCase(playerToNotify.getId())?tourni.players.get(1).getName():tourni.players.get(0).getName();
+        String msgs = LangManager.get(tc.getGuild(),(playerthathaswon.getId().equalsIgnoreCase(playerToNotify.getId())?"LogicNotifyYouHaveWon":"LogicNotifyEnemyHasWon").replace("%ENEMY%",enemy));
+        msgs += "\n"+LangManager.get(tc.getGuild(),"LogicPleaseVerify");
         try {
             Message msg =playerToNotify.openPrivateChannel().complete().sendMessage(msgs).complete();
             msg.addReaction("U+2705").queue();
             msg.addReaction("U+274E").queue();
             UnconfirmedResult ur = new UnconfirmedResult(nid,playerthathaswon,tc.getGuild());
             ConfirmReactListener.toConfirmResult.put(msg.getId(),ur);
-            tc.sendMessage(author.getAsMention()+": Dein Gegner wurde benachrichtigt!").queue();
+            tc.sendMessage(author.getAsMention()+":"+LangManager.get(tc.getGuild(),"LogicEnemyWasNotified")).queue();
 
         } catch (Exception e) {
             //TextChannel tc= Objects.requireNonNull(playerthathaswon.getJDA().getGuildById(STATIC.GUILDID)).getTextChannelById(STATIC.CHANNEL_ALLGEMEIN);
-            assert tc != null;
-            tc.sendMessage(Objects.requireNonNull(tc.getGuild().getMember(playerToNotify)).getAsMention()+": Bitte öffne deine PN's. Nutze dann den Befehl `"+ commandListener.getPrefix(tc.getGuild())+"retry`, damit dir die Nachricht zugestellt wird! ").queue();
+            tc.sendMessage(Objects.requireNonNull(tc.getGuild().getMember(playerToNotify)).getAsMention()+": "+LangManager.get(tc.getGuild(),"LogicPleaseOpenPNs").replace("%PREFIX%",commandListener.getPrefix(tc.getGuild()))).queue();
             String finalMsgs = msgs;
             retryOnDemand rod = u -> {
                 try {
@@ -637,7 +637,7 @@ public class Logic {
             TournamentNode node = nodes.get(nid);
             if (!node.players.contains(u)) continue;
             if (node.winner!=null) continue;
-            if (node.getRunde()==1) throw new Exception("Dieser Spieler ist noch in der Vorrunde 1!");
+            if (node.getRunde()==1) throw new Exception(LangManager.get(g,"LogicPlayerStillPre1"));
             ArrayList<Integer> from = node.promoteFrom;
             TournamentNode a = nodes.get(from.get(0));
             TournamentNode b = nodes.get(from.get(1));
@@ -650,13 +650,13 @@ public class Logic {
                 return;
             }
         }
-        throw new Exception("Nimmt dieser Spieler überhaupt teil?");
+        throw new Exception(LangManager.get(g,"LogicIsntParticipant"));
     }
     private static void revert(User u, TournamentNode revto, TournamentNode revfrom,Guild g) throws Exception {
         revto.winner =null;
         revfrom.players.remove(u);
         if (!revfrom.players.isEmpty()) {
-            trysend(revfrom.players.get(0),"Das Ergebnis des vorherigen Spieles deines Gegners wurde zurückgesetzt: Bitte warte, bis eine Entscheidung getroffen ist!",g);
+            trysend(revfrom.players.get(0),LangManager.get(g,"LogicRevertedEnemy"),g);
         }
         revfrom.update();
         revto.update();
@@ -681,7 +681,7 @@ public class Logic {
                 role = g.getRoleById(STATIC.getSettings(g,"ROLE_FINALE"));
                 break;
             default:
-                throw new Exception("Interner Fehler: Runde ="+revfrom.getRunde()+ " in line 222");
+                throw new Exception("Internal Error: Runde ="+revfrom.getRunde()+ " in line 222");
         }
         assert role != null;
         Objects.requireNonNull(g).removeRoleFromMember(Objects.requireNonNull(Objects.requireNonNull(g).getMember(u)), role).queue();
@@ -849,7 +849,7 @@ public class Logic {
 
                 if (tn.players.contains(u)) {
                     tn.players.remove(u);
-                    u.openPrivateChannel().complete().sendMessage("Du wurdest aus dem Turnier entfert!").queue();
+                    u.openPrivateChannel().complete().sendMessage(LangManager.get(g,"LogicYouGotRemoved")).queue();
                     User other = null;
                     if (!tn.players.isEmpty()) {
                         other = tn.players.get(0);
@@ -858,7 +858,7 @@ public class Logic {
                     if (tn.players.size()==2&&tn.winner==null) try {
                         Logic.logresult(u.getJDA().getSelfUser(),false,g);
                     } catch (Exception e) {
-                        if (other!=null) other.openPrivateChannel().complete().sendMessage("Du bist eine Runde weiter, anscheinend ist aber ein Fehler aufgetreten, bitte melde dich bei Logii!\n"+e.getMessage()).queue();
+                        if (other!=null) other.openPrivateChannel().complete().sendMessage(LangManager.get(g,"LogicRoundUp")+"\n"+e.getMessage()).queue();
                         e.printStackTrace();
                     }
                 }
@@ -898,20 +898,20 @@ public class Logic {
                 return Objects.requireNonNull(u.getJDA().getTextChannelById(STATIC.getSettings(g,"CHANNEL_ALLGEMEIN"))).sendMessage(Objects.requireNonNull(g.getMember(u)).getAsMention()+":"+msg+"\nFür das Turnier öffne bite deine Privatnachrichten, da nicht alle Nachrichten über diesen Channel gesendet werden können!").complete();} else {return null;}
         }
     }
-    public static String getRoundname(int runde) {
+    public static String getRoundname(int runde,Guild g) {
         switch (runde) {
             case 1:
-                return "Vorrunde 1";
+                return LangManager.get(g,"RoundNameVR1");
             case 2:
-                return "Vorrunde 2";
+                return LangManager.get(g,"RoundNameVR2");
             case 3:
-                return "Achtelfinale";
+                return LangManager.get(g,"RoundNameAF");
             case 4:
-                return "Viertelfinale";
+                return LangManager.get(g,"RoundNameVF");
             case 5:
-                return "Halbfinale";
+                return LangManager.get(g,"RoundNameHF");
             case 6:
-                return "Finale";
+                return LangManager.get(g,"RoundNameF");
             default:
                 return "undefined";
         }

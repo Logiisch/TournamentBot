@@ -27,7 +27,7 @@ public class cmdRetry implements Command {
             event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": "+LangManager.get(event.getGuild(),"cmdRetrySuccess")).queue();
             retryLater.remove(event.getAuthor());
         } else {
-            event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+":" +LangManager.get(event.getGuild(),"cmdRetryFailure").replace("%MSG%",retryLater.get(event.getAuthor()).whatiscurrentlywrong())).queue();
+            event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+":" +LangManager.get(event.getGuild(),"cmdRetryFailure").replace("%MSG%",retryLater.get(event.getAuthor()).whatiscurrentlywrong(event.getGuild()))).queue();
         }
     }
 

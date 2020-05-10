@@ -1,6 +1,7 @@
 package core;
 
 import commands.Command;
+import helperCore.LangManager;
 import helperCore.PermissionLevel;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -23,7 +24,7 @@ public class commandHandler {
         if (commands.containsKey(cmd.invoke)) {
             if (commands.get(cmd.invoke).blockedServerIDs() != null) {
                 if (commands.get(cmd.invoke).blockedServerIDs().contains(cmd.event.getGuild().getId())) {
-                    cmd.event.getTextChannel().sendMessage("Dieser Befehl ist auf dem Server deaktiviert!").queue();
+                    cmd.event.getTextChannel().sendMessage(LangManager.get(cmd.event.getGuild(),"cmdHandlerDeactivated")).queue();
                     return;
                 }
                 if (!STATIC.canStartTournament(cmd.event.getGuild())) {
@@ -35,7 +36,7 @@ public class commandHandler {
 
                 PermissionLevel perm = commands.get(cmd.invoke).PermLevel();
                 if (!hasPermission(perm,cmd.event)) {
-                    cmd.event.getTextChannel().sendMessage("Dazu hast du keinerlei Berechtigungen! Benötigte Berechtigung: "+perm.name()).queue();
+                    cmd.event.getTextChannel().sendMessage(LangManager.get(cmd.event.getGuild(),"cmdHandlerPermission").replace("%MSG%",perm.name())).queue();
                     return;
                 }
 
@@ -64,8 +65,8 @@ public class commandHandler {
         Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
         if (pm.equals(PermissionLevel.HELPER)&&!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)) return false;
         Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));
-        if (pm.equals(PermissionLevel.HELPER)&&!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)) return false;
-        return true;
+        if (pm.equals(PermissionLevel.ADMIN)&&!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)) return false;
+        return false;
     }
 
 }

@@ -1,5 +1,6 @@
 package listeners;
 
+import helperCore.LangManager;
 import helperCore.RoundTime;
 import helperCore.UnconfirmedResult;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -42,7 +43,7 @@ public class ConfirmReactListener extends ListenerAdapter {
             RoundTime rt = rtimes.get(event.getMessageId());
             rt.userreact(event.getUser());
             rtimes.put(event.getMessageId(),rt);
-            event.getChannel().sendMessage("Danke, du hast deine Anwesenheit bestätigt. Bitte erinner auch deinen Gegner, die zu tun!").queue();
+            event.getChannel().sendMessage(LangManager.get(rt.getGuild(),"CRLSuccess")).queue();
         }
 
 

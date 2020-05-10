@@ -7,6 +7,7 @@ import listeners.ConfirmReactListener;
 import listeners.commandListener;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import util.STATIC;
 
 import java.io.File;
@@ -92,7 +93,12 @@ public class cmdReset implements Command {
         roles.add(m.getGuild().getRoleById(STATIC.getSettings(m.getGuild().getId(),"ROLE_VORRUNDE1")));
         for (Role r:roles) {
             //if (m.getRoles().contains(r))
+            try {
                 m.getGuild().removeRoleFromMember(m,r).queue();
+            } catch (ErrorResponseException e) {
+                System.out.println("Fehler beim Löschen! "+e.getMeaning());
+            }
+
         }
 
     }

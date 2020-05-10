@@ -65,7 +65,7 @@ public class cmdFinalDisplay implements Command {
             return;
         }
         OffsetDateTime now = OffsetDateTime.now();
-        String out = LangManager.get(event.getGuild(),"cmdFinalOut").replace("%DAY%",now.getDayOfMonth()+"").replace("%MONTH%",now.getMonth()+"").replace("%YEAR%",now.getYear()+"").replace("%WINNER%",wstring).replace("%COUNT%",users.size()+"");
+        String out = LangManager.get(event.getGuild(),"cmdFinalOut").replace("%DAY%",now.getDayOfMonth()+"").replace("%MONTH%",now.getMonthValue()+"").replace("%YEAR%",now.getYear()+"").replace("%WINNER%",wstring).replace("%COUNT%",users.size()+"");
         TextChannel sendto = event.getMessage().getMentionedChannels().get(0);
         sendto.sendMessage(out).queue();
         sendto.sendFile(new File("bracket.jpg")).queue();

@@ -20,6 +20,10 @@ public class RoundTime  implements TimeKeeper{
         guild=g;
     }
 
+    public Guild getGuild() {
+        return guild;
+    }
+
     @Override
     public OffsetDateTime fireOn() {
         return end;
@@ -32,24 +36,24 @@ public class RoundTime  implements TimeKeeper{
         if (tn.winner!=null) return true;
         if (hasReacted.size()==0) {
             for (User u:tn.players) {
-                Logic.trysend(u,"Da sich keiner innerhalb des zeitlimits gemeldet hat, wurde die Zeit um 15min verlängert!",guild);
+                Logic.trysend(u,LangManager.get(guild,"RoundTimeNobody"),guild);
             }
             end =end.plusMinutes(15);
-            Objects.requireNonNull(guild.getTextChannelById(STATIC.getSettings(guild,"CHANNEL_ALLGEMEIN"))).sendMessage("Sowohl Nutzer "+tn.players.get(0).getName()+" als auch Nutzer "+tn.players.get(1).getName()+" sind nicht aktiv. Es wird empfohlen, sie zu kicken!").queue();
+            Objects.requireNonNull(guild.getTextChannelById(STATIC.getSettings(guild,"CHANNEL_ALLGEMEIN"))).sendMessage(LangManager.get(guild,"RoundTimeWarning").replace("%USERA%",tn.players.get(0).getName()).replace("%USERB%",tn.players.get(1).getName())).queue();
             return true;
         }
         if(hasReacted.size()==1) {
             User hR = hasReacted.get(0);
             User missingReaction;
             if (tn.players.get(0).getId().equalsIgnoreCase(hR.getId())) missingReaction=tn.players.get(1); else missingReaction=tn.players.get(0);
-            hR.openPrivateChannel().complete().sendMessage("Da die Zeit deines Gegners abgelaufen ist, hast du automatisch gewonnen!").queue();
+            hR.openPrivateChannel().complete().sendMessage(LangManager.get(guild,"RoundTimeWon")).queue();
             try {
                 Logic.logresult(hR,true,guild);
             } catch (Exception e) {
-                hR.openPrivateChannel().complete().sendMessage("anscheinend ist beim Eintragen ein fehler aufgetreten: "+e.getMessage()+"\nBitte informiere Logii!").queue();
+                hR.openPrivateChannel().complete().sendMessage(LangManager.get(guild,"RoundTimeError").replace("%MSG",e.getMessage()).replace("%BR%","\n").replace("%EMAIL%",STATIC.EMAIL)).queue();
                 e.printStackTrace();
             }
-            missingReaction.openPrivateChannel().complete().sendMessage("Deine Zeit ist abgelaufen, du hast damit automatisch verloren!!").queue();
+            missingReaction.openPrivateChannel().complete().sendMessage(LangManager.get(guild,"RoundTimeLost")).queue();
             return true;
         }
         return true;
