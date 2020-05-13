@@ -6,9 +6,23 @@ import listeners.commandListener;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jsoup.Jsoup;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import util.SECRETS;
 import util.STATIC;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -32,16 +46,33 @@ public class cmdNext implements Command {
                 }
                 return;
             }
+            String tzs = STATIC.SOMMERZEIT?"CEST":"CET";
+            if (args.length==1) {
+                String ret = "";
+                try {
+                    ret = convert(args[0].toUpperCase(),tn);
+                } catch (NumberFormatException e) {
+                    event.getTextChannel().sendMessage("ERROR: "+e.getMessage()).queue();
+                    return;
+                }catch (IOException | SAXException | ParserConfigurationException e) {
+                    event.getTextChannel().sendMessage("An Error occured. Please try again later").queue();
+                    e.printStackTrace();
+                    return;
+                }
+                long offset = Long.parseLong(ret);
+                tn =tn.withOffsetSameInstant(ZoneOffset.ofTotalSeconds((int) offset));
+                tzs = args[0].toUpperCase();
+            }
             String day = digitadd(tn.getDayOfMonth(),2);
             String month = digitadd(tn.getMonthValue(),2);
             String year = digitadd(tn.getYear(),4);
             String hour = digitadd(tn.getHour(),2);
             String minute = digitadd(tn.getMinute(),2);
-            String out =LangManager.get(event.getGuild(),"cmdNextGet").replace("%DAY%",day).replace("%MONTH%",month).replace("%YEAR%",year).replace("%HOUR%",hour).replace("%MINUTE%",minute);
+            String out =LangManager.get(event.getGuild(),"cmdNextGet").replace("%DAY%",day).replace("%MONTH%",month).replace("%YEAR%",year).replace("%HOUR%",hour).replace("%MINUTE%",minute).replace("%TIMEZONE%",tzs);
             event.getTextChannel().sendMessage(out).queue();
             return;
         }
-        if (args.length<1) {
+        if (args.length<2) {
             String out ="";
             OffsetDateTime tn = STATIC.getNextTournament(event.getGuild());
             if(OffsetDateTime.now().isAfter(tn)) {
@@ -51,12 +82,31 @@ public class cmdNext implements Command {
                     event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdNextAlreadyRunning")).queue();
                 }
             } else {
+                String tzs = STATIC.SOMMERZEIT?"CEST":"CET";
+                if (args.length>0) {
+                    String ret = "";
+                    try {
+                        ret = convert(args[0].toUpperCase(),tn);
+                    } catch (NumberFormatException e) {
+                        event.getTextChannel().sendMessage("ERROR: "+e.getMessage()).queue();
+                        return;
+                    }catch (IOException | SAXException | ParserConfigurationException e) {
+                        event.getTextChannel().sendMessage("An Error occured. Please try again later").queue();
+                        e.printStackTrace();
+                        return;
+                    }
+                    long offset = Long.parseLong(ret);
+                    tn =tn.withOffsetSameInstant(ZoneOffset.ofTotalSeconds((int) offset));
+                    tzs = args[0];
+                }
+
+
                 String day = digitadd(tn.getDayOfMonth(),2);
                 String month = digitadd(tn.getMonthValue(),2);
                 String year = digitadd(tn.getYear(),4);
                 String hour = digitadd(tn.getHour(),2);
                 String minute = digitadd(tn.getMinute(),2);
-                out += LangManager.get(event.getGuild(),"cmdNextGet").replace("%DAY%",day).replace("%MONTH%",month).replace("%YEAR%",year).replace("%HOUR%",hour).replace("%MINUTE%",minute);
+                out += LangManager.get(event.getGuild(),"cmdNextGet").replace("%DAY%",day).replace("%MONTH%",month).replace("%YEAR%",year).replace("%HOUR%",hour).replace("%MINUTE%",minute).replace("%TIMEZONE%",tzs);
             }
             out += "\n"+LangManager.get(event.getGuild(),"cmdNextUsage").replace("%PREFIX%",prefix);
             event.getTextChannel().sendMessage(out).queue();
@@ -135,7 +185,7 @@ public class cmdNext implements Command {
 
     @Override
     public String Def(String prefix, Guild g) {
-        return LangManager.get(g,"cmdNextDef");
+        return LangManager.get(g,"cmdNextDef").replace("%PREFIX%",prefix);
     }
 
     private String digitadd(int numbertoadd, int howmanydigits) {
@@ -145,5 +195,69 @@ public class cmdNext implements Command {
             out.insert(0, "0");
         }
         return out.toString();
+    }
+
+    private static String convert(String tz, OffsetDateTime odt) throws IOException, SAXException, ParserConfigurationException, NumberFormatException {
+        long unix =odt.toEpochSecond();
+        String from = //STATIC.SOMMERZEIT?"CEST":"CET";
+                "UTC";
+
+        String in = "http://api.timezonedb.com/v2.1/convert-time-zone?key="+ SECRETS.getTimeDBKey() +"&format=xml&from="+from+"&to="+tz+"&time="+unix;
+        String html = "";
+        try {
+            html = Jsoup.connect(in).get().html();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+
+        // Load the input XML document, parse it and return an instance of the
+        // Document class.
+        ArrayList<String> outal = new ArrayList<>();
+        outal.add(html);
+
+        util.printOutTxtFile.Write("xml.txt",outal);
+        Document document = builder.parse("xml.txt");
+
+        NodeList nodeList = document.getDocumentElement().getChildNodes();
+        boolean hasworked = true;
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node node = nodeList.item(i);
+
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element elem = (Element) node;
+                if (elem.getTagName().equalsIgnoreCase("status")) {
+                    String status = elem.getChildNodes().item(0).getNodeValue().replace("\n","").replace(" ","");
+                    if (!status.equalsIgnoreCase("OK")) {
+                        hasworked = false;
+                        System.out.println("status="+status);
+                    }
+                }
+                if (elem.getTagName().equalsIgnoreCase("message")&&!hasworked) {
+                    String ret = elem.getChildNodes().item(0).getNodeValue().replace("\n","");
+                    throw new NumberFormatException(ret);
+                }
+                if (elem.getTagName().equalsIgnoreCase("offset")) {
+                    return  elem.getChildNodes().item(0).getNodeValue().replace("\n","").replace(" ","");
+                }
+
+
+                // Get the value of all sub-elements.
+                /*String status = elem.getElementsByTagName("status").item(0).getChildNodes().item(0).getNodeValue();
+                String ret ="";
+
+                if (!status.equalsIgnoreCase("OK")) {
+                    ret = elem.getElementsByTagName("message").item(0).getChildNodes().item(0).getNodeValue();
+                    throw new NumberFormatException(ret);
+                } else {
+                    ret = elem.getElementsByTagName("offset").item(0).getChildNodes().item(0).getNodeValue();
+                }
+                return ret;*/
+
+            }
+        }
+        throw new NumberFormatException("ERROR whilst connecting to API!");
     }
 }

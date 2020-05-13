@@ -54,9 +54,9 @@ public class STATIC {
 
     public static String TESTGUILD = "676002000835444736";
 
-    public static OffsetDateTime NextTournament = OffsetDateTime.of(2020, 5,5,19,30,0,0, OffsetDateTime.now().getOffset());
-
     public static boolean dryRun = false;
+
+    public static boolean SOMMERZEIT = true;
 
     public static void setSettings(Guild g, String key, String value) {
         setSettings(g.getId(),key,value);

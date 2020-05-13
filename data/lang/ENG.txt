@@ -73,7 +73,7 @@
 -#cmdNext
 -NotSet#The date for the next tournament has not yet been fixed!
 -AlreadyRunning#The tournament is already running!
--Get#The next tournament will take place on %DAY%. %MONTH%. %YEAR% at %HOUR%:%MINUTE% clock (CEST)!
+-Get#The next tournament will take place on %DAY%. %MONTH%. %YEAR% at %HOUR%:%MINUTE% clock (%TIMEZONE%)!
 -Usage#If you want to change / set the date, use `%PREFIX%next [day] [month] [year] [hour] [minute]`
 -Error#Error processing input: %MSG%
 -NEDay#This day does not exist!
@@ -82,7 +82,7 @@
 -NEMinute#This minute does not exist!
 -ParseError# Error parsing time: %MSG%
 -PastError#This time is in the past!
--Def#Find out the time of the next tournament!
+-Def#Find out the time of the next tournament! Use "%PREFIX%next [Timezone]" to get the date in your timezone
 
 //TRANSLATED BY JasonAimer#9118
 
@@ -216,3 +216,10 @@
 
 -#CRL
 -Success#Thank you, that you’ve confirmed you presence. Please remember your opponent to do this!
+
+-#cmdTZ
+-Def#See the time zones you can use with the command next
+-Usage#Usage: `%PREFIX%timezone [country/country code/continent]`
+-Error#An Error occured:
+-NoMatches#There are no matching results!
+-Results#Here are the results. If you want to use one with the next-command, please use the first term with the "/"
