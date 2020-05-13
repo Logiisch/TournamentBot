@@ -73,7 +73,7 @@
 -#cmdNext
 -NotSet#The date for the next tournament has not yet been fixed!
 -AlreadyRunning#The tournament is already running!
--Get#The next tournament will take place on %DAY%. %MONTH%. %YEAR% at %HOUR%:%MINUTE% clock!
+-Get#The next tournament will take place on %DAY%. %MONTH%. %YEAR% at %HOUR%:%MINUTE% clock (CEST)!
 -Usage#If you want to change / set the date, use `%PREFIX%next [day] [month] [year] [hour] [minute]`
 -Error#Error processing input: %MSG%
 -NEDay#This day does not exist!
