@@ -19,7 +19,7 @@ public class commandHandler {
     public static final commandParser parser = new commandParser();
     public static HashMap<String, Command> commands = new HashMap<>();
 
-    public static void handleCommand(commandParser.commandContainer cmd) throws IOException {
+    public static void handleCommand(commandParser.commandContainer cmd)  {
 
         if (commands.containsKey(cmd.invoke)) {
             if (commands.get(cmd.invoke).blockedServerIDs() != null) {
@@ -59,14 +59,23 @@ public class commandHandler {
 
     }
     private static boolean hasPermission(PermissionLevel pm, MessageReceivedEvent event)  {
-        if (pm.equals(PermissionLevel.GUILDOWNER)&&event.getAuthor().getId().equalsIgnoreCase(Objects.requireNonNull(event.getGuild().getOwner()).getUser().getId())) return true;
+        if (pm.equals(PermissionLevel.EVERYONE)) return true;
         if (event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) return true;
-        if (pm.equals(PermissionLevel.BOTOWNER)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) return false;
-        Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
-        if (pm.equals(PermissionLevel.HELPER)&&!Objects.requireNonNull(event.getMember()).getRoles().contains(helper)) return false;
-        Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));
-        if (pm.equals(PermissionLevel.ADMIN)&&!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)) return false;
-        return false;
+        if (pm.equals(PermissionLevel.GUILDOWNER)) {
+            return event.getAuthor().getId().equalsIgnoreCase(Objects.requireNonNull(event.getGuild().getOwner()).getUser().getId());
+        }
+        if (pm.equals(PermissionLevel.ADMIN)) {
+            Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));
+            assert admin!=null;
+            return Objects.requireNonNull(event.getMember()).getRoles().contains(admin);
+        }
+        if (pm.equals(PermissionLevel.HELPER)) {
+            Role helper = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HELPER"));
+            assert helper!=null;
+            return Objects.requireNonNull(event.getMember()).getRoles().contains(helper);
+        }
+        return true;
+
     }
 
 }
