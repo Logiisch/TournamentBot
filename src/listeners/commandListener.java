@@ -60,12 +60,10 @@ public class commandListener extends ListenerAdapter {
                 }
 
             }*/
-            try {
-                writeCmd(event);
-                commandHandler.handleCommand(commandHandler.parser.parse(CD,  event));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+            writeCmd(event);
+            commandHandler.handleCommand(commandHandler.parser.parse(CD,  event));
+
         }
 
     }
