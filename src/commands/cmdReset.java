@@ -47,7 +47,7 @@ public class cmdReset implements Command {
         nodes.clear();
         Logic.setNodes(event.getGuild(),nodes);
         ConfirmReactListener.toConfirmResult.clear();
-        File f = new File ("data/"+event.getGuild().getId()+"/nodes.txt");
+        File f = new File ("data/guilds/"+event.getGuild().getId()+"/nodes.txt");
         if (f.exists()) //noinspection ResultOfMethodCallIgnored
             f.delete();
         TextChannel tc =event.getGuild().getTextChannelById(STATIC.getSettings(event.getGuild(),"CHANNEL_RESULTS"));

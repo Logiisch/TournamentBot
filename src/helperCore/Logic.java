@@ -719,7 +719,7 @@ public class Logic {
         for (int i:nodes.keySet()) {
             out.add(save(i,g));
         }
-        File f = new File("data/"+g.getId()+"/");
+        File f = new File("data/guilds/"+g.getId()+"/");
         if (!f.exists()) //noinspection ResultOfMethodCallIgnored
             f.mkdirs();
         try {
@@ -842,7 +842,7 @@ public class Logic {
     }
     public static boolean loadNodes(JDA jda) {
         ArrayList<String> in;
-        File f = new File("data/");
+        File f = new File("data/guilds/");
         if (!f.exists()) return false;
         File[] subs = f.listFiles();
         for (File fl:subs) {
