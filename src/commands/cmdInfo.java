@@ -25,7 +25,7 @@ public class cmdInfo implements Command {
         } else {
             u= event.getMessage().getMentionedMembers().get(0).getUser();
         }
-        tn = Logic.getCurrentNode(u);
+        tn = Logic.getCurrentNode(u,event.getGuild());
         if (tn==null) {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralNoOpenMatch")).queue();
             return;

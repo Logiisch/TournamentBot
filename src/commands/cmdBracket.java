@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.HashMap;
 
 public class cmdBracket implements Command {
     private static final int FontsizeSmall = 26;
@@ -25,7 +26,7 @@ public class cmdBracket implements Command {
 
     @Override
     public void action(String[] args, MessageReceivedEvent event) {
-        if (Logic.nodes.isEmpty()) {
+        if (Logic.getNodes(event.getGuild()).isEmpty()) {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralDidntStartYet")).queue();
             return;
         }
@@ -76,8 +77,8 @@ public class cmdBracket implements Command {
         g.setStroke(new BasicStroke(3));
         g.setColor(Color.BLACK);
         g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));
-        for (int nid:Logic.nodes.keySet()) {
-            TournamentNode tn = Logic.nodes.get(nid);
+        for (int nid:Logic.getNodes(gl).keySet()) {
+            TournamentNode tn = Logic.getNodes(gl).get(nid);
             draw(tn, author, g,gl);
         }
 
@@ -87,10 +88,11 @@ public class cmdBracket implements Command {
 
     }
     private static void draw(TournamentNode tn, User u, Graphics2D g,Guild gl) {
+        HashMap<Integer, TournamentNode> nodes = Logic.getNodes(gl);
         int brcktnd = tn.getBracketNbr();
         if (tn.winner!=null) {
             if (tn.winner.getId().equalsIgnoreCase(u.getId())) g.setPaint(Color.blue); else g.setPaint(Color.black);
-            if (Logic.nodes.containsKey(tn.promoteToNID)) if (Logic.nodes.get(tn.promoteToNID).winner==null ) g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall)); else if (Logic.nodes.get(tn.promoteToNID).winner.getId().equalsIgnoreCase(tn.winner.getId())) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeSmall)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));
+            if (nodes.containsKey(tn.promoteToNID)) if (nodes.get(tn.promoteToNID).winner==null ) g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall)); else if (nodes.get(tn.promoteToNID).winner.getId().equalsIgnoreCase(tn.winner.getId())) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeSmall)); else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));else g.setFont(new Font(Font.DIALOG,Font.PLAIN,FontsizeSmall));
             if (tn.getBracketNbr()>64) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeMedium));
             if (tn.getBracketNbr()==127) g.setFont(new Font(Font.DIALOG,Font.BOLD,FontsizeBig));
             g.drawString(bracketify(tn.winner,gl),getx(brcktnd),gety(brcktnd));

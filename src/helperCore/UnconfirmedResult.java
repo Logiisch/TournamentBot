@@ -31,7 +31,7 @@ public class UnconfirmedResult {
             Logic.logresult(winner,true,g);
         } catch (Exception e) {
             StringBuilder msg = new StringBuilder();
-            ArrayList<User> usrs = Logic.nodes.get(nid).players;
+            ArrayList<User> usrs = Logic.getNodes(g).get(nid).players;
             for (User u: usrs) {
                 try {
                     Member m = g.getMember(u);
@@ -58,7 +58,7 @@ public class UnconfirmedResult {
     }
     public void deny() {
         StringBuilder msg = new StringBuilder();
-        ArrayList<User> usrs = Logic.nodes.get(nid).players;
+        ArrayList<User> usrs = Logic.getNodes(g).get(nid).players;
         for (User u: usrs) {
             try {
                 Member m = g.getMember(u);

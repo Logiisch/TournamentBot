@@ -31,7 +31,7 @@ public class cmdSet implements Command {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralOnlyHelper")).queue();
             return;
         }
-        if (Logic.nodes.size()==0) {
+        if (Logic.getNodes(event.getGuild()).size()==0) {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralDidntStartYet")).queue();
             return;
         }

@@ -102,8 +102,8 @@ public class cmdTimezone implements Command {
         ArrayList<String> outal = new ArrayList<>();
         outal.add(html);
 
-        util.printOutTxtFile.Write("xml.txt",outal);
-        Document document = builder.parse("xml.txt");
+        util.printOutTxtFile.Write("timezones.txt",outal);
+        Document document = builder.parse("timezones.txt");
 
         NodeList nodeList = document.getDocumentElement().getChildNodes();
         boolean hasworked = true;

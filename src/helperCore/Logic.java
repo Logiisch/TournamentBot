@@ -19,16 +19,23 @@ import java.util.List;
 
 public class Logic {
 
-    public static HashMap<Integer,TournamentNode> nodes = new HashMap<>();
+    private static HashMap<String,HashMap<Integer,TournamentNode>> allNodes = new HashMap<>();
+
+    public static HashMap<Integer, TournamentNode> getNodes(Guild g) {
+        return allNodes.getOrDefault(g.getId(),new HashMap<>());
+    }
+    public static void setNodes(Guild g, HashMap<Integer, TournamentNode> map) {
+        allNodes.put(g.getId(),map);
+    }
 
     public static String start(MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
-        nodes.clear();
+
 
         List<Member> mbrs =event.getGuild().getMembers();
 
 
-        TournamentNode finale = new TournamentNode(1,0,6,127);
+        TournamentNode finale = new TournamentNode(1,0,6,127,event.getGuild());
         int nid = 2;
         ArrayList<TournamentNode> temp = new ArrayList<>();
         temp.add(finale);
@@ -36,8 +43,8 @@ public class Logic {
         while (!temp.isEmpty()) {
             TournamentNode tn = temp.get(0);
             if (tn.getRunde()>1) {
-                TournamentNode a = new TournamentNode(nid++,tn.NID,tn.getRunde()-1,getSubs(tn.getBracketNbr()).get(0));
-                TournamentNode b = new TournamentNode(nid++,tn.NID,tn.getRunde()-1,getSubs(tn.getBracketNbr()).get(1));
+                TournamentNode a = new TournamentNode(nid++,tn.NID,tn.getRunde()-1,getSubs(tn.getBracketNbr()).get(0),event.getGuild());
+                TournamentNode b = new TournamentNode(nid++,tn.NID,tn.getRunde()-1,getSubs(tn.getBracketNbr()).get(1),event.getGuild());
 
                 tn.promoteFrom.add(a.NID);
                 tn.promoteFrom.add(b.NID);
@@ -75,6 +82,7 @@ public class Logic {
             teilnehmer.add(event.getJDA().getSelfUser());
         }
         Collections.shuffle(teilnehmer);
+        HashMap<Integer,TournamentNode> nodes = getNodes(event.getGuild());
         for (int i:nodes.keySet()) {
             TournamentNode node = nodes.get(i);
             if (node.getRunde()==1) {
@@ -99,6 +107,7 @@ public class Logic {
             }
             node.update();
         }
+        setNodes(event.getGuild(),nodes);
         refreshTournamnet(event,false);
 
         if (STATIC.dryRun) {
@@ -109,6 +118,7 @@ public class Logic {
 
     private static void refreshTournamnet(MessageReceivedEvent event, boolean exitOnHalfway) {
         boolean changedsomething = false;
+        HashMap<Integer,TournamentNode> nodes = getNodes(event.getGuild());
         for (int nid: nodes.keySet()) {
             TournamentNode node = nodes.get(nid);
             if (node.players.size()<2) continue;
@@ -134,6 +144,7 @@ public class Logic {
             }
 
         }
+        setNodes(event.getGuild(),nodes);
         if (changedsomething) refreshTournamnet(event,true);
         if(exitOnHalfway) return;
         String prefix = commandListener.getPrefix(event.getGuild());
@@ -434,7 +445,7 @@ public class Logic {
 
     public static void logresult(User u, boolean haswon, Guild g) throws Exception{
         TournamentNode tn = null;
-
+        HashMap<Integer,TournamentNode> nodes = getNodes(g);
         for(int i:nodes.keySet()) {
             TournamentNode node = nodes.get(i);
             if (node.winner==null&&node.players.contains(u)) tn = node;
@@ -465,6 +476,7 @@ public class Logic {
             EmbedBuilder eb = new EmbedBuilder().setColor(roleOfRound(6,g).getColor()).setTitle(LangManager.get(g,"LogicFinalRes"));
             eb.setDescription(LangManager.get(g,"LogicEndResults").replace("%WINNER%",winner.getName()).replace("%LB%","\n")+(tn.players.get(0).getId().equalsIgnoreCase(winner.getId())?tn.players.get(1).getName():tn.players.get(0).getName()));
             Objects.requireNonNull(g.getTextChannelById(STATIC.getSettings(g,"CHANNEL_RESULTS"))).sendMessage(eb.build()).queue();
+            setNodes(g,nodes);
             return;
         }
 
@@ -534,6 +546,7 @@ public class Logic {
         eb.setColor(role.getColor());
         assert tc != null;
         tc.sendMessage(eb.build()).queue();
+        setNodes(g,nodes);
     }
     private static void refreshRoles(Member m, boolean isdead, int round) throws Exception {
         if (m==null){
@@ -578,6 +591,7 @@ public class Logic {
     }
     public static void trylog(MessageReceivedEvent event,boolean haswon) {
         boolean found =false;
+        HashMap<Integer,TournamentNode> nodes = getNodes(event.getGuild());
         for (int nid: nodes.keySet()) {
             TournamentNode node = nodes.get(nid);
             if (node.winner==null&&node.players.contains(event.getAuthor())&&node.players.size()==2) {
@@ -589,19 +603,20 @@ public class Logic {
                 if (node.players.get(0).getId().equalsIgnoreCase(event.getAuthor().getId())) tosend=node.players.get(1); else tosend=node.players.get(0);
                 if (haswon) {
                     sendConfirmationMessage(nid,tosend,event.getAuthor(),event.getTextChannel(),event.getMember());
-                    event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": "+LangManager.get(event.getGuild(),"LogicWaitingForEnemyResponse")).queue();
                 } else {
                     sendConfirmationMessage(nid,tosend,tosend,event.getTextChannel(),event.getMember());
-                    event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": "+LangManager.get(event.getGuild(),"LogicWaitingForEnemyResponse")).queue();
                 }
+                event.getTextChannel().sendMessage(Objects.requireNonNull(event.getMember()).getAsMention()+": "+LangManager.get(event.getGuild(),"LogicWaitingForEnemyResponse")).queue();
                 found = true;
             }
         }
         if (!found) {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"LogicNoCurrentMatch")).queue();
         }
+
     }
     private static void sendConfirmationMessage(int nid, User playerToNotify, User playerthathaswon,TextChannel tc,Member author) {
+        HashMap<Integer,TournamentNode> nodes = getNodes(tc.getGuild());
         TournamentNode tourni = nodes.get(nid);
         String enemy = tourni.players.get(0).getId().equalsIgnoreCase(playerToNotify.getId())?tourni.players.get(1).getName():tourni.players.get(0).getName();
         String msgs = LangManager.get(tc.getGuild(),(playerthathaswon.getId().equalsIgnoreCase(playerToNotify.getId())?"LogicNotifyYouHaveWon":"LogicNotifyEnemyHasWon").replace("%ENEMY%",enemy));
@@ -630,9 +645,11 @@ public class Logic {
             };
             cmdRetry.retryLater.put(playerToNotify,rod);
         }
+        setNodes(tc.getGuild(),nodes);
     }
 
     public static void revert(User u,Guild g) throws Exception{
+        HashMap<Integer,TournamentNode> nodes = getNodes(g);
         for (int nid : nodes.keySet()) {
             TournamentNode node = nodes.get(nid);
             if (!node.players.contains(u)) continue;
@@ -653,6 +670,7 @@ public class Logic {
         throw new Exception(LangManager.get(g,"LogicIsntParticipant"));
     }
     private static void revert(User u, TournamentNode revto, TournamentNode revfrom,Guild g) throws Exception {
+        HashMap<Integer,TournamentNode> nodes = getNodes(g);
         revto.winner =null;
         revfrom.players.remove(u);
         if (!revfrom.players.isEmpty()) {
@@ -694,17 +712,18 @@ public class Logic {
 
     }
 
-    static void save() {
+    static void save(Guild g) {
+        HashMap<Integer,TournamentNode> nodes = getNodes(g);
         if (nodes.isEmpty()) return;
         ArrayList<String> out = new ArrayList<>();
         for (int i:nodes.keySet()) {
-            out.add(save(i));
+            out.add(save(i,g));
         }
-        File f = new File("data/");
+        File f = new File("data/"+g.getId()+"/");
         if (!f.exists()) //noinspection ResultOfMethodCallIgnored
             f.mkdirs();
         try {
-            printOutTxtFile.Write("data/nodes.txt",out);
+            printOutTxtFile.Write("data/"+g.getId()+"/nodes.txt",out);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -712,7 +731,8 @@ public class Logic {
 
 
 
-    private static String save(int nid) {
+    private static String save(int nid,Guild g) {
+        HashMap<Integer,TournamentNode> nodes = getNodes(g);
         StringBuilder out = new StringBuilder();
         TournamentNode node = nodes.get(nid);
         out.append(node.NID).append(",");
@@ -758,17 +778,17 @@ public class Logic {
 
     /*
     Serialisation:
-    nid, promtonid, winner(id,0 wenn nicht gesetzt),runde,promotefrom[0](0 wenn nicht gsetzt),promotefrom[1](0 wenn nicht gsetzt),player[0](id,0 wenn nicht gsetzt),player[1](id,0 wenn nicht gsetzt),bracketnode,bracketsub1,bracketsub2
+    nid, promtonid, winner(id,0 wenn nicht gesetzt),runde,promotefrom[0](0 wenn nicht gsetzt),promotefrom[1](0 wenn nicht gsetzt),player[0](id,0 wenn nicht gsetzt),player[1](id,0 wenn nicht gsetzt),bracketnode,bracketsub1,bracketsub2,guildid
     Seperator: ,
 
     */
 
-    private static void load (String s, JDA jda) {
+    private static boolean load (String s, JDA jda,String gid) {
         String[] split = s.split(",");
         long[] sp = new long[11];
         if (split.length!=11) {
             System.out.println("split lenght wrong: expectet 8, got"+split.length);
-            return;
+            return false;
         }
         try {
             for (int i=0;i<split.length;i++) {
@@ -776,7 +796,7 @@ public class Logic {
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            return;
+            return false;
         }
 
         int nid = (int)sp[0];
@@ -814,26 +834,34 @@ public class Logic {
             subs.add(suba);
             subs.add(subb);
         }
-        TournamentNode tn = new TournamentNode(nid,promtoid,winner,runde,promfrom,plyr,brckt,subs);
+        Guild g = jda.getGuildById(gid);
+        if (g==null) return false;
+        TournamentNode tn = new TournamentNode(nid,promtoid,winner,runde,promfrom,plyr,brckt,subs,g);
         tn.update(false);
+        return true;
     }
     public static boolean loadNodes(JDA jda) {
         ArrayList<String> in;
-        File f = new File("data/nodes.txt");
+        File f = new File("data/");
         if (!f.exists()) return false;
-        try {
-            in =readInTxtFile.Read("data/nodes.txt");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+        File[] subs = f.listFiles();
+        for (File fl:subs) {
+            try {
+                in =readInTxtFile.Read(fl.getAbsolutePath()+"/nodes.txt");
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+            for (String s:in) {
+                load(s,jda,fl.getName());
+            }
         }
-        for (String s:in) {
-            load(s,jda);
-        }
+
 
         return true;
     }
-    public static TournamentNode getCurrentNode(User u) {
+    public static TournamentNode getCurrentNode(User u,Guild g) {
+        HashMap<Integer, TournamentNode> nodes = getNodes(g);
         for (int nid:nodes.keySet()) {
             TournamentNode tn = nodes.get(nid);
             if (tn.players.contains(u)&&tn.winner==null) return tn;
@@ -842,10 +870,11 @@ public class Logic {
     }
 
     public static void kickUser(User u,Guild g) {
+        HashMap<Integer, TournamentNode> nodes = getNodes(g);
         notincluded.add(u.getId());
-        if (!Logic.nodes.isEmpty()) {
-            for (int nid:Logic.nodes.keySet()) {
-                TournamentNode tn = Logic.nodes.get(nid);
+        if (!nodes.isEmpty()) {
+            for (int nid:nodes.keySet()) {
+                TournamentNode tn = nodes.get(nid);
 
                 if (tn.players.contains(u)) {
                     tn.players.remove(u);
@@ -864,6 +893,7 @@ public class Logic {
                 }
             }
         }
+        setNodes(g,nodes);
         saveNotIncluded();
     }
 

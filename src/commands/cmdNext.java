@@ -39,7 +39,7 @@ public class cmdNext implements Command {
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
             OffsetDateTime tn = STATIC.getNextTournament(event.getGuild());
             if(OffsetDateTime.now().isAfter(tn)) {
-                if(Logic.nodes.isEmpty()) {
+                if(Logic.getNodes(event.getGuild()).isEmpty()) {
                     event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdNextNotSet")).queue();
                 } else {
                     event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdNextAlreadyRunning")).queue();
@@ -76,7 +76,7 @@ public class cmdNext implements Command {
             String out ="";
             OffsetDateTime tn = STATIC.getNextTournament(event.getGuild());
             if(OffsetDateTime.now().isAfter(tn)) {
-                if(Logic.nodes.isEmpty()) {
+                if(Logic.getNodes(event.getGuild()).isEmpty()) {
                     event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdNextNotSet")).queue();
                 } else {
                     event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdNextAlreadyRunning")).queue();
@@ -218,8 +218,8 @@ public class cmdNext implements Command {
         ArrayList<String> outal = new ArrayList<>();
         outal.add(html);
 
-        util.printOutTxtFile.Write("xml.txt",outal);
-        Document document = builder.parse("xml.txt");
+        util.printOutTxtFile.Write("result.txt",outal);
+        Document document = builder.parse("result.txt");
 
         NodeList nodeList = document.getDocumentElement().getChildNodes();
         boolean hasworked = true;

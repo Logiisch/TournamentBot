@@ -14,6 +14,7 @@ import util.STATIC;
 import java.io.File;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class cmdFinalDisplay implements Command {
@@ -34,11 +35,11 @@ public class cmdFinalDisplay implements Command {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralOnlyAdmin")).queue();
             return;
         }
-        if (Logic.nodes.isEmpty()) {
+        if (Logic.getNodes(event.getGuild()).isEmpty()) {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralDidntStartYet")).queue();
             return;
         }
-        if (Logic.nodes.get(1).winner==null) {
+        if (Logic.getNodes(event.getGuild()).get(1).winner==null) {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdFinalNoWinnerYet")).queue();
             return;
         }
@@ -46,12 +47,13 @@ public class cmdFinalDisplay implements Command {
              event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdFinalNoChannel")).queue();
              return;
          }
-        User winner = Logic.nodes.get(1).winner;
+        HashMap<Integer, TournamentNode> nodes = Logic.getNodes(event.getGuild());
+        User winner = nodes.get(1).winner;
         String wstring = "";
         if (event.getGuild().isMember(winner)) wstring = Objects.requireNonNull(event.getGuild().getMember(winner)).getAsMention(); else wstring = winner.getName();
         ArrayList<String> users = new ArrayList<>();
-        for (Integer nid : Logic.nodes.keySet()) {
-            TournamentNode tn = Logic.nodes.get(nid);
+        for (Integer nid : nodes.keySet()) {
+            TournamentNode tn = nodes.get(nid);
             for (User ta:tn.players) {
                 if (!users.contains(ta.getId())) users.add(ta.getId());
             }

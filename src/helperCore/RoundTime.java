@@ -32,7 +32,7 @@ public class RoundTime  implements TimeKeeper{
     @Override
     public boolean OnTimeRunOut() {
         if (hasReacted.size()==2) return true;
-        TournamentNode tn = Logic.nodes.get(nid);
+        TournamentNode tn = Logic.getNodes(guild).get(nid);
         if (tn.winner!=null) return true;
         if (hasReacted.size()==0) {
             for (User u:tn.players) {

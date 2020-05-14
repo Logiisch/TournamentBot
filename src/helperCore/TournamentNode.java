@@ -1,8 +1,10 @@
 package helperCore;
 
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TournamentNode {
 
@@ -14,19 +16,21 @@ public class TournamentNode {
     public ArrayList<User> players = new ArrayList<>();
     private int bracketNodeNbr;
     private ArrayList<Integer> bracketSubNotes = new ArrayList<>();
+    private Guild guild;
 
-    TournamentNode(int nid, int ptnid, int rnd,int bracket) {
+    TournamentNode(int nid, int ptnid, int rnd,int bracket,Guild g) {
         NID = nid;
         promoteToNID = ptnid;
         runde = rnd;
         bracketNodeNbr = bracket;
+        guild = g;
     }
     /*TournamentNode(int nid, int ptnid, int rnd, int bracket, int suba, int subb) {
         this(nid,ptnid,rnd,bracket);
         bracketSubNotes.add(suba);
         bracketSubNotes.add(subb);
     }*/
-    TournamentNode(int nid, int promotetonid, User wnner, int rnde, ArrayList<Integer> promFrom, ArrayList<User> plyrs,int brckt,ArrayList<Integer> subbrckt) {
+    TournamentNode(int nid, int promotetonid, User wnner, int rnde, ArrayList<Integer> promFrom, ArrayList<User> plyrs,int brckt,ArrayList<Integer> subbrckt,Guild g) {
         NID = nid;
         promoteToNID= promotetonid;
         winner =wnner;
@@ -35,6 +39,7 @@ public class TournamentNode {
         runde= rnde;
         bracketNodeNbr = brckt;
         bracketSubNotes = subbrckt;
+        guild = g;
     }
     public int getBracketNbr() {
         return bracketNodeNbr;
@@ -50,8 +55,10 @@ public class TournamentNode {
         update(true);
     }
     void update(boolean save) {
-        Logic.nodes.put(NID,this);
-        if(save) Logic.save();
+        HashMap<Integer,TournamentNode> nodes = Logic.getNodes(guild);
+        nodes.put(NID,this);
+        Logic.setNodes(guild,nodes);
+        if(save) Logic.save(guild);
     }
 
     public int getRunde() {

@@ -29,7 +29,7 @@ public class cmdStart implements Command {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralOnlyAdmin")).queue();
             return;
         }
-        if (!Logic.nodes.isEmpty()) {
+        if (!Logic.getNodes(event.getGuild()).isEmpty()) {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdStartStillRunning").replace("%PREFIX%",commandListener.getPrefix(event.getGuild()))).queue();
             return;
         }

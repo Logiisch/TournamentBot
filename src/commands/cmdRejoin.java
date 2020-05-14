@@ -32,7 +32,7 @@ public class cmdRejoin implements Command {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralOnlyAdmin")).queue();
             return;
         }
-        if (!Logic.nodes.isEmpty()) {
+        if (!Logic.getNodes(event.getGuild()).isEmpty()) {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdRejoinAlreadyStarted")).queue();
             return;
         }

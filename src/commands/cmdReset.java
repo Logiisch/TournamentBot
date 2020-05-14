@@ -3,6 +3,7 @@ package commands;
 import helperCore.LangManager;
 import helperCore.Logic;
 import helperCore.PermissionLevel;
+import helperCore.TournamentNode;
 import listeners.ConfirmReactListener;
 import listeners.commandListener;
 import net.dv8tion.jda.api.entities.*;
@@ -12,6 +13,7 @@ import util.STATIC;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class cmdReset implements Command {
@@ -41,9 +43,11 @@ public class cmdReset implements Command {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdresetConfirm").replace("%PREFIX",prefix)).queue();
             return;
         }
-        Logic.nodes.clear();
+        HashMap<Integer, TournamentNode> nodes = Logic.getNodes(event.getGuild());
+        nodes.clear();
+        Logic.setNodes(event.getGuild(),nodes);
         ConfirmReactListener.toConfirmResult.clear();
-        File f = new File ("data/nodes.txt");
+        File f = new File ("data/"+event.getGuild().getId()+"/nodes.txt");
         if (f.exists()) //noinspection ResultOfMethodCallIgnored
             f.delete();
         TextChannel tc =event.getGuild().getTextChannelById(STATIC.getSettings(event.getGuild(),"CHANNEL_RESULTS"));

@@ -19,7 +19,7 @@ public class cmdResult implements Command {
     @Override
     public void action(String[] args, MessageReceivedEvent event)  {
         String prefix = commandListener.getPrefix(event.getGuild());
-        if (Logic.nodes.size()==0) {
+        if (Logic.getNodes(event.getGuild()).size()==0) {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralDidntStartYet")).queue();
             return;
         }
