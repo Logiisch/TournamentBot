@@ -61,6 +61,7 @@ public class commandHandler {
     private static boolean hasPermission(PermissionLevel pm, MessageReceivedEvent event)  {
         if (pm.equals(PermissionLevel.EVERYONE)) return true;
         if (event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) return true;
+        if (pm.equals(PermissionLevel.BOTOWNER)) return false;
         if (pm.equals(PermissionLevel.GUILDOWNER)) {
             return event.getAuthor().getId().equalsIgnoreCase(Objects.requireNonNull(event.getGuild().getOwner()).getUser().getId());
         }
