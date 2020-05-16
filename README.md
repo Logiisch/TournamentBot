@@ -3,7 +3,7 @@
 Tournament Bot for Michis Discord
 
 
-## Tournamnet Server
+## Tournamet Server
 
 Join the tournament server: https://turnier.dermichi.de
 
