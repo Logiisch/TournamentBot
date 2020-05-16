@@ -1,9 +1,14 @@
 # TournamentBot
+
 Tournament Bot for Michis Discord
+
+
+## Tournamnet Server
 
 Join the tournament server: https://turnier.dermichi.de
 
-#Setup-Instructions:
+
+## Setup-Instructions:
 - Download .jar-File here: https://logii.de/data/TournamentBot.jar
 - Generate a Discord bot token
 - Generate a TimeDB Access Token
