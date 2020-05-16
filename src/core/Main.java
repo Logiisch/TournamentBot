@@ -50,6 +50,7 @@ public class Main {
         builder.addEventListeners(new readyListener());
         builder.addEventListeners(new privateMessageListener());
         builder.addEventListeners(new autoChannelListener());
+        builder.addEventListeners(new MessageRoleListener());
     }
 
     private static void addCommands() {
