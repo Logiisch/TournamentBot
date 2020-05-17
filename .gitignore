@@ -5,7 +5,7 @@ data/guilds/
 META-INF/*
 out/*
 *.iml
-*.jpg
+bracket.jpg
 notInc.txt
 result.txt
 timezones.txt
