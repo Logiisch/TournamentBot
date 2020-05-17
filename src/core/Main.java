@@ -3,7 +3,6 @@ package core;
 
 import commands.*;
 import listeners.*;
-
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -13,10 +12,10 @@ import threads.AutoKickThread;
 import util.SECRETS;
 import util.STATIC;
 
-import javax.security.auth.login.LoginException;
+import java.time.OffsetDateTime;
 
 public class Main {
-    private static JDABuilder builder = new JDABuilder(AccountType.BOT);
+    private static final JDABuilder builder = new JDABuilder(AccountType.BOT);
 
     public static void main(String[] args) {
         // JDABuilder builder = new JDABuilder(AccountType.BOT);
@@ -28,7 +27,8 @@ public class Main {
 
 
         builder.setActivity(Activity.playing(Version + ""));
-        System.out.println("Starte mit Status " + Version + " ...");
+        OffsetDateTime odt = OffsetDateTime.now();
+        System.out.println("Starte um "+odt.getHour()+":"+odt.getMinute());
         addListeners();
         addCommands();
         //readInStartValues();
@@ -36,8 +36,6 @@ public class Main {
         try {
             JDA jda = builder.build();
             StartThreads(jda);
-        } catch (LoginException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
