@@ -845,9 +845,12 @@ public class Logic {
         File f = new File("data/guilds/");
         if (!f.exists()) return false;
         File[] subs = f.listFiles();
+        File fe;
         for (File fl:subs) {
+            fe = new File(fl.getAbsolutePath()+"/nodes.txt");
+            if (!fe.exists()) continue;
             try {
-                in =readInTxtFile.Read(fl.getAbsolutePath()+"/nodes.txt");
+                in =readInTxtFile.Read(fe.getAbsolutePath());
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
