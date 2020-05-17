@@ -223,3 +223,7 @@
 -Error#An Error occured:
 -NoMatches#There are no matching results!
 -Results#Here are the results. If you want to use one with the next-command, please use the first term with the "/"
+
+-#cmdCode
+-Link#Here you find the link to the source code: %LINK%
+-Def#View the source code

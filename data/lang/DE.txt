@@ -219,3 +219,7 @@
 -Error#Leider ist ein Fehler aufgetreten:
 -NoMatches#Es konnten keine Ergebnisss gefunden werden, die deiner Suche entsprechen!
 -Results#Die Ergebnisse deiner Suche sind da. Bitte nutze als Zeitzone den ersten Ausdruck mit dem "/"
+
+-#cmdCode
+-Link#Hier ist der Link zum Code: %LINK%
+-Def#Der Link zum Code des Bots

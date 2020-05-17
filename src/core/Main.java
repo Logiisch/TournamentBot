@@ -77,6 +77,7 @@ public class Main {
         commandHandler.commands.put("reload",new cmdReload());
         commandHandler.commands.put("lang", new cmdLang());
         commandHandler.commands.put("timezone",new cmdTimezone());
+        commandHandler.commands.put("code", new cmdCode());
 
     }
 
