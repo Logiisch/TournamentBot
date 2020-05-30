@@ -21,6 +21,7 @@ import java.util.*;
 
 public class STATIC {
     private static HashMap<String, GuildSettings> settings = new HashMap<>();
+    public static ArrayList<String> GuildsWithTeamMode = new ArrayList<>();
     public static String ACTIVITY = "keine große Rolle";
     public static String PREFIX = "t!";
     public static String ADDLINK = "https://discordapp.com/oauth2/authorize?client_id=705567211380801598&scope=bot&permissions=268692560";

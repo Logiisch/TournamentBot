@@ -54,6 +54,7 @@
 -#cmdInfo
 -NotSetYet#Is not yet clear
 -Current#Current opponent
+-Partner#Team mate
 -Def#Show your current position and your current opponent
 
 -#cmdKick
@@ -227,3 +228,15 @@
 -#cmdCode
 -Link#Here you find the link to the source code: %LINK%
 -Def#View the source code
+
+-#cmdMixup
+-OddPlayers#At the moment we have an odd number of players, please remove or add one player!
+-NoPlayers#There is no player with the tournament participant role!
+-NoTeammode#The tournament mode of your guild has been switched to team tournament.
+-EbTeams#Teams
+-EbTeamList#Here are the random generated Teams:
+-EbAnd#and
+-EbFooter#The Player mentioned first is the team leader!
+-Partner#Your team parter is %NAME%!
+-TeamLeaderYou#You are the team leader!
+-TeamLeaderParter#He/she is your team leader!

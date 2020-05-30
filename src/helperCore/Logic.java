@@ -60,7 +60,7 @@ public class Logic {
         }
 
         ArrayList<User> teilnehmer = new ArrayList<>();
-        Role tt = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_TURNIERTEILNEHMER"));
+        Role tt = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(), STATIC.GuildsWithTeamMode.contains(event.getGuild().getId())?"ROLE_TEAMLEADER":"ROLE_TURNIERTEILNEHMER"));
         for (Member m:mbrs) {
             if (getNotIncluded().contains(m.getUser().getId())) continue;
             if (!m.getRoles().contains(tt)) continue;

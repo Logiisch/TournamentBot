@@ -57,6 +57,8 @@ public class cmdReset implements Command {
         } catch (Exception e) {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdResetError").replace("%MSG%",e.getMessage())).queue();
         }
+        STATIC.GuildsWithTeamMode.remove(event.getGuild().getId());
+        cmdTeamMixup.guildTeams.remove(event.getGuild().getId());
         event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdResetMsgClear")).queue();
         for (Member m:event.getGuild().getMembers()) {
             removeRoles(m);

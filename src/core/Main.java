@@ -76,6 +76,7 @@ public class Main {
         commandHandler.commands.put("lang", new cmdLang());
         commandHandler.commands.put("timezone",new cmdTimezone());
         commandHandler.commands.put("code", new cmdCode());
+        commandHandler.commands.put("mixup",new cmdTeamMixup());
 
     }
 

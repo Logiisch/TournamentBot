@@ -54,6 +54,7 @@
 -#cmdInfo
 -NotSetYet#Steht noch nicht fest
 -Current#Aktueller Gegner
+-Partner#Teampartner
 -Def#Zeige deine aktuelle Position und deinen aktuellen Gegner an
 
 -#cmdKick
@@ -223,3 +224,15 @@
 -#cmdCode
 -Link#Hier ist der Link zum Code: %LINK%
 -Def#Der Link zum Code des Bots
+
+-#cmdMixup
+-OddPlayers#Aktuell ist die Anzahl der Spieler ungerade. Bitte füge einen Spieler hinzu oder entferne einen!
+-NoPlayers#Es wurde kein Spieler gefunden, der die Teilnehmer-Rolle hat!
+-NoTeammode#Dein Turnier läuft nun im 2vs2-Modus
+-EbTeams#Teams
+-EbTeamList#Hier sind die zufällig generierten Teams:
+-EbAnd#und
+-EbFooter#Der zuerst genannte Spieler ist der Teamleiter!
+-Partner#Dein Teampartner ist %NAME%!
+-TeamLeaderYou#Du bist der Teamleiter!
+-TeamLeaderParter#Er/sie ist euer Teamleiter!
