@@ -13,12 +13,14 @@ public class AutoKickThread implements Runnable {
         while (true) {
             synchronized (this) {
                 ArrayList<Integer> nidsToRem = new ArrayList<>();
+                synchronized (ConfirmReactListener.rtimes) {
                 for (String s : ConfirmReactListener.rtimes.keySet()) {
                     RoundTime rt = ConfirmReactListener.rtimes.get(s);
                     if (rt.fireOn().isBefore(OffsetDateTime.now())) {
                         boolean remove = rt.OnTimeRunOut();
                         if (remove) nidsToRem.add(rt.getNid());
                     }
+                }
                 }
                 ArrayList<String> msgidsTorem = new ArrayList<>();
                 for (String s : ConfirmReactListener.rtimes.keySet()) {

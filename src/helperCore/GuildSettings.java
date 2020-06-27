@@ -31,6 +31,7 @@ public  class GuildSettings {
         values.put("ROLE_ACHTELFINALE","");
         values.put("ROLE_VORRUNDE2","");
         values.put("ROLE_VORRUNDE1","");
+        values.put("ROLE_TEAMLEADER","");
 
         values.put("ROLE_WINNER","");
         values.put("ROLE_ADMIN","");
@@ -66,7 +67,7 @@ public  class GuildSettings {
         if(values.getOrDefault("ROLE_ACHTELFINALE","").equalsIgnoreCase("")) return false;
         if(values.getOrDefault("ROLE_VORRUNDE1","").equalsIgnoreCase("")) return false;
         if(values.getOrDefault("ROLE_VORRUNDE2","").equalsIgnoreCase("")) return false;
-
+        if(values.getOrDefault("ROLE_TEAMLEADER","").equalsIgnoreCase("")) return false;
         if(values.getOrDefault("ROLE_WINNER","").equalsIgnoreCase("")) return false;
         if(values.getOrDefault("ROLE_ADMIN","").equalsIgnoreCase("")) return false;
         if(values.getOrDefault("ROLE_HELPER","").equalsIgnoreCase("")) return false;
@@ -74,6 +75,7 @@ public  class GuildSettings {
 
         if(values.getOrDefault("CHANNEL_RESULTS","").equalsIgnoreCase("")) return false;
         if(values.getOrDefault("CHANNEL_ALLGEMEIN","").equalsIgnoreCase("")) return false;
+        if(values.getOrDefault("ROLE_TEAMLEADER","").equalsIgnoreCase("")) return false;
         return true;
     }
     public Set<String> keys() {

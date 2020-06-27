@@ -175,7 +175,7 @@
 -EnemyNotReadyYet#Your opponent is still in an other game. Please wait just a few moments!
 -MatchResult#Matchresults
 -DirectPromote#Since the match wasn’t full, %NAME% could move up to "%ROUND%"!
--Result#The match between %PLAYERA% and %PLAYERB% has finished, the winner is: %WINNER%. This play is now in round "%ROUND%"!
+-Result#The match between %PLAYERA% and %PLAYERB% has finished, the winner is: %WINNER%. This player is now in round "%ROUND%"!
 -ResultAlready#A result has already been entered for this match. Please check your DM's!
 -WaitingForEnemyResponse#You’ve to await the confirmation of your opponent, before the result is entered!
 -NoCurrentMatch#No pending match was found, for which you could already rate!
@@ -239,4 +239,4 @@
 -EbFooter#The Player mentioned first is the team leader!
 -Partner#Your team parter is %NAME%!
 -TeamLeaderYou#You are the team leader!
--TeamLeaderParter#He/she is your team leader!
+-TeamLeaderPartner#He/she is your team leader!

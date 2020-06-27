@@ -1,6 +1,7 @@
 package helperCore;
 
 import commands.cmdRetry;
+import commands.cmdTeamMixup;
 import listeners.ConfirmReactListener;
 import listeners.commandListener;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -58,15 +59,22 @@ public class Logic {
             temp.remove(0);
             tn.update();
         }
-
         ArrayList<User> teilnehmer = new ArrayList<>();
-        Role tt = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(), STATIC.GuildsWithTeamMode.contains(event.getGuild().getId())?"ROLE_TEAMLEADER":"ROLE_TURNIERTEILNEHMER"));
-        for (Member m:mbrs) {
-            if (getNotIncluded().contains(m.getUser().getId())) continue;
-            if (!m.getRoles().contains(tt)) continue;
-            teilnehmer.add(m.getUser());
+        if (!STATIC.GuildsWithTeamMode.contains(event.getGuild().getId())) {
+
+            Role tt = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_TURNIERTEILNEHMER"));
+            for (Member m : mbrs) {
+                if (getNotIncluded().contains(m.getUser().getId())) continue;
+                if (!m.getRoles().contains(tt)) continue;
+                teilnehmer.add(m.getUser());
 
 
+            }
+        } else {
+            ArrayList<ArrayList<String>> teams = cmdTeamMixup.guildTeams.get(event.getGuild().getId());
+            for (ArrayList<String> part:teams) {
+                teilnehmer.add(event.getJDA().getUserById(part.get(0)));
+            }
         }
         StringBuilder out = new StringBuilder(LangManager.get(event.getGuild(),"LogicParticipants")+"\n");
         for (User u:teilnehmer) {

@@ -57,6 +57,7 @@ public class cmdReset implements Command {
         } catch (Exception e) {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdResetError").replace("%MSG%",e.getMessage())).queue();
         }
+
         STATIC.GuildsWithTeamMode.remove(event.getGuild().getId());
         cmdTeamMixup.guildTeams.remove(event.getGuild().getId());
         event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdResetMsgClear")).queue();
@@ -97,6 +98,7 @@ public class cmdReset implements Command {
         roles.add(m.getGuild().getRoleById(STATIC.getSettings(m.getGuild().getId(),"ROLE_ACHTELFINALE")));
         roles.add(m.getGuild().getRoleById(STATIC.getSettings(m.getGuild().getId(),"ROLE_VORRUNDE2")));
         roles.add(m.getGuild().getRoleById(STATIC.getSettings(m.getGuild().getId(),"ROLE_VORRUNDE1")));
+        roles.add(m.getGuild().getRoleById(STATIC.getSettings(m.getGuild().getId(),"ROLE_TEAMLEADER")));
         for (Role r:roles) {
             //if (m.getRoles().contains(r))
             try {

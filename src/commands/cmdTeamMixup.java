@@ -26,6 +26,7 @@ public class cmdTeamMixup implements Command {
     public void action(String[] args, MessageReceivedEvent event) {
         if (!STATIC.GuildsWithTeamMode.contains(event.getGuild().getId())) {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdMixupNoTeammode")).queue();
+            STATIC.GuildsWithTeamMode.add(event.getGuild().getId());
         }
         Role tlnhmr = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_TURNIERTEILNEHMER"));
         ArrayList<Member> tn = new ArrayList<>();
@@ -46,9 +47,9 @@ public class cmdTeamMixup implements Command {
             ArrayList<String> part = new ArrayList<>();
             Member a = tn.get(0);
             Member b = tn.get(1);
-            part.add(a.getId());
+            part.add(a.getUser().getId());
             tn.remove(a);
-            part.add(b.getId());
+            part.add(b.getUser().getId());
             tn.remove(b);
             teams.add(part);
         }

@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class ConfirmReactListener extends ListenerAdapter {
     public static HashMap<String, UnconfirmedResult> toConfirmResult = new HashMap<>();
-    public static HashMap<String, RoundTime> rtimes = new HashMap<>();
+    public static final HashMap<String, RoundTime> rtimes = new HashMap<>();
 
     public void onPrivateMessageReactionAdd(@Nonnull PrivateMessageReactionAddEvent event) {
         if (!toConfirmResult.containsKey(event.getMessageId()) &&!rtimes.containsKey(event.getMessageId())) return;
