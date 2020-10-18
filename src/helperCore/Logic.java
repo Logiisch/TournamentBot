@@ -36,29 +36,7 @@ public class Logic {
         List<Member> mbrs =event.getGuild().getMembers();
 
 
-        TournamentNode finale = new TournamentNode(1,0,6,127,event.getGuild());
-        int nid = 2;
-        ArrayList<TournamentNode> temp = new ArrayList<>();
-        temp.add(finale);
 
-        while (!temp.isEmpty()) {
-            TournamentNode tn = temp.get(0);
-            if (tn.getRunde()>1) {
-                TournamentNode a = new TournamentNode(nid++,tn.NID,tn.getRunde()-1,getSubs(tn.getBracketNbr()).get(0),event.getGuild());
-                TournamentNode b = new TournamentNode(nid++,tn.NID,tn.getRunde()-1,getSubs(tn.getBracketNbr()).get(1),event.getGuild());
-
-                tn.promoteFrom.add(a.NID);
-                tn.promoteFrom.add(b.NID);
-                temp.add(a);
-                temp.add(b);
-            } else {
-                for (int i:getSubs(tn.getBracketNbr())) {
-                    tn.addSub(i);
-                }
-            }
-            temp.remove(0);
-            tn.update();
-        }
         ArrayList<User> teilnehmer = new ArrayList<>();
         if (!STATIC.GuildsWithTeamMode.contains(event.getGuild().getId())) {
 
@@ -86,14 +64,50 @@ public class Logic {
         if (teilnehmer.size()>64) {
             return LangManager.get(event.getGuild(),"logicMax64".replace("%PREFIX%",prefix));
         }
-        while (teilnehmer.size()<64) {
+        int playersFull = 64;
+        if (teilnehmer.size()<33) playersFull= 32;
+        if (teilnehmer.size()<17) playersFull= 16;
+        if (teilnehmer.size()<9) playersFull= 8;
+        if (teilnehmer.size()<5) playersFull= 4;
+        while (teilnehmer.size()<playersFull) {
             teilnehmer.add(event.getJDA().getSelfUser());
         }
+
+        TournamentNode finale = new TournamentNode(1,0,6,127,event.getGuild());
+        int nid = 2;
+        ArrayList<TournamentNode> temp = new ArrayList<>();
+        temp.add(finale);
+
+        int minrunde = 1;
+        if (teilnehmer.size()<33) minrunde=2;
+        if (teilnehmer.size()<17) minrunde=3;
+        if (teilnehmer.size()<9) minrunde=4;
+        if (teilnehmer.size()<5) minrunde=5;
+
+        while (!temp.isEmpty()) {
+            TournamentNode tn = temp.get(0);
+            if (tn.getRunde()>minrunde) {
+                TournamentNode a = new TournamentNode(nid++,tn.NID,tn.getRunde()-1,getSubs(tn.getBracketNbr()).get(0),event.getGuild());
+                TournamentNode b = new TournamentNode(nid++,tn.NID,tn.getRunde()-1,getSubs(tn.getBracketNbr()).get(1),event.getGuild());
+
+                tn.promoteFrom.add(a.NID);
+                tn.promoteFrom.add(b.NID);
+                temp.add(a);
+                temp.add(b);
+            } else {
+                for (int i:getSubs(tn.getBracketNbr())) {
+                    tn.addSub(i);
+                }
+            }
+            temp.remove(0);
+            tn.update();
+        }
+
         Collections.shuffle(teilnehmer);
         HashMap<Integer,TournamentNode> nodes = getNodes(event.getGuild());
         for (int i:nodes.keySet()) {
             TournamentNode node = nodes.get(i);
-            if (node.getRunde()==1) {
+            if (node.getRunde()==minrunde) {
                 User a = teilnehmer.get(0);
                 teilnehmer.remove(0);
 
@@ -108,6 +122,10 @@ public class Logic {
                 assert mema!=null;
                 assert memb!=null;
                 Role vr1 = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_VORRUNDE1"));
+                if (minrunde==2) vr1 = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_VORRUNDE2"));
+                if (minrunde==3) vr1 = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ACHTELFINALE"));
+                if (minrunde==4) vr1 = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_VIERTELFINALE"));
+                if (minrunde==5) vr1 = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_HALBFINALE"));
                 assert vr1 != null;
                 event.getGuild().addRoleToMember(mema,vr1).queue();
                 event.getGuild().addRoleToMember(memb,vr1).queue();
@@ -537,6 +555,9 @@ public class Logic {
         promto.update();
         TextChannel tc=g.getTextChannelById(STATIC.getSettings(g,"CHANNEL_RESULTS"));
         EmbedBuilder eb = new EmbedBuilder().setTitle(LangManager.get(g,"LogicMatchResult")).setAuthor(getRoundname(tn.getRunde(),g));
+
+        eb.setDescription(LangManager.get(g,"LogicResult").replace("%PLAYERA%",tn.players.get(0).getName()).replace("%PLAYERB%",tn.players.get(1).getName()).replace("%WINNER%",tn.winner.getName()).replace("%ROUND%",getRoundname(promto.getRunde(),g)));
+
         if (tn.players.contains(g.getSelfMember().getUser())) {
             User named;
             if (tn.players.get(0).getId().equalsIgnoreCase(g.getJDA().getSelfUser().getId())) {
@@ -545,8 +566,6 @@ public class Logic {
                 named = tn.players.get(0);
             }
             eb.setDescription(LangManager.get(g,"LogicDirectPromote").replace("%NAME%",named.getName()).replace("%ROUND%",getRoundname(promto.getRunde(),g)));
-        } else {
-            eb.setDescription(LangManager.get(g,"LogicResult").replace("%PLAYERA%",tn.players.get(0).getName()).replace("%PLAYERB%",tn.players.get(1).getName()).replace("%WINNER%",tn.winner.getName()).replace("%ROUND%",getRoundname(promto.getRunde(),g)));
         }
         Role role = roleOfRound(tn.getRunde(),g);
 
