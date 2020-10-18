@@ -1,6 +1,6 @@
 package commands;
 
-import com.sun.xml.internal.ws.api.pipe.ServerTubeAssemblerContext;
+
 import helperCore.LangManager;
 import helperCore.PermissionLevel;
 import listeners.commandListener;
@@ -26,12 +26,12 @@ public class cmdLang implements Command{
         String lang = args[0].toUpperCase();
         Set<String> av = LangManager.getPossible();
         if (!av.contains(lang)) {
-            String langs = "";
+            StringBuilder langs = new StringBuilder();
             for (String s:av) {
-                langs+=","+s;
+                langs.append(",").append(s);
             }
-            langs = langs.replaceFirst(",","");
-            String out = LangManager.get(event.getGuild(),"cmdLangLangDidntExist")+"\n"+LangManager.get(event.getGuild(),"cmdLangPossibleLangs").replace("%MSG%",langs);
+            langs = new StringBuilder(langs.toString().replaceFirst(",", ""));
+            String out = LangManager.get(event.getGuild(),"cmdLangLangDidntExist")+"\n"+LangManager.get(event.getGuild(),"cmdLangPossibleLangs").replace("%MSG%", langs.toString());
             event.getTextChannel().sendMessage(out).queue();
             return;
         }

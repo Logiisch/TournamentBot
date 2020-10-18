@@ -15,7 +15,7 @@ import util.STATIC;
 import java.time.OffsetDateTime;
 
 public class Main {
-    private static final JDABuilder builder = new JDABuilder(AccountType.BOT);
+    private static final JDABuilder builder = JDABuilder.createDefault(SECRETS.getTOKEN());
 
     public static void main(String[] args) {
         // JDABuilder builder = new JDABuilder(AccountType.BOT);
