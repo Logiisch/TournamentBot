@@ -8,18 +8,24 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import threads.AutoKickThread;
 import util.SECRETS;
 import util.STATIC;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Main {
-    private static final JDABuilder builder = JDABuilder.createDefault(SECRETS.getTOKEN());
+    private static JDABuilder builder = JDABuilder.createDefault(SECRETS.getTOKEN());
 
     public static void main(String[] args) {
-        // JDABuilder builder = new JDABuilder(AccountType.BOT);
         if (!SECRETS.loadTokens()) return;
+        List<GatewayIntent> ints = new ArrayList<>(Arrays.asList(GatewayIntent.values()));
+
+        builder = JDABuilder.create(ints);
         builder.setToken(SECRETS.getTOKEN());
         builder.setAutoReconnect(true);
         builder.setStatus(OnlineStatus.ONLINE);

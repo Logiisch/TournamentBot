@@ -30,7 +30,7 @@ public class cmdReset implements Command {
     @Override
     public void action(String[] args, MessageReceivedEvent event) {
         String prefix = commandListener.getPrefix(event.getGuild());
-        Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));;
+        Role admin = event.getGuild().getRoleById(STATIC.getSettings(event.getGuild(),"ROLE_ADMIN"));
         if (!Objects.requireNonNull(event.getMember()).getRoles().contains(admin)&&!event.getAuthor().getId().equalsIgnoreCase(STATIC.OWNERID)) {
             event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdGeneralOnlyAdmin")).queue();
             return;
@@ -111,13 +111,17 @@ public class cmdReset implements Command {
 
     }
     private void removeMemberConversation(Member m) {
-        if (m.getUser().getId().equalsIgnoreCase(m.getJDA().getSelfUser().getId()))return;
-        PrivateChannel pc =m.getUser().openPrivateChannel().complete();
-        MessageHistory mh =pc.getHistoryFromBeginning(100).complete();
-        if (mh.size()==0) return;
-        for (Message ms:mh.getRetrievedHistory()) {
-            if (!ms.getAuthor().getId().equalsIgnoreCase(m.getJDA().getSelfUser().getId())) continue;
-            pc.deleteMessageById(ms.getId()).queue();
+        try {
+            if (m.getUser().getId().equalsIgnoreCase(m.getJDA().getSelfUser().getId()))return;
+            PrivateChannel pc =m.getUser().openPrivateChannel().complete();
+            MessageHistory mh =pc.getHistoryFromBeginning(100).complete();
+            if (mh.size()==0) return;
+            for (Message ms:mh.getRetrievedHistory()) {
+                if (!ms.getAuthor().getId().equalsIgnoreCase(m.getJDA().getSelfUser().getId())) continue;
+                pc.deleteMessageById(ms.getId()).queue();
+            }
+        } catch (Exception e) {
+            System.err.println("Fehler beim Löschen der Konversation für "+m.getEffectiveName()+"("+m.getUser().getName()+","+m.getUser().getId()+"):"+e.getLocalizedMessage());
         }
     }
 }
