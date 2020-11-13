@@ -46,7 +46,7 @@ public class cmdNext implements Command {
                 }
                 return;
             }
-            String tzs = STATIC.SOMMERZEIT?"CEST":"CET";
+            String tzs = STATIC.istSommerzeit()?"CEST":"CET";
             if (args.length==1) {
                 String ret = "";
                 try {
@@ -82,7 +82,7 @@ public class cmdNext implements Command {
                     event.getTextChannel().sendMessage(LangManager.get(event.getGuild(),"cmdNextAlreadyRunning")).queue();
                 }
             } else {
-                String tzs = STATIC.SOMMERZEIT?"CEST":"CET";
+                String tzs = STATIC.istSommerzeit()?"CEST":"CET";
                 if (args.length>0) {
                     String ret = "";
                     try {

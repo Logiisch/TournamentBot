@@ -15,6 +15,9 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -57,7 +60,15 @@ public class STATIC {
 
     public static boolean dryRun = false;
 
-    public static boolean SOMMERZEIT = false;
+    public static boolean istSommerzeit() {
+        TimeZone tz = TimeZone.getTimeZone("Europe/Rome");
+        TimeZone.setDefault(tz);
+        Calendar cal = Calendar.getInstance(tz, Locale.ITALIAN);
+        Date date = new Date();
+        cal.setTime(date);
+        int out =cal.get(Calendar.DST_OFFSET);
+        return out == 3600000;
+    }
 
     public static void setSettings(Guild g, String key, String value) {
         setSettings(g.getId(),key,value);
