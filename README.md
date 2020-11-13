@@ -3,14 +3,14 @@
 Tournament Bot for Michis Discord
 
 
-## Tournamet Server
+## Tournament Server
 
 Join the tournament server: https://turnier.dermichi.de
 
 
 ## Setup-Instructions:
 - Download .jar-File here: https://logii.de/data/TournamentBot.jar
-- Generate a Discord bot token
+- Generate a Discord bot token and enable both Privileged Gateway Intents
 - Generate a TimeDB Access Token
 - put a file called "tokens_discord_bot.txt" next to the executable
   - Line 1: Discord-Token
