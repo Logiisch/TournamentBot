@@ -61,9 +61,9 @@ public class STATIC {
     public static boolean dryRun = false;
 
     public static boolean istSommerzeit() {
-        TimeZone tz = TimeZone.getTimeZone("Europe/Rome");
+        TimeZone tz = TimeZone.getTimeZone("Europe/Berlin");
         TimeZone.setDefault(tz);
-        Calendar cal = Calendar.getInstance(tz, Locale.ITALIAN);
+        Calendar cal = Calendar.getInstance(tz, Locale.GERMANY);
         Date date = new Date();
         cal.setTime(date);
         int out =cal.get(Calendar.DST_OFFSET);
