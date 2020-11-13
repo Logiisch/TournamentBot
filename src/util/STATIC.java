@@ -57,7 +57,7 @@ public class STATIC {
 
     public static boolean dryRun = false;
 
-    public static boolean SOMMERZEIT = true;
+    public static boolean SOMMERZEIT = false;
 
     public static void setSettings(Guild g, String key, String value) {
         setSettings(g.getId(),key,value);
