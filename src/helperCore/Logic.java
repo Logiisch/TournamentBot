@@ -750,7 +750,7 @@ public class Logic {
         if (!f.exists()) //noinspection ResultOfMethodCallIgnored
             f.mkdirs();
         try {
-            printOutTxtFile.Write("data/"+g.getId()+"/nodes.txt",out);
+            printOutTxtFile.Write("data/guilds/"+g.getId()+"/nodes.txt",out);
         } catch (IOException e) {
             e.printStackTrace();
         }
